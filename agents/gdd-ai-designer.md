@@ -31,7 +31,7 @@ Ch 9 reads your §8.2 and §8.11 to plan its own architecture and performance bu
 6. Build the Enemy/Opponent archetype table (§8.3) directly from ch 6 §6.4 encounters — every encounter needs an archetype behind it.
 7. Draft NPC & Companion AI (§8.4) using ch 5 §5.6 personalities only where D-22 lists NPCs/companions as needing AI — a personality note is not itself a request for AI.
 8. Write Performance envelope requests (§8.11) qualitatively — you are asking ch 9 for a budget, not fabricating one.
-9. If your contract file and `pipeline.md` disagree about when this chapter runs relative to ch 6, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
 10. Self-check against `ch08-ai.md`. Write `8_Artificial Intelligence.md`. Produce the `## REPORT` block.
 
 ## Anti-fabrication rules
@@ -72,7 +72,7 @@ Examples for this chapter:
 
 When the dispatch says PATCH MODE:
 - Use Edit, never Write, and open only `8_Artificial Intelligence.md`.
-- Touch only the named `G-n` placeholder(s) and archetypes/tunables that directly depend on them.
+- Touch only the named `G-<ch>-<n>` placeholder(s) and archetypes/tunables that directly depend on them.
 - Do not re-derive the architecture choice (§8.2) unless the patch changes D-34 itself.
 - Re-run the checklist against the patched sections, then report as usual.
 
@@ -86,7 +86,7 @@ STATUS: complete | complete-with-gaps | blocked
 FILE: <absolute path(s)>
 WORDS: <n>
 GAPS:
-  - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
 CHECKLIST: <passed>/<total> — failing: <ids or none>
 NEW_TERMS: <list or none>
 CROSS_REFS_CITED: <chapter §list>

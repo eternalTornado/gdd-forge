@@ -86,15 +86,16 @@ Unchanged from the full flow — this profile does not relax any of them:
   and let the subagent read it.
 - Chapter bodies are written in `D-12`; headings keep the English numbered prefix in every language.
 - No external facts without a data file backing them.
+- Two orchestrator-written exceptions to "never writes chapter prose": `0_Index.md` and the §1.1
+  game-name line in `1_Concept.md` — boilerplate assembly, never design prose.
 
 ## Paths
 
 | Var | Value |
 |---|---|
 | `KIT` | `${CLAUDE_SKILL_DIR}` |
-| `AGENTS` | `${CLAUDE_PLUGIN_ROOT}/agents`, or `${CLAUDE_SKILL_DIR}/../../agents` if unset |
 | `OUT` | `brief:D-14` resolved to an absolute path, default `<cwd>/deliverables/<slug>/GDD/<D-15>/` |
-| `WORK` | `OUT/_work/` — `brief.md`, `gap-log.md`, `run-meta.md`, `review-report.md` (only if W4 ran), `_anchor.md`, `slices/`, `reports/<file>.report.md` |
+| `WORK` | `OUT/_work/` — `brief.md`, `gap-log.md`, `run-meta.md`, `review-report.md` (only if W4 ran), `inputs/` (holding `_anchor.md` and the per-dispatch slice files — same layout as the full flow), `reports/<file>.report.md` |
 
 `slug` = kebab-case of the chosen game name, ASCII only, exactly as in the full flow.
 
@@ -131,8 +132,8 @@ Unchanged from the full flow — this profile does not relax any of them:
    (e.g. a `run-meta.md` from before this profile existed). Write this line for both sub-profiles, not
    just one.
 8. Create `OUT`/`WORK` with a provisional slug (kebab-case of `D-01` if it is a real title, else
-   `untitled-game`), exactly as the full flow does. Naming resolves during W1 below, not here — this
-   profile has no separate naming wave.
+   `untitled-game`), exactly as the full flow does. Naming resolves in the W1 naming step below — this
+   profile has no `gdd-namer` dispatch.
 
 ## Wave table
 
@@ -152,8 +153,8 @@ The full flow's `KIT/scripts/extract-sections.sh <source> <dest> <spec>...` (spe
 `4.3-4.6`, or `all`) is available here too, and this profile uses it **only where it actually saves
 tokens** — it is not a hard dependency of any dispatch:
 
-- **After W1**, build the anchor once: `extract-sections.sh <OUT>/"1_Concept.md" <WORK>/_anchor.md 1.4
-  1.9` (pillars + glossary). Every dispatch from W2 onward that is given anything less than the whole of
+- **After W1**, build the anchor once: `extract-sections.sh <OUT>/"1_Concept.md" <WORK>/inputs/_anchor.md
+  1.4 1.9` (pillars + glossary). Every dispatch from W2 onward that is given anything less than the whole of
   `1_Concept.md` should also receive `_anchor.md` so it always has the pillars to cite and the glossary
   to reuse verbatim, regardless of what else it was sliced.
 - **W2** is a single, uncontended dispatch reading only one upstream file that targets 3–5 KB. Slicing it
@@ -162,9 +163,11 @@ tokens** — it is not a hard dependency of any dispatch:
 - **W3 is where slicing earns its keep**: three parallel dispatches would otherwise each read two whole
   upstream files, tripling the duplicated token cost of content most of them never use. Build, right
   after W2 completes:
-  - UX: `extract-sections.sh <OUT>/"1_Concept.md" <WORK>/slices/ux-1.md 1.7 1.8` and
-    `extract-sections.sh <OUT>/"2_Core Gameplay.md" <WORK>/slices/ux-2.md 2.1 2.3`
-  - Business: specs `1.5 1.7` from file 1, `2.4 2.9` from file 2
+  - UX: `extract-sections.sh <OUT>/"1_Concept.md" <WORK>/inputs/ux-1.md 1.7 1.8` and
+    `extract-sections.sh <OUT>/"2_Core Gameplay.md" <WORK>/inputs/ux-2.md 2.1 2.3 2.8` (§3.4 FTUE ties to
+    §2.8's first stage)
+  - Business: specs `1.5 1.7` from file 1, `2.1 2.3 2.4 2.6 2.9` from file 2 (§4.2 ties ad placement to
+    §2.1/§2.6 moments, §4.5 names a §2.3 mechanic)
   - Tech: specs `1.7` from file 1, `2.6 2.8` from file 2
   Each W3 dispatch gets `_anchor.md` plus its own two slice files.
 - **W4 (review) is never sliced.** `gdd-reviewer`'s own contract is explicit that it reads full chapters,
@@ -173,6 +176,22 @@ tokens** — it is not a hard dependency of any dispatch:
   giving the affected W3 dispatch the whole file(s) instead of blocking the run on the script's
   existence. Note the fallback in that dispatch's entry in `run-meta.md` so a later resume knows slicing
   wasn't used.
+
+## W1 — Concept, then the naming step (orchestrator)
+
+W1 dispatches `gdd-concept-architect` → `1_Concept.md` (whole `brief.md`). When its REPORT arrives, the
+orchestrator runs the naming step **before W2**:
+
+1. If `D-01` is a real title: `game_name` = D-01, compute `slug`, no question asked.
+2. If `D-01 ∈ {GENERATE, UNDECIDED}`: read §1.2 of the finished file (exactly 3 candidates), ask the user
+   once with `AskUserQuestion` — the 3 candidates as options (label = name, description = rationale);
+   'Other' free text becomes the name.
+3. Write `game_name` and `slug` into `brief.md` under 'Chosen game name'; rename `OUT`/`WORK` from the
+   provisional slug; update `run-meta.md`.
+4. Replace the literal `[GAME NAME — pending §1.2]` placeholder in `1_Concept.md` §1.1 with the chosen
+   name by a direct `Edit` — boilerplate assembly, not design prose (same exemption as `0_Index.md`); do
+   not re-dispatch the agent for this.
+5. Only then build `_anchor.md` and start W2.
 
 ## Lite dispatch envelope
 
@@ -184,8 +203,8 @@ LANGUAGE: write the body in <D-12>. Keep heading numbers in English ("# 2. Core 
 CONTRACT: read <KIT>/references/contracts-lite/lite-<n>.md in full. Obey Sections, Depth rule, Hard rules.
 INPUTS (read all, read nothing else):
   - <WORK>/brief.md
-  - <WORK>/_anchor.md (pillars + glossary), when provided — see wave table for which dispatches get it
-  - <OUT>/<consumed lite file(s)>, whole file OR <WORK>/slices/<name>.md — see wave table for which
+  - <WORK>/inputs/_anchor.md (pillars + glossary), when provided — see wave table for which dispatches get it
+  - <OUT>/<consumed lite file(s)>, whole file OR <WORK>/inputs/<name>.md — see wave table for which
   - template: <KIT>/templates/lite/<tmpl>
   - checklist: <KIT>/checklists/lite/<check>
   - data: <KIT>/data/<file>, and <KIT>/data/casual/<file> only where the contract names it
@@ -193,7 +212,7 @@ OUTPUT: write exactly one file <OUT>/<lite file>.
 RULES:
   1. DECISIONS come only from brief.md. If a section needs a decision that is missing or UNDECIDED and
      the Depth rule doesn't say what to do, do NOT invent it — write the section header, a one-line
-     placeholder "⟂ GAP G-<n>: <what is needed>", and list it under GAPS in your report. If the gap is
+     placeholder "⟂ GAP G-<file>-<n>: <what is needed>", and list it under GAPS in your report. If the gap is
      that this pitch actually needs the full profile (real narrative/AI/multiplayer/console-PC), say so
      explicitly in the GAP text rather than writing around it.
   2. Design elaborations are yours. Mark tunables "(tunable)", estimates "(est.)", targets "(target)".
@@ -202,14 +221,15 @@ RULES:
   4. Use the Glossary from 1_Concept.md §1.9 verbatim (or from `_anchor.md` if that's what you were
      given). New terms go under a "New terms" note at the end of your file.
   5. End with an "Open Decisions" box listing every UNDECIDED brief field you touched and every GAP.
-  6. Self-check against your checklist before reporting; fix what you can; report the rest.
+  6. Self-check against your checklist before reporting. Items tagged `[R]` are reviewer-only: count them
+     as n/a, not failing. Fix what you can; report the rest.
 REPORT (last thing in your final message, exact format — identical shape to the full flow's):
   ## REPORT
   STATUS: complete | complete-with-gaps | blocked
   FILE: <absolute path>
   WORDS: <n>
   GAPS:
-    - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+    - G-<file>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
   CHECKLIST: <passed>/<total> — failing: <ids or none>
   NEW_TERMS: <list or none>
   CROSS_REFS_CITED: <file §list>
@@ -220,7 +240,7 @@ all three before proceeding — same mechanics as the full flow's parallel waves
 block verbatim to `WORK/reports/<file>.report.md` as it arrives.
 
 **PATCH mode** (used only during § GAP handling, never mid-wave): identical shape to the full flow —
-`PATCH MODE: <file> exists. Replace only the placeholder(s) G-<n> and any sentence that directly depends
+`PATCH MODE: <file> exists. Replace only the placeholder(s) G-<file>-<n> and any sentence that directly depends
 on them. Do not rewrite other sections. Re-run your checklist. Report as usual.` Use `Edit`, never
 `Write`, in PATCH mode.
 
@@ -229,7 +249,8 @@ on them. Do not rewrite other sections. Re-run your checklist. Report as usual.`
 **This profile does not ask GAP questions between waves.** It collects every `G-n` from every REPORT
 across W1, W2, and W3 into `WORK/gap-log.md` as they arrive, and asks them all together in one place —
 after W3 finishes, before W4 — rather than after each of the four waves. State this rule explicitly to
-the user if they ask why the gate feels quieter mid-run than the full flow's.
+the user if they ask why the gate feels quieter mid-run than the full flow's. GAP ids are `G-<file>-<n>`
+(`<file>` = lite file number 1–5, `<n>` restarts per file), so W3's three parallel agents never collide.
 
 **Why**: three reasons, all specific to this profile's shape, not a shortcut taken for its own sake.
 
@@ -264,22 +285,10 @@ assembly?* If they skip, `0_Index.md` §0.3's checklist-pass column reads "lite 
 row, and Done still reports normally.
 
 If run: dispatch `gdd-reviewer` with all five finished lite files, `brief.md`, `gap-log.md`, every
-`references/contracts-lite/lite-N.md` (in place of `chapter-contracts.md`'s Consistency rules section),
-and every `checklists/lite/*.md`. It writes `WORK/review-report.md` in the same Blockers/Majors/Minors
-shape the full flow uses, checked against the **Lite Consistency rules** below instead of the full
-kit's 8 (they are the same 8 rules, restated for a 5-file structure):
-
-```
-1. Every file uses the Glossary terms from 1_Concept.md §1.9 (no synonyms for defined terms).
-2. Every feature in 2_Core Gameplay.md §2.9 traces to a pillar in 1_Concept.md §1.4.
-3. Every ad/IAP mechanism in 4_Business and LiveOps.md §4.2/§4.3 uses only D-30 entries.
-4. Every asset row (3_UX Art and Audio.md §3.7) uses the naming convention stated in that same section.
-5. Every UNDECIDED in brief.md appears in at least one file's Open Decisions box.
-6. No file states a decision value absent from brief.md (platform, engine, ad network, KPI target, etc.).
-7. No numeric CPI/retention/build-size/performance claim appears without a brief citation (D-45/D-47) or
-   an explicit "(target)" tag.
-8. Every GAP raised during the run is logged in gap-log.md with its resolution or explicit UNDECIDED.
-```
+`references/contracts-lite/lite-N.md`, `KIT/references/consistency-rules-lite.md`, and every
+`checklists/lite/*.md`. It writes `WORK/review-report.md` in the same Blockers/Majors/Minors shape the
+full flow uses, checked against `KIT/references/consistency-rules-lite.md` (the 8 lite rules — same
+concerns as the full kit's, renumbered for 5 files).
 
 **Blockers** → ask the user, patch the owner (same as § GAP handling). **Majors** → PATCH mode dispatch
 to the named owner once. **Minors** → listed, not auto-fixed; each file's own Open Decisions box is the
@@ -330,12 +339,14 @@ The counterpart to the full flow's `--chapter N`. `N` is the lite file number, 1
    `/gdd-forge:review` uses), or hand off to `pipeline.md`'s Resume if it looks like a full run instead.
 2. If `brief.md` was never frozen, resume at W0 — re-show any preset rows already confirmed before the
    session ended rather than re-asking them.
-3. List `OUT/*.md`. A file counts as done only if it exists **and**
+3. If `1_Concept.md` exists but `run-meta.md` still shows the provisional slug and `D-01 ∈ {GENERATE,
+   UNDECIDED}`, run the W1 naming step before anything else.
+4. List `OUT/*.md`. A file counts as done only if it exists **and**
    `WORK/reports/<file>.report.md` shows `STATUS: complete` or `complete-with-gaps`.
-4. Resume at the first wave whose file(s) are not all done. If resuming into W3, rebuild `_anchor.md` and
+5. Resume at the first wave whose file(s) are not all done. If resuming into W3, rebuild `_anchor.md` and
    the relevant slice files first if they're missing (W1/W2 finished but the session ended before slicing
    ran). Then continue W1→W4 forward normally, including the single end-of-run GAP batch.
-5. If `review-report.md` exists but `0_Index.md` does not, resume at 0_Index assembly directly.
+6. If `review-report.md` exists but `0_Index.md` does not, resume at 0_Index assembly directly.
 
 ## Failure modes
 
@@ -350,7 +361,8 @@ The counterpart to the full flow's `--chapter N`. `N` is the lite file number, 1
 ## Token cost — lite vs full
 
 The full flow costs roughly 20 subagent dispatches and on the order of a million input tokens across the
-whole run (per `README.md` §4 / `SKILL.md`). This profile's clean-run baseline is 6 dispatches — about
+whole run (`README.md` §4 gives the ~20-dispatch figure; the token figure is this file's own estimate and
+is stated nowhere else in the kit). This profile's clean-run baseline is 6 dispatches — about
 30% of the full flow's dispatch count — and each dispatch reads at most two upstream files (often just a
 slice of each) instead of the full flow's later waves, which can read four or five finished chapters at
 once (e.g. `12_Management.md` reads six upstream sections across four chapters). Combined with templates
@@ -370,7 +382,7 @@ treat it the same way this profile treats every other unsourced number — as an
 | `gdd-producer` | sonnet | 4 (`4_Business and LiveOps.md`) | ch 12 |
 | `gdd-tech-designer` | sonnet | 5 (`5_Tech Note.md`) | ch 9 (+ ch11) |
 | `gdd-reviewer` | sonnet | (review, optional) | review |
-| — orchestrator — | — | 0 (`0_Index.md`) | ch 0 (`gdd-scribe`) |
+| — orchestrator — | — | 0 (`0_Index.md`) + the §1.1 game-name line | ch 0 (`gdd-scribe`) |
 
 No `gdd-namer`, `gdd-narrative-designer`, `gdd-level-designer`, `gdd-ai-designer`, or `gdd-art-director`
 dispatch exists in this profile — their full-profile responsibilities are either folded into the five

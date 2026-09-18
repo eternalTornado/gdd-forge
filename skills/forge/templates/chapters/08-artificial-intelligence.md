@@ -56,6 +56,6 @@
 <!-- guidance: qualitative asks to ch 9 (e.g. "pathfinding must support N concurrent agents," "perception checks must not run every frame") — no fabricated numbers; if a number matters, ask ch 9 to confirm it or raise a GAP. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." If D-20 is competitive-only with no stated bot support, flag that here as an Open Decision. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-8-<n> — <what is needed> — §N.x". If none: "None." If D-20 is competitive-only with no stated bot support, flag that here as an Open Decision. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

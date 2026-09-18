@@ -1,5 +1,6 @@
 # Checklist ch07-ui-ux — Interface, UX & Accessibility
 Applies to: 7_Interface.md · Used by: gdd-ux-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Structure & Flow
 - [ ] UI-01 UX Principles (§7.1) are 3–5 items, each derived from a pillar in ch3 §3.2
@@ -34,5 +35,5 @@ Applies to: 7_Interface.md · Used by: gdd-ux-designer (self-check) and gdd-revi
 - [ ] UI-20 No accessibility standard is cited without naming the source document
 
 ## Consistency rules
-- [ ] UI-21 [Rule 5] Asset Inventory (§7.11) uses the naming convention from ch10 §10.8
+- [ ] UI-21 [Rule 5] Asset Inventory (§7.11) states ONE naming pattern — the GDD's canonical one, which ch10 §10.8 adopts — and every row follows it
 - [ ] UI-22 [Rule 1] UI terminology matches the Glossary in ch3 §3.10

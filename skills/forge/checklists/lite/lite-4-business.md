@@ -24,4 +24,4 @@ Applies to: 4_Business and LiveOps.md · Used by: gdd-producer (self-check) and 
 
 ## Consistency rules
 - [ ] LB-14 [Lite rule 3] Every ad/IAP mechanism in §4.2/§4.3 uses only D-30 entries
-- [ ] LB-15 [Lite rule 6] Every UNDECIDED field touched (including D-45/D-46 when unresolved) appears in the Open Decisions box
+- [ ] LB-15 [Lite rule 5] Every UNDECIDED field touched (including D-45/D-46 when unresolved) appears in the Open Decisions box

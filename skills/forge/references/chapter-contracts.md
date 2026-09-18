@@ -32,4 +32,4 @@ Contract files live under `contracts/`.
 
 \* same run as ch 9, after it.
 
-8 cross-chapter consistency rules enforced by `gdd-reviewer`: see `consistency-rules.md`.
+8 cross-chapter consistency rules enforced by `gdd-reviewer`: see `consistency-rules.md` (full profile) or `consistency-rules-lite.md` (lite profile — different numbering).

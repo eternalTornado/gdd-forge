@@ -24,4 +24,4 @@ Applies to: 2_Core Gameplay.md · Used by: gdd-mechanics-designer (self-check) a
 
 ## Consistency rules
 - [ ] LG-14 [Lite rule 2] Every feature in §2.9 traces to a §1.4 pillar
-- [ ] LG-15 [Lite rule 6] Every UNDECIDED field touched by this file appears in its Open Decisions box
+- [ ] LG-15 [Lite rule 5] Every UNDECIDED field touched by this file appears in its Open Decisions box

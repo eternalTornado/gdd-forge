@@ -22,7 +22,7 @@
 - state explicitly which §4.4 mechanic each beat teaches, so ch 4/ch 6 stay traceable to each other -->
 
 ## 6.4 Level Entries
-<!-- guidance: one per level/zone — synopsis · objectives · narrative beat (ch 5 §5.5) · layout sketch · critical path · encounters/challenges · mechanics introduced/tested (ch 4 §4.4) · target duration (est.) · difficulty tier · asset needs (feeds ch 10 §10.9, ch 13 §C). DEPTH RULE: number of full entries follows ch 3 §3.9's level count — if that count is > 20, write full entries for the first 5 + one per act, and list the rest as §6.7 table rows only. If D-23 = Single persistent space, these become zone entries instead of levels. -->
+<!-- guidance: one per level/zone — synopsis · objectives · narrative beat (ch 5 §5.5) · layout sketch · critical path · encounters/challenges · mechanics introduced/tested (ch 4 §4.4) · target duration (est.) · difficulty tier · asset needs (feeds ch 10 §10.9, ch 13 §C) — asset needs are CATEGORY names ('desert ruins kit, 2 new enemy silhouettes'), never asset IDs; naming is defined in ch 7 §7.11. DEPTH RULE: number of full entries follows ch 3 §3.9's level count — if that count is > 20, write full entries for the first 5 + one per act, and list the rest as §6.7 table rows only. If D-23 = Single persistent space, these become zone entries instead of levels. -->
 
 ### 6.4.x <Level id> — <Level name>
 <!-- repeat per level; see Depth rule for how many full entries -->
@@ -56,6 +56,6 @@
 -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-6-<n> — <what is needed> — §N.x". If none: "None." -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

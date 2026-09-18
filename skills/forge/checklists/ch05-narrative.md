@@ -1,8 +1,9 @@
 # Checklist ch05-narrative — Narrative Consistency
 Applies to: 5_Story, Setting and Character.md · Used by: gdd-narrative-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Premise & Structure
-- [ ] NA-01 Narrative Premise & Themes (§5.1) is stated even when D-21 = None or Light (per Depth rule)
+- [ ] NA-01 Narrative Premise & Themes (§5.1) is present whenever D-21 ≥ Light; when D-21 = None it is replaced by the one-line N/A statement (per Depth rule)
 - [ ] NA-02 Main story arc (§5.5 Plot Structure) has a clearly labelled beginning, middle, and end
 - [ ] NA-03 Plot Structure table names where gameplay progression (ch4 §4.2) intersects each act/beat
 - [ ] NA-04 Narrative pacing is described as aligned with gameplay progression, not stated independently

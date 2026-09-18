@@ -1,5 +1,6 @@
 # Checklist ch03-overview — Game Overview
 Applies to: 3_Game Overview.md · Used by: gdd-concept-architect (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Concept & Pillars
 - [ ] OV-01 One-liner in §3.1 matches D-02 verbatim before the expanded paragraph

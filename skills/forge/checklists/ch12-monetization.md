@@ -1,5 +1,6 @@
 # Checklist ch12-monetization — Monetisation Ethics
 Applies to: 12_Management.md · Used by: gdd-producer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Model & Mechanisms
 - [ ] MO-01 Monetisation Plan (§12.6) is present only if D-06 ≠ Premium; if D-06 = Premium, it is one paragraph on pricing tier as an Open Decision

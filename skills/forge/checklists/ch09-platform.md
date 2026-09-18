@@ -1,5 +1,6 @@
 # Checklist ch09-platform — Platform Compatibility
 Applies to: 9_Technical.md · Used by: gdd-tech-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Platform Targets
 - [ ] PL-01 Target Platforms & Hardware Floor (§9.1) lists exactly the platforms in D-04, no more, no fewer

@@ -48,4 +48,4 @@
 <!-- Launch languages (D-38) and rating/compliance path (D-40), condensed. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." D-45/D-46 = UNDECIDED always appear here per the Depth rule. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." D-45/D-46 = UNDECIDED always appear here per the Depth rule. -->

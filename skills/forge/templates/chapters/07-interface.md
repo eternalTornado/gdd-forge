@@ -40,7 +40,7 @@
 <!-- guidance: music style & adaptive layers · SFX categories · VO/dialogue delivery (ties to ch 5 §5.8) · mix priorities · platform audio profiles per D-04. ELABORATION: style and layering; DECISION: none invented beyond D-07/D-08 tone. -->
 
 ## 7.8 Help, Tutorialisation & Onboarding UI
-<!-- guidance: how the tutorial in ch 6 §6.3 is surfaced in UI — hint prompts, contextual help, replayable tutorial access. -->
+<!-- guidance: how the tutorial is surfaced in UI — hint prompts, contextual help, replayable tutorial access — keyed to the mechanic order in ch 4 §4.4 (ch 6 §6.3 is written in parallel with you and aligns to the same order). -->
 
 ## 7.9 Accessibility
 <!-- guidance: map each D-39 commitment to a concrete, buildable feature, using the `data/accessibility/` slice you were given for the standard it satisfies. DEPTH RULE: if D-39 = "None specified", list baseline-only support (platform defaults) and flag the absence of commitments as an Open Decision rather than inventing features. -->
@@ -54,7 +54,7 @@
 <!-- guidance: text expansion allowance, font support, RTL handling if any target in D-38 requires it, and how D-38's language list maps to UI string budget. -->
 
 ## 7.11 UI & Audio Asset Inventory
-<!-- guidance: naming pattern must match ch 10 §10.8's convention (consistency rule #5) — do not invent a separate scheme. Feeds ch 13 §C. -->
+<!-- guidance: this table DEFINES the canonical asset naming convention for the whole GDD (consistency rule #5): state the pattern once with 2–3 examples, then follow it in every row. Ch 10 §10.8 adopts and extends it, ch 9 §9.5 inherits it, ch 13 §C indexes it — so choose prefixes broad enough to cover art assets too (e.g. CHR_, ENV_, PROP_, VFX_, UI_, SFX_, MUS_), not only UI/audio. -->
 <!--
 | ID | Asset | Type | Naming pattern | Priority |
 |---|---|---|---|---|
@@ -62,6 +62,6 @@
 -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." D-39 = "None specified" must always appear here per the Depth rule. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-7-<n> — <what is needed> — §N.x". If none: "None." D-39 = "None specified" must always appear here per the Depth rule. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

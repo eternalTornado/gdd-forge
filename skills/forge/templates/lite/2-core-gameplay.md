@@ -51,4 +51,4 @@ Intent · Rules · Inputs/Outputs
 <!-- Every feature this file designs: id · feature · §1.4 pillar · priority · depends-on. Cross-referenced to §1.5. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." -->

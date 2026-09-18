@@ -53,7 +53,7 @@ Intent · Rules · Inputs · Outputs · Edge cases
 <!-- guidance: target curves described qualitatively (difficulty, power, economy) + which tunables from §4.4/§4.7 drive each curve. No fabricated numeric benchmarks — curves are described in words, tunables are named. -->
 
 ## 4.11 Feature List Table
-<!-- guidance: every feature this chapter designs, cross-referenced to ch 3 §3.3. DECISION: every row's pillar must exist in §3.2 and every id must also appear in ch 12's roadmap (consistency rule #2) — flag any that don't yet as a GAP. -->
+<!-- guidance: every feature this chapter designs, cross-referenced to ch 3 §3.3. DECISION: every row's pillar must exist in §3.2 — a row with no pillar is a GAP. Ch 12's roadmap must later carry every id here (consistency rule #2); the reviewer checks that, never you — ch 12 does not exist yet, so do not raise a GAP for it. -->
 <!--
 | ID | Feature | Pillar | Priority | Depends on |
 |---|---|---|---|---|
@@ -61,6 +61,6 @@ Intent · Rules · Inputs · Outputs · Edge cases
 -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-4-<n> — <what is needed> — §N.x". If none: "None." -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

@@ -1,5 +1,6 @@
 # Checklist ch06-levels — Level Design Quality
 Applies to: 6_Levels.md · Used by: gdd-level-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Structure & Philosophy
 - [ ] LV-01 Level Design Philosophy (§6.1) states how the pillars (ch3 §3.2) show up spatially
@@ -12,7 +13,7 @@ Applies to: 6_Levels.md · Used by: gdd-level-designer (self-check) and gdd-revi
 - [ ] LV-06 Every level/zone entry ties its narrative beat to a beat in ch5 §5.5 (when D-21 ≠ None)
 - [ ] LV-07 Every level/zone entry states target duration tagged "(est.)"
 - [ ] LV-08 Every level/zone entry states a difficulty tier consistent with the Difficulty & Pacing Curve (§6.5)
-- [ ] LV-09 Every level/zone entry lists asset needs that reappear in ch10 §10.9 or ch7 §7.11
+- [ ] LV-09 [R] Every level/zone entry lists asset needs that reappear in ch10 §10.9 or ch7 §7.11
 - [ ] LV-10 Difficulty & Pacing Curve (§6.5) is a table spanning the full level list, not prose
 
 ## Scale Compliance
@@ -29,4 +30,4 @@ Applies to: 6_Levels.md · Used by: gdd-level-designer (self-check) and gdd-revi
 
 ## Consistency rules
 - [ ] LV-17 [Rule 3] Every level in §6.7 references mechanics that exist in ch4 §4.4
-- [ ] LV-18 [Rule 5] Any asset table in this chapter uses the naming convention defined in ch10 §10.8
+- [ ] LV-18 [Rule 5] Asset needs in §6.4 are category names only — no asset IDs and no naming pattern invented here (naming is defined in ch7 §7.11)

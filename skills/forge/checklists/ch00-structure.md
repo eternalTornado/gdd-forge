@@ -1,5 +1,6 @@
 # Checklist ch00-structure — Structural & Payoff Baseline (Chapters 3 & 4)
 Applies to: 3_Game Overview.md, 4_Gameplay and Mechanics.md · Used by: gdd-concept-architect, gdd-mechanics-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Core Loop & Pillars
 - [ ] ST-01 Core gameplay loop is stated as a named cycle with explicit verbs (not just described abstractly)
@@ -29,5 +30,5 @@ Applies to: 3_Game Overview.md, 4_Gameplay and Mechanics.md · Used by: gdd-conc
 - [ ] ST-17 Difficulty/economy claims use "(tunable)" or "(est.)" tags rather than asserting fixed numbers as fact
 
 ## Consistency rules
-- [ ] ST-18 [Rule 2] Every feature in ch4 §4.11 traces to a pillar in ch3 §3.2 and appears in ch12's roadmap
+- [ ] ST-18 [R] [Rule 2] Every feature in ch4 §4.11 traces to a pillar in ch3 §3.2 and appears in ch12's roadmap
 - [ ] ST-19 [Rule 6] Every UNDECIDED field touched by ch3 or ch4 appears in that chapter's Open Decisions box

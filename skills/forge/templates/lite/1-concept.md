@@ -6,7 +6,7 @@
 <!-- 2–3 lines: the anchor file for the lite profile — header, pitch, pillars, feature set, scope and glossary. Every other lite file reads at least §1.4 and §1.9. -->
 
 ## 1.1 Document Header
-<!-- game name (D-01) · GDD version (D-15) · profile (hyper-casual/casual) · date · rights holder (D-41, or "[RIGHTS HOLDER — UNDECIDED]") · language (D-12) · platforms (D-04). One-line copyright notice · one-line confidentiality statement. Seed a single-row version table (version · date · summary) for future runs to append to. Replaces the full kit's 1_Copyright Information.md and 2_Version History.md. -->
+<!-- game name (D-01 if a real title; else the literal `[GAME NAME — pending §1.2]` placeholder, filled by the orchestrator after the user picks) · GDD version (D-15) · profile (hyper-casual/casual) · date · rights holder (D-41, or "[RIGHTS HOLDER — UNDECIDED]") · language (D-12) · platforms (D-04). One-line copyright notice · one-line confidentiality statement. Seed a single-row version table (version · date · summary) for future runs to append to. Replaces the full kit's 1_Copyright Information.md and 2_Version History.md. -->
 
 ## 1.2 Name Candidates
 <!-- CONDITIONAL: only if D-01 = GENERATE or UNDECIDED. Propose exactly 3 candidates, each: name · one-line rationale · "cannot verify trademark/app-store availability" caveat. Otherwise: "Not applicable — working title already set (D-01)." -->
@@ -38,4 +38,4 @@
 <!-- D-09 scope statement + a project-scope estimate line (levels/stages, characters if any — every number (est.)). Then 8–15 glossary terms this GDD uses consistently — every later lite file reuses these verbatim (Lite Consistency rule 1). -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." -->

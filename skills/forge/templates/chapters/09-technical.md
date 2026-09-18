@@ -26,7 +26,7 @@
 <!-- guidance: save system (format, location, versioning/migration strategy) · config system · content data formats. ELABORATION: format choices; DECISION: security/compliance constraints only from D-40. -->
 
 ## 9.5 Asset Pipeline & Media Profiles
-<!-- guidance: import rules and compression per platform (D-04), naming convention inherited from ch 10 §10.8 / ch 7 §7.11 — do not invent a separate naming scheme. -->
+<!-- guidance: import rules and compression per platform (D-04), naming convention inherited from ch 7 §7.11 (as extended by ch 10 §10.8) — do not invent a separate naming scheme. -->
 
 ## 9.6 Networking
 <!-- CONDITIONAL: only if D-20 ≠ None. Otherwise write the single line: "Not applicable — single-player only (D-20)." -->
@@ -55,6 +55,6 @@
 -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." D-11 = UNDECIDED must always appear here per the Depth rule. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-9-<n> — <what is needed> — §N.x". If none: "None." D-11 = UNDECIDED must always appear here per the Depth rule. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

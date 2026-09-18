@@ -31,6 +31,6 @@ ELABORATION: factual reporting of orchestrator-provided run metadata, nothing in
 State it as standing policy, not as history — this section does not change between runs unless the policy itself is amended. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-2-<n> — <what is needed> — §N.x". If none: "None." -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

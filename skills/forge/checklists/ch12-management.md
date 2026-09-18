@@ -1,5 +1,6 @@
 # Checklist ch12-management — Development Readiness & Roadmap
 Applies to: 12_Management.md · Used by: gdd-producer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Roadmap & Milestones
 - [ ] MG-01 Development Roadmap (§12.1) names all phases (concept → prototype → vertical slice → alpha → beta → gold → live) with a goal and exit criteria for each
@@ -12,7 +13,7 @@ Applies to: 12_Management.md · Used by: gdd-producer (self-check) and gdd-revie
 - [ ] MG-06 Risk Register (§12.5) table has risk, source chapter, likelihood, impact, mitigation, and owner filled for every row
 
 ## Handoff Completeness
-- [ ] MG-07 Asset requirements referenced (via ch10 §10.9, ch7 §7.11, ch6 asset needs) are complete, not restated ad hoc
+- [ ] MG-07 [R] Asset requirements referenced (via ch10 §10.9, ch7 §7.11, ch6 asset needs) are complete, not restated ad hoc
 - [ ] MG-08 Feature priority levels (P0/P1/P2) referenced match ch3 §3.3 and ch4 §4.11 exactly
 - [ ] MG-09 QA & Playtest Plan (§12.10) states what each milestone tests, not a generic "QA will validate"
 

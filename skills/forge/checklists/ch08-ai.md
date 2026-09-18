@@ -1,5 +1,6 @@
 # Checklist ch08-ai — Artificial Intelligence
 Applies to: 8_Artificial Intelligence.md · Used by: gdd-ai-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Architecture & Intent
 - [ ] AI-01 AI Goals & Player Experience Intent (§8.1) states what the AI must make the player feel, not just what it does

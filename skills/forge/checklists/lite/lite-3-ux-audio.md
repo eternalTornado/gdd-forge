@@ -22,4 +22,4 @@ Applies to: 3_UX Art and Audio.md · Used by: gdd-ux-designer (self-check) and g
 
 ## Consistency rules
 - [ ] LU-14 [Lite rule 4] Every asset row in §3.7 uses the naming convention stated in that same section, applied consistently
-- [ ] LU-15 [Lite rule 6] Every UNDECIDED field touched by this file appears in its Open Decisions box
+- [ ] LU-15 [Lite rule 5] Every UNDECIDED field touched by this file appears in its Open Decisions box

@@ -29,7 +29,7 @@ Ch 9 reads your §10.8 and §10.9 to plan its asset pipeline, and ch 12 reads §
 4. Draft the Art Direction Statement & Visual Pillars (§10.1) first, then the Style Guide (§10.2) — every later section (character, environment, UI) must be traceable to these.
 5. Apply the Depth rule: if D-21 = None, §10.3 covers only the player avatar and enemy roster, not a full cast.
 6. Draft Character Art (§10.3) and Environment Art (§10.4) side by side, cross-checking each entry against the ch 5 cast/regions and ch 6 zones you read — an entry with no matching source is orphaned.
-7. Establish the Asset Pipeline & Naming Convention (§10.8) once, then reuse it verbatim in the Asset List (§10.9) — every asset ID should already fit the pattern you stated.
+7. Adopt ch 7 §7.11's naming pattern in §10.8 (verbatim, then your extensions), then reuse it verbatim in the Asset List (§10.9) — every asset ID should already fit the pattern you stated.
 8. Write the Reference & Mood Board section (§10.10) last, as prose description only — never attempt to generate, fetch, or embed an actual image.
 9. Self-check against `ch10-art.md`. Write `10_Game Art.md`. Produce the `## REPORT` block.
 
@@ -48,7 +48,7 @@ Examples for this chapter:
 - DECISION: platform list (D-04) bounds fidelity — do not write a high-poly/4K pipeline for a mobile-only brief.
 - ELABORATION: the specific colour script per act, the exact polycount budget per asset tier = elaboration `(target)`; naming convention prefixes; mood board descriptions.
 
-The naming convention you establish in §10.8 is a decision *you* make once — after that, it behaves like a hard rule for the rest of the chapter and every chapter that reuses it.
+The naming convention in §10.8 is not yours to invent: ch 7 §7.11 (written before you) defines the pattern; you adopt it verbatim and extend it with art categories, directory structure and variant rules. After that it behaves like a hard rule for every row you write.
 
 ## Domain guidance
 
@@ -56,7 +56,7 @@ The naming convention you establish in §10.8 is a decision *you* make once — 
 - Props, VFX & Animation principles (§10.5) should distinguish hero props (bespoke, high detail) from set-dressing props (kit-based, reused) — treating every prop as bespoke inflates scope beyond what ch 12's roadmap can plan for.
 - Character Art (§10.3) needs silhouette, palette, and costume rules per character — a description with no silhouette note gives animators and modelers nothing to start from.
 - Environment Art (§10.4) should map directly onto ch 5 regions or ch 6 zones by name — an environment entry with no matching region/zone is orphaned content.
-- The Asset Pipeline & Naming Convention (§10.8) is load-bearing for three other chapters (ch 7 UI assets, ch 9 asset pipeline, ch 13 index) — state it as a literal pattern with examples, not a philosophy paragraph.
+- The Asset Pipeline & Naming Convention (§10.8) inherits ch 7 §7.11's pattern and is load-bearing for ch 9 §9.5 and ch 13 §C — restate the inherited pattern literally, then your extensions with examples, not a philosophy paragraph.
 - The Asset List (§10.9) is a minimum deliverable, not an exhaustive one — prioritise coverage across categories (character, environment, prop, VFX, UI) over exhaustive enumeration within one category.
 - Keep polycount/texture budgets in §10.2/§10.9 tied to D-04's platform ceiling — a budget copy-pasted from a AAA console reference is a fabrication risk on a mobile-only brief.
 - Reference & Mood Board descriptions (§10.10) stay text-only — describe references verbally ("muted teal/rust palette, hard cel-shaded edges, referencing D-13's borrow notes"), never attempt to generate or embed images.
@@ -72,8 +72,8 @@ The naming convention you establish in §10.8 is a decision *you* make once — 
 
 When the dispatch says PATCH MODE:
 - Use Edit, never Write, and open only `10_Game Art.md`.
-- Touch only the named `G-n` placeholder(s) and asset rows/entries directly dependent on them.
-- Do not rename the pipeline convention or re-derive the style guide unless the patch explicitly requires it — both are cited verbatim by ch 7, 9, and 13.
+- Touch only the named `G-<ch>-<n>` placeholder(s) and asset rows/entries directly dependent on them.
+- Do not alter the inherited naming pattern or re-derive the style guide unless the patch explicitly requires it — both are cited verbatim by ch 7, 9, and 13.
 - Re-run the checklist against the patched sections, then report as usual.
 
 ## Report format
@@ -86,7 +86,7 @@ STATUS: complete | complete-with-gaps | blocked
 FILE: <absolute path(s)>
 WORDS: <n>
 GAPS:
-  - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
 CHECKLIST: <passed>/<total> — failing: <ids or none>
 NEW_TERMS: <list or none>
 CROSS_REFS_CITED: <chapter §list>

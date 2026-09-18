@@ -2,7 +2,7 @@
 Applies to: 1_Concept.md · Used by: gdd-concept-architect (self-check) and gdd-reviewer.
 
 ## Header & Pillars
-- [ ] LC-01 Document Header (§1.1) states game name, version, profile (hyper-casual/casual), and rights holder (or the `[RIGHTS HOLDER — UNDECIDED]` placeholder)
+- [ ] LC-01 Document Header (§1.1) states game name (or the literal `[GAME NAME — pending §1.2]` placeholder when D-01 = GENERATE/UNDECIDED), version, profile (hyper-casual/casual), and rights holder (or the `[RIGHTS HOLDER — UNDECIDED]` placeholder)
 - [ ] LC-02 Name Candidates (§1.2) is present only if D-01 = GENERATE/UNDECIDED, with exactly 3 candidates each carrying a rationale and a trademark-caveat line; otherwise it is exactly the one-line Depth-rule statement
 - [ ] LC-03 Game Concept (§1.3) opens with D-02 quoted verbatim
 - [ ] LC-04 Design Pillars (§1.4) has 3–5 pillars, each with a name, one-sentence meaning, and one-sentence forbid clause
@@ -22,4 +22,4 @@ Applies to: 1_Concept.md · Used by: gdd-concept-architect (self-check) and gdd-
 
 ## Consistency rules
 - [ ] LC-14 [Lite rule 1] Glossary terms in §1.9 are the ones every later lite file must reuse verbatim
-- [ ] LC-15 [Lite rule 6] Every UNDECIDED field touched by this file appears in its Open Decisions box
+- [ ] LC-15 [Lite rule 5] Every UNDECIDED field touched by this file appears in its Open Decisions box

@@ -1,5 +1,6 @@
 # Checklist ch04-mechanics — Gameplay and Mechanics
 Applies to: 4_Gameplay and Mechanics.md · Used by: gdd-mechanics-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Core & Meta Loop
 - [ ] ME-01 Core Loop (§4.1) is written as 30-second → 5-minute → session loop, each a numbered cycle naming the player's verb

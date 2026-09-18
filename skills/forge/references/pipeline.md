@@ -3,16 +3,15 @@
 The orchestrator is the **main conversation agent** (the one running this skill). It is the only party that talks to the user. Subagents cannot call `AskUserQuestion`; they report GAPs and the orchestrator asks on their behalf.
 
 ```
-W0 Gate ─► W1 Name ─► W2 ch3 ─► W3 ch4 ‖ ch5 ─► W4 ch6 ‖ ch7 ─► W5 ch8 ‖ ch10 ─► W6 ch9→ch11 ─► W7 ch12 ─► W8 Review ─► W9 Fix loop (≤1) ─► W10 ch1 ‖ ch2 ‖ ch13 ‖ 0_Index ─► Done
+W0 Gate ─► W1 Name ─► W2 ch3 ─► W3 ch4 → ch5 ─► W4 ch6 ‖ ch7 ─► W5 ch8 ‖ ch10 ─► W6 ch9 → ch11 ─► W7 ch12 ─► W8 Review ─► W9 Fix loop (≤1) ─► W10 ch1 ‖ ch2 ‖ ch13 → 0_Index ─► Done
 ```
-`‖` = dispatch in parallel (one message, several `Agent` calls). `→` = same agent, sequential.
+`‖` = dispatch in parallel (one message, several `Agent` calls). `→` = sequential inside the wave: the right-hand dispatch starts only after the left-hand file is on disk and its GAPs are handled.
 
 ## Paths the orchestrator computes once
 
 | Var | Value |
 |---|---|
 | `KIT` | `${CLAUDE_SKILL_DIR}` (folder of this skill: `references/`, `templates/`, `checklists/`, `data/`, `scripts/`) |
-| `AGENTS` | `${CLAUDE_PLUGIN_ROOT}/agents` — if unset, `${CLAUDE_SKILL_DIR}/../../agents` |
 | `OUT` | `brief:D-14` resolved to an absolute path, default `<cwd>/deliverables/<slug>/GDD/<D-15>/` |
 | `WORK` | `OUT/_work/` — `brief.md`, `gap-log.md`, `review-report.md`, `run-meta.md`, `reports/<chapter file>.report.md` (each agent's REPORT block, saved verbatim on arrival) |
 | `INPUTS` | `WORK/inputs/` — pre-sliced upstream sections, one subfolder per dispatch (see "Input slicing" below) |
@@ -25,7 +24,7 @@ Pass **absolute paths** to every subagent. Subagents never guess paths.
 
 ## W0 — Gate (orchestrator)
 
-Follow `brief-schema.md` exactly. Outcome: `WORK/brief.md` in the format of `brief-template.md`, frozen after the user confirms. Also write `WORK/run-meta.md` (date, kit version, D-15, brief sha256 of the frozen text).
+Follow `brief-schema.md` exactly. Outcome: `WORK/brief.md` in the format of `brief-template.md`, frozen after the user confirms. Also write `WORK/run-meta.md` (date, kit version, D-15, sha256 of the frozen Section A/B/C tables as shown at freeze time (later `game_name` and `Gate additions` do not change this hash — it identifies the freeze, not the file)).
 
 Refuse to proceed while D-02 is empty. Everything else may be `UNDECIDED` subject to the required-set table for D-15.
 
@@ -57,14 +56,14 @@ Pass `INPUTS/_anchor.md` to **every** W3–W7 dispatch in addition to that chapt
 | Dispatch | Slices to build | Passed whole |
 |---|---|---|
 | ch 4 | — | ch 3 (the anchor chapter; mechanics reads it in full) |
-| ch 5 | ch 4 → `4.1`, `4.3` | ch 3 |
+| ch 5 | ch 4 → `4.1-4.3` | ch 3 |
 | ch 6 | ch 3 → `3.9` · ch 4 → `4.1-4.6` · ch 5 → `5.3`, `5.5`, `5.9` | — |
 | ch 7 | ch 3 → `3.7`, `3.8` · ch 4 → `4.4`, `4.9` · ch 5 → `5.8` | — |
 | ch 8 | ch 4 → `4.3-4.6`, `4.10` · ch 5 → `5.6` · ch 6 → `6.4` | — |
-| ch 9 | ch 4 → `4.5`, `4.8`, `4.9` · ch 6 → `6.2`, `6.6` · ch 7 → `7.5`, `7.11` · ch 8 → `8.2`, `8.11` · ch 10 → `10.8`, `10.9` | — |
+| ch 9 | ch 4 → `4.5`, `4.8`, `4.9`, `4.11` · ch 6 → `6.2`, `6.6` · ch 7 → `7.5`, `7.11` · ch 8 → `8.2`, `8.11` · ch 10 → `10.8`, `10.9` | — |
 | ch 10 | ch 3 → `3.8` · ch 5 → `5.2`, `5.3`, `5.6`, `5.9` · ch 6 → `6.4` · ch 7 → `7.4`, `7.11` | — |
 | ch 11 | ch 6 → `6.6` · ch 8 → `8.10` · ch 10 → `10.8` | ch 9 (the agent's own just-finished file) |
-| ch 12 | ch 3 → `3.3`, `3.9` · ch 4 → `4.7`, `4.11` · ch 6 → `6.7` · ch 9 → `9.10` · ch 10 → `10.9` · ch 11 → `11.7` | — |
+| ch 12 | ch 3 → `3.3`, `3.9` · ch 4 → `4.2`, `4.7`, `4.11` · ch 6 → `6.7` · ch 9 → `9.10` · ch 10 → `10.9` · ch 11 → `11.5`, `11.7` | — |
 
 W8 (review) and W10 (scribe) are **not** sliced — both exist to see whole chapters.
 
@@ -90,19 +89,19 @@ section your contract lets you consume, so never open the full chapter they came
   - data: <KIT>/data/<dir>/<only the slices the brief selects>
 OUTPUT: write exactly one file <OUT>/<file> (or two for the tech-designer run: ch9 then ch11).
 RULES:
-  1. DECISIONS come only from brief.md. If a section needs a decision that is missing or UNDECIDED and the Depth rule does not tell you what to do, do NOT invent it — write the section header, a one-line placeholder "⟂ GAP G-<n>: <what is needed>" and list it under GAPS in your report.
+  1. DECISIONS come only from brief.md. If a section needs a decision that is missing or UNDECIDED and the Depth rule does not tell you what to do, do NOT invent it — write the section header, a one-line placeholder "⟂ GAP G-<ch>-<n>: <what is needed>" and list it under GAPS in your report.
   2. Design elaborations are yours. Mark tunables "(tunable)", estimates "(est.)", targets "(target)".
   3. No external facts (market sizes, benchmarks, sales numbers, legal claims) unless present in brief.md or the data files you were given. Otherwise write "no data available".
   4. Use the Glossary from 3_Game Overview §3.10 verbatim. If you must introduce a new term, add it under a "New terms" note at the end of your file.
   5. End every chapter with an "Open Decisions" box listing each UNDECIDED brief field you touched and each GAP placeholder.
-  6. Self-check against the checklists before reporting; fix what you can; report the rest.
+  6. Self-check against the checklists before reporting. Items tagged `[R]` are reviewer-only (they depend on a chapter written after yours): count them as n/a, not as failing, and exclude them from passed/total. Fix what you can; report the rest.
 REPORT (last thing in your final message, exact format):
   ## REPORT
   STATUS: complete | complete-with-gaps | blocked
   FILE: <absolute path(s)>
   WORDS: <n>
   GAPS:
-    - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+    - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
   CHECKLIST: <passed>/<total> — failing: <ids or none>
   NEW_TERMS: <list or none>
   CROSS_REFS_CITED: <chapter §list>
@@ -113,27 +112,29 @@ REPORT (last thing in your final message, exact format):
 | Wave | Dispatches (parallel within a wave) | Blocks on | Why this order |
 |---|---|---|---|
 | W2 | `gdd-concept-architect` → 3 | brief frozen, name chosen, dirs renamed | anchor for everything |
-| W3 | `gdd-mechanics-designer` → 4 ‖ `gdd-narrative-designer` → 5 | ch 3 | both read only ch 3 |
+| W3a | `gdd-mechanics-designer` → 4 | ch 3 | reads only ch 3 |
+| W3b | `gdd-narrative-designer` → 5 | ch 4 (§4.1–4.3, GAPs handled) | ch 5 §5.2/§5.5 intersect ch 4's world rules and progression, so it must read the finished ch 4 |
 | W4 | `gdd-level-designer` → 6 ‖ `gdd-ux-designer` → 7 | ch 4, ch 5 | both read only 3/4/5 |
 | W5 | `gdd-ai-designer` → 8 ‖ `gdd-art-director` → 10 | ch 6, ch 7 | 8 reads ch 6 §6.4; 10 reads ch 6 §6.4 and ch 7 §7.4/§7.11 |
 | W6 | `gdd-tech-designer` → 9 then 11 | ch 7, ch 8, ch 10 | 9 reads 7/8/10; 11 reads 9 |
 | W7 | `gdd-producer` → 12 | ch 9, ch 11 | 12 reads ch 9 §9.10 and ch 11 §11.7 |
 | W8 | `gdd-reviewer` → `WORK/review-report.md` | all of 3–12 | |
 | W9 | fix loop (below) | review | |
-| W10 | `gdd-scribe` → 1 ‖ 2 ‖ 13 ‖ 0_Index (four parallel dispatches) | fixes applied | |
+| W10a | `gdd-scribe` → 1 ‖ 2 ‖ 13 (three parallel dispatches, one file each) | fixes applied | |
+| W10b | `gdd-scribe` → 0_Index (one dispatch) | ch 1, 2, 13 | §0.2/§0.3 abstract and count every chapter 1–13, so those three must exist first |
 
 Waves are serial because every chapter's *Consumes* list in its contract (`references/contracts/ch<NN>.md`) must already be on disk. Do not merge waves to save time; a chapter that reads a file being written in the same wave will read nothing or stale text.
 
 Between waves the orchestrator reads each agent's REPORT block only (not the chapter), saves it verbatim to `WORK/reports/<chapter file>.report.md`, and appends GAPS to `WORK/gap-log.md`.
 
-### GAP handling (after each wave, before the next)
+### GAP handling (after each wave or half-wave W3a/W3b, before the next)
 
-1. Collect all `G-n` from the wave's reports. De-duplicate by field.
+1. Collect all `G-n` from the wave's reports. De-duplicate by field. GAP ids are `G-<ch>-<n>` — `<ch>` is the chapter number the agent owns (`G-4-1`, `G-11-2`), `<n>` restarts at 1 per chapter — so parallel agents never collide.
 2. Ask the user with `AskUserQuestion` — ≤ 4 per call — using the agent's *suggested options*. Offer an explicit option "Leave UNDECIDED".
 3. Write answers into `brief.md` under `## Gate additions (W<n>)` with the G-id. Log Q/A in `gap-log.md`.
 4. If the answer is a real value: re-dispatch the owning agent in **PATCH mode**:
    ```
-   PATCH MODE: <file> exists. Replace only the placeholder(s) G-<n> and any sentence that directly depends on them. Do not rewrite other sections. Re-run your checklist. Report as usual.
+   PATCH MODE: <file> exists. Replace only the placeholder(s) G-<ch>-<n> and any sentence that directly depends on them. Do not rewrite other sections. Re-run your checklist. Report as usual.
    ```
    Wait for the patch before starting the next wave (downstream chapters read the patched text).
 5. If the answer is "Leave UNDECIDED": the placeholder stays; it is picked up by the Appendices register. Do not re-dispatch.
@@ -160,7 +161,7 @@ Dispatch `gdd-reviewer` (sonnet) with: all chapter paths (whole, not sliced), `b
 
 ## W10 — Boilerplate & assembly
 
-`gdd-scribe` (haiku) writes 1, 2, 13, 0_Index using everything final. It needs `run-meta.md`, `gap-log.md`, `review-report.md`.
+`gdd-scribe` (haiku) is dispatched once per file. W10a: three parallel dispatches — `1_Copyright Information.md`, `2_Version History.md`, `13_Appendices.md` — each needing `run-meta.md`, `gap-log.md`, `review-report.md` (13 also needs every chapter 3–12). W10b: one dispatch for `0_Index.md` after those three exist, needing every finished chapter 1–13 plus `run-meta.md`, `gap-log.md`, `review-report.md` and `WORK/reports/*`. Never dispatch 0_Index in parallel with 1, 2, 13.
 
 ## Done — what the orchestrator tells the user
 

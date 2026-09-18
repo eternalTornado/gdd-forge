@@ -55,6 +55,6 @@ DECISION: the one-liner is D-02 verbatim. ELABORATION: the expansion paragraph. 
 <!-- guidance: 10–20 terms this GDD will use consistently from here on — mechanic names, world-specific nouns, system names. Every later chapter must reuse these exact terms, never a synonym (this is consistency rule #1 in `consistency-rules.md`). Alphabetical, one line each: **Term** — one-sentence definition. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-3-<n> — <what is needed> — §N.x". If none: "None." -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

@@ -55,6 +55,6 @@
 <!-- guidance: what happens after live support ends (if D-24 ≠ None) or after initial release (if D-24 = None) — data retention, community wind-down, or continued support commitment. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." D-10 = UNDECIDED must always appear here per the Depth rule when it forces a relative-only timeline. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-12-<n> — <what is needed> — §N.x". If none: "None." D-10 = UNDECIDED must always appear here per the Depth rule when it forces a relative-only timeline. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

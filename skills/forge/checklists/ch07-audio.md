@@ -1,5 +1,6 @@
 # Checklist ch07-audio — Audio Direction
 Applies to: 7_Interface.md · Used by: gdd-ux-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Direction & Style
 - [ ] AU-01 Audio Direction (§7.7) states a music style consistent with D-07/D-08 tone
@@ -25,5 +26,5 @@ Applies to: 7_Interface.md · Used by: gdd-ux-designer (self-check) and gdd-revi
 - [ ] AU-12 No audio performance number (file size, voice count) is stated without an "(est.)" or "(target)" tag
 
 ## Consistency rules
-- [ ] AU-13 [Rule 5] Audio asset rows use the naming convention from ch10 §10.8
+- [ ] AU-13 [Rule 5] Audio asset rows follow the naming convention defined in §7.11 of this chapter
 - [ ] AU-14 [Rule 7] No audio decision (VO language, platform profile) appears that is absent from brief.md

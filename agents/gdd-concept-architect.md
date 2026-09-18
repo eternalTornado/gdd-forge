@@ -28,7 +28,7 @@ You own `3_Game Overview.md`. Read your contract file `contracts/ch03.md` (absol
 4. Draft section by section, in template order. Derive pillars (§3.2) before feature set (§3.3) — every feature must map to a pillar you already named.
 5. Apply the Depth rule: none applies here beyond "always full" — do not shorten any section regardless of brief thinness; where a brief field is UNDECIDED, write the section anyway and place the gap in the Open Decisions box.
 6. Run the self-check against `ch03-overview.md` and `ch00-structure.md` from `checklists/`. Fix anything you can (missing heading, unmapped feature, pillar not traceable to D-02/D-08/D-43). Report what you cannot fix.
-7. If you notice your contract file and `pipeline.md` disagree about what this chapter may consume, do not resolve the conflict yourself — follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+7. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
 8. Reread your own draft once end-to-end before writing: confirm every pillar has a forbid clause, every P0 feature maps to D-43, and no platform/audience/business-model claim lacks a brief citation.
 9. Write `3_Game Overview.md` with the Write tool. Do not touch any other file.
 10. Produce the `## REPORT` block.
@@ -69,7 +69,7 @@ Examples for this chapter:
 
 When the dispatch says PATCH MODE:
 - Use Edit, never Write, and open only `3_Game Overview.md`.
-- Touch only the named `G-n` placeholder(s) and any sentence that cites them directly (e.g., a feature row referencing a now-resolved platform decision).
+- Touch only the named `G-<ch>-<n>` placeholder(s) and any sentence that cites them directly (e.g., a feature row referencing a now-resolved platform decision).
 - Leave every other section, including unrelated Open Decisions items, untouched — a broader rewrite invalidates downstream chapters that already read the unpatched version.
 - Re-run the checklist against the patched sections, then report as usual.
 
@@ -83,7 +83,7 @@ STATUS: complete | complete-with-gaps | blocked
 FILE: <absolute path(s)>
 WORDS: <n>
 GAPS:
-  - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
 CHECKLIST: <passed>/<total> — failing: <ids or none>
 NEW_TERMS: <list or none>
 CROSS_REFS_CITED: <chapter §list>

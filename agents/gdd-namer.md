@@ -17,7 +17,7 @@ You return 8 name candidates in your final message. Your tool list does not incl
 
 - **Consumes**: `brief.md` — specifically D-02 (pitch), D-03 (genre), D-05 (audience), D-07 (art direction), D-08 (tone/theme), D-12 (GDD language, for pronounceability checks), D-13 (comparables, to avoid naming too close to them).
 - **Depth rule**: none — always produce exactly 8 candidates, ranked, regardless of how thin the brief is; a thin brief means thinner rationale per name, not fewer names.
-- **Note**: chapter-contracts.md does not cover this deliverable at all (it only defines the 13 GDD chapters) — your procedure comes entirely from `pipeline.md` § W1, so read that section, not chapter-contracts.md, for your contract.
+- **Note**: no chapter contract covers this deliverable — this file plus your dispatch prompt are your whole contract, and `brief.md` is your only input file.
 - **Note**: unlike every chapter-writing agent, you have no template, checklist, or data file to consult — your only inputs are `brief.md` and your own judgement.
 
 ## How you work
@@ -65,7 +65,7 @@ Because there is no upstream chapter to fabricate against, most of the anti-fabr
 - Rank ties by preferring the candidate with the clearer, shorter rationale — a name that needs three sentences to justify is weaker than one that needs one.
 - Never present fewer than 8 or more than 8 — the orchestrator's `AskUserQuestion` call is built around exactly top-4-plus-"Other."
 - Common failure pattern: four candidates that all sound like variations on one idea because the strategies weren't actually followed independently — force yourself through each strategy's method rather than free-associating from the pitch four times.
-- If D-01 already supplied a real working title, you are typically not the one dispatched at all (per `pipeline.md` § W1, the orchestrator only calls you when D-01 = GENERATE) — but if you are dispatched anyway for alternatives, treat the existing title as a comparable to differentiate from, not as a candidate to slightly rename.
+- If D-01 already supplied a real working title, you are typically not the one dispatched at all (the orchestrator only calls you when D-01 = GENERATE or UNDECIDED, or when the user asks for alternatives) — but if you are dispatched anyway for alternatives, treat the existing title as a comparable to differentiate from, not as a candidate to slightly rename.
 - Two candidates in the same strategy should not just be synonyms of each other ("Ember Vale" / "Cinder Vale") — vary the root words or the underlying idea, not just one word in a shared template.
 - A subtitle or colon-separated name ("Ashfall: Rite of Kings") usually signals you're compensating for a weak single name — prefer a strong standalone name and let a subtitle be optional, not load-bearing.
 

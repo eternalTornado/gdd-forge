@@ -1,6 +1,6 @@
 # Brief — <working title or GENERATE>
 
-> Frozen: <ISO date> · Kit: gdd-forge <version> · Target: <D-15> · Language: <D-12>
+> Frozen: <ISO date> · Kit: gdd-forge <version> · Target: <D-15> · Language: <D-12> · Profile: <full | casual | hyper-casual>
 > Status of each field: `value` · `UNDECIDED` · `—` (not applicable: trigger off)
 
 ## Section A — Identity
@@ -49,6 +49,9 @@
 | D-42 | existing_tooling | | |
 | D-43 | must_have_features | | |
 | D-44 | explicit_exclusions | | |
+| D-45 | kpi_targets | | casual profile only — `—` in full profile |
+| D-46 | ad_networks | | casual profile only — `—` in full profile |
+| D-47 | build_size_target | | casual profile only — `—` in full profile |
 
 ## Chosen game name
 `game_name`: <final name> · `slug`: <kebab-case>
@@ -57,4 +60,4 @@
 > …
 
 ## Gate additions
-_(appended by the orchestrator after each wave: `G-n · D-xx · answer · date`)_
+_(appended by the orchestrator after each wave: `G-<ch>-<n> · D-xx · answer · date`)_

@@ -22,4 +22,4 @@ Applies to: 5_Tech Note.md · Used by: gdd-tech-designer (self-check) and gdd-re
 
 ## Consistency rules
 - [ ] LT-14 [Lite rule 7] No numeric CPI/build-size/performance claim appears without a brief citation or an explicit "(target)" tag
-- [ ] LT-15 [Lite rule 6] Every UNDECIDED field touched (including D-11/D-47 when unresolved) appears in the Open Decisions box
+- [ ] LT-15 [Lite rule 5] Every UNDECIDED field touched (including D-11/D-47 when unresolved) appears in the Open Decisions box

@@ -1,5 +1,6 @@
 # Checklist ch12-liveops — Live Operations
 Applies to: 12_Management.md · Used by: gdd-producer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Cadence & Content
 - [ ] LO-01 LiveOps Plan (§12.7) is present only if D-24 ≠ None; if D-24 = None, it is the one-line Depth-rule statement

@@ -55,9 +55,9 @@ Skip with a one-line note if D-21 < Medium and no factions exist. -->
 <!-- guidance: concrete hooks (props, ruins, signage, audio logs) that ch 6 (level dressing) and ch 10 (art) can place directly. 3–6 bullets. -->
 
 ## 5.10 Cultural & Sensitivity Notes
-<!-- guidance: per the region(s) implied by D-05 audience, note cultural/sensitivity considerations using the the `data/cultural/` slice you were given data file — never invent cultural claims not supported by that file. This section survives even when D-21 = None. -->
+<!-- guidance: per the region(s) implied by D-05 audience, note cultural/sensitivity considerations using only the `data/cultural/` slice you were given — never invent cultural claims not supported by that file. This section survives even when D-21 = None. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-5-<n> — <what is needed> — §N.x". If none: "None." -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

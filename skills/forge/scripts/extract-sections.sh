@@ -29,6 +29,9 @@
 #     '#'), or EOF. This means a "## 4.5" section swallows any deeper
 #     "### 4.5.1" subsections that follow it, and stops at the next
 #     heading of any kind (numbered or not) at level <= its own.
+#   - Lines inside fenced code blocks (``` or ~~~) are never treated as
+#     headings, so ASCII layout sketches and mermaid blocks whose lines
+#     start with '#' cannot split a section.
 #   - Output order follows the SOURCE FILE'S order (by section number,
 #     compared numerically), never the order the specs were given in.
 #     A section requested twice (via overlapping specs) is only emitted
@@ -206,9 +209,62 @@ BEGIN {
 END {
   total = NR
 
+  # ---- mark lines inside fenced code blocks (``` or ~~~) so an ASCII
+  #      layout sketch or mermaid block whose lines start with "#" is
+  #      never mistaken for a heading. A fence opens on a line that,
+  #      after stripping up to 3 leading spaces, starts with 3+ backticks
+  #      or 3+ tildes; it closes on a line starting with the same
+  #      character repeated at least that many times and nothing else but
+  #      trailing whitespace. An unclosed fence leaves the rest of the
+  #      file in-fence. ----
+  fence_state = 0
+  fence_char = ""
+  fence_len = 0
+  for (i = 1; i <= total; i++) {
+    line = lines[i]
+    stripped = line
+    nstrip = 0
+    while (nstrip < 3 && substr(stripped, 1, 1) == " ") {
+      stripped = substr(stripped, 2)
+      nstrip++
+    }
+    if (fence_state == 0) {
+      if (match(stripped, /^```+/)) {
+        infence[i] = 1
+        fence_state = 1
+        fence_char = "`"
+        k = 1
+        while (substr(stripped, k, 1) == "`") k++
+        fence_len = k - 1
+      } else if (match(stripped, /^~~~+/)) {
+        infence[i] = 1
+        fence_state = 1
+        fence_char = "~"
+        k = 1
+        while (substr(stripped, k, 1) == "~") k++
+        fence_len = k - 1
+      } else {
+        infence[i] = 0
+      }
+    } else {
+      infence[i] = 1
+      if (substr(stripped, 1, 1) == fence_char) {
+        k = 1
+        while (substr(stripped, k, 1) == fence_char) k++
+        run = k - 1
+        rest = substr(stripped, k)
+        gsub(/[ \t]+$/, "", rest)
+        if (run >= fence_len && rest == "") {
+          fence_state = 0
+        }
+      }
+    }
+  }
+
   # ---- H1 (exactly one leading "#" then a space) ----
   h1_line = 0
   for (i = 1; i <= total; i++) {
+    if (infence[i]) continue
     if (lines[i] ~ /^# /) { h1_line = i; break }
   }
 
@@ -231,6 +287,7 @@ END {
   #      (e.g. an "## Open Decisions" appendix) has no section number ----
   nall = 0
   for (i = 1; i <= total; i++) {
+    if (infence[i]) continue
     line = lines[i]
     if (match(line, /^#{1,6}([ \t]|$)/)) {
       lvl = 0; j = 1

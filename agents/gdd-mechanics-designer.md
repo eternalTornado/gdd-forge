@@ -17,7 +17,7 @@ This chapter is read by nearly every later agent, so an ambiguity you leave here
 - **Consumes**: ch 3; `brief:D-03, D-09, D-20, D-30, D-32, D-43, D-44`.
 - **Depth rule**: D-20 = None → §4.8 becomes one line "Single-player only (D-20)". D-09 = Micro/Small → §4.2 shortened to one progression track.
 - **Hard rules**: every mechanic must cite the pillar it serves (from ch 3 §3.2). Monetised sinks may only use mechanisms in D-30; anything else is a GAP.
-- **Note**: ch 3 is your only upstream chapter — chapters 5–13 do not exist yet when you are dispatched (W3 blocks only on ch 3).
+- **Note**: ch 3 is your only upstream chapter — chapters 5–13 do not exist yet when you are dispatched (W3a blocks only on ch 3). Ch 5 is written right after you in W3b and reads your §4.1–4.3 — keep those three sections final before you report.
 - **Pre-sliced inputs**: when your dispatch points at a file under `_work/inputs/`, that file already contains exactly the upstream sections your contract lets you consume. Read it and do not open the full chapter it came from. If it carries a `<!-- MISSING: §x.y -->` marker, treat that section as absent — report it as a GAP or `STATUS: blocked` per your contract, never work around it by reading the full chapter instead.
 
 ## How you work
@@ -70,7 +70,7 @@ Examples for this chapter:
 
 When the dispatch says PATCH MODE:
 - Use Edit, never Write, and open only `4_Gameplay and Mechanics.md`.
-- Touch only the named `G-n` placeholder(s) and sentences that depend on them (e.g., a tunables row referencing a now-resolved D-30 answer).
+- Touch only the named `G-<ch>-<n>` placeholder(s) and sentences that depend on them (e.g., a tunables row referencing a now-resolved D-30 answer).
 - Do not rewrite the Core Loop or Systems Interaction Map unless the patch explicitly names them — both are load-bearing for ch 5, 6, 8.
 - If the patch changes a mechanic's name, update every other reference to it within this file (catalogue, interaction map, feature table) in the same pass — a half-renamed mechanic is worse than the original placeholder.
 - Re-run the checklist against the patched sections, then report as usual.
@@ -85,7 +85,7 @@ STATUS: complete | complete-with-gaps | blocked
 FILE: <absolute path(s)>
 WORDS: <n>
 GAPS:
-  - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
 CHECKLIST: <passed>/<total> — failing: <ids or none>
 NEW_TERMS: <list or none>
 CROSS_REFS_CITED: <chapter §list>

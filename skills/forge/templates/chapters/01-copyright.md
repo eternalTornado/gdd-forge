@@ -29,6 +29,6 @@
 <!-- guidance: one paragraph stating who may copy, distribute or modify this GDD itself (not the game) — default to "internal use only, all rights reserved" when D-41/D-40 give no other instruction. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x". If none: "None." Per the Depth rule, D-41 = UNDECIDED must always be listed here. -->
+<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-1-<n> — <what is needed> — §N.x". If none: "None." Per the Depth rule, D-41 = UNDECIDED must always be listed here. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

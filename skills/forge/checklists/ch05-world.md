@@ -1,5 +1,6 @@
 # Checklist ch05-world — World Design Continuity & Cultural Sensitivity
 Applies to: 5_Story, Setting and Character.md · Used by: gdd-narrative-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Geography & Systems
 - [ ] WO-01 Level geography referenced in §5.3 World Map & Regions is consistent with any other mention of the same region in the chapter

@@ -28,17 +28,17 @@ free text) before doing anything else.
    - Checklists — `${CLAUDE_SKILL_DIR}/../forge/checklists/` for a full GDD, or
      `${CLAUDE_SKILL_DIR}/../forge/checklists/lite/` for a lite one. Pass only the directory that
      matches the profile; the other one's ids will not resolve.
-   - `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules.md` — the 8 cross-chapter rules.
-     For a lite GDD, rules 1, 2, 3, 5, 6, 7 and 8 apply as written against the lite section numbers;
-     rule 4 (characters ↔ art entries) applies only when the brief's `D-21` ≠ None. Say in the report
-     which rules were skipped and why.
+   - `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules.md` for a full GDD, or
+     `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules-lite.md` for a lite one. The two files
+     number their 8 rules differently — pass only the one matching the profile, and cite its numbering
+     in the report.
    - The contract files for the mapped files, from `contracts/` or `contracts-lite/`.
    - `<folder>/_work/brief.md` (or `<folder>/brief.md`) if present — pass it along; if absent, tell
-     `gdd-reviewer` no brief is available and it must skip brief-dependent checks (rule 6, rule 7)
-     rather than guessing brief content.
+     `gdd-reviewer` no brief is available and it must skip brief-dependent checks (full: rules 6, 7;
+     lite: rules 3, 5, 6, 7) rather than guessing brief content.
 
 4. **Dispatch.** Call the `Agent` tool with `subagent_type` set to the reviewer agent as it appears in your available agent types — `gdd-forge:gdd-reviewer` under a plugin install, `gdd-reviewer` if the agents were copied to `~/.claude/agents/`. Pass absolute paths to:
-   every mapped chapter file, the matching checklists directory, `consistency-rules.md`, the
+   every mapped chapter file, the matching checklists directory, the matching consistency-rules file (full or lite), the
    relevant contract files, and brief.md (if found). Never paste chapter bodies into the prompt — paths only. Ask it
    to write the same report shape `gdd-forge:forge` uses internally:
    ```
@@ -47,7 +47,7 @@ free text) before doing anything else.
    ## Majors     (cross-chapter contradiction / contract miss) — id · chapters · what · owner agent
    ## Minors     (wording, formatting, checklist nits)         — id · chapter · what
    ## Checklist matrix   chapter × checklist → pass %
-   ## Consistency rules  1–8 → PASS/FAIL + evidence
+   ## Consistency rules  1–8 → PASS/FAIL + evidence (numbered per the rules file passed)
    ```
 
 5. **Write output.** Create `<folder>/_work/` if it doesn't exist. Write the reviewer's report to

@@ -1,5 +1,6 @@
 # Checklist ch09-technical — Technical Feasibility & Handoff Readiness
 Applies to: 9_Technical.md · Used by: gdd-tech-designer (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Architecture & Stack
 - [ ] TE-01 Engine & Language stack (§9.2) states D-11; if D-11 = UNDECIDED, a comparison table of 2–3 candidates is given with no pick made
@@ -7,7 +8,7 @@ Applies to: 9_Technical.md · Used by: gdd-tech-designer (self-check) and gdd-re
 - [ ] TE-03 Data Architecture (§9.4) states the save system format and a versioning/migration approach
 
 ## Pipeline & Networking
-- [ ] TE-04 Asset Pipeline & Media Profiles (§9.5) references naming conventions from ch10 §10.8 rather than restating a new one
+- [ ] TE-04 Asset Pipeline & Media Profiles (§9.5) references the naming convention from ch7 §7.11 / ch10 §10.8 rather than restating a new one
 - [ ] TE-05 Networking (§9.6) is present only if D-20 ≠ None; otherwise it is the one-line Depth-rule statement
 - [ ] TE-06 If present, Networking states topology, authority model, sync model, anti-cheat stance, and scale from D-32
 

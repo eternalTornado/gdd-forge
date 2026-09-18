@@ -5,7 +5,7 @@ It is the single source of truth for **what the user decides** vs **what agents 
 
 ## Profiles
 
-The gate above is the **default full profile** — every Section A/B field and all triggered Section C rows are asked, producing the 13-chapter GDD described in `pipeline.md`. Passing `--profile casual` (or `--profile hyper-casual`) to `/gdd-forge:forge` switches to the **lite gate**: instead of asking each Section A/B/C field one at a time, the orchestrator proposes a preset table of common casual/hyper-casual answers up front (see "Casual Profile Preset" below) and asks far fewer questions overall. The user reviews that single table and confirms, edits, or rejects it in one round — nothing from the preset reaches `brief.md` until explicitly confirmed. Full detail on the lite pipeline, its five output files, and how it differs from the full 13-chapter flow lives in [`profile-casual.md`](profile-casual.md). This schema file remains the single source of truth for every `D-xx` field regardless of profile; the casual profile changes *how* values are collected, never what a field means.
+The gate defined in this file is the **default full profile** — every Section A/B field and all triggered Section C rows are asked, producing the 13-chapter GDD described in `pipeline.md`. Passing `--profile casual` (or `--profile hyper-casual`) to `/gdd-forge:forge` switches to the **lite gate**: instead of asking each Section A/B/C field one at a time, the orchestrator proposes a preset table of common casual/hyper-casual answers up front (see "Casual Profile Preset" below) and asks far fewer questions overall. The user reviews that single table and confirms, edits, or rejects it in one round — nothing from the preset reaches `brief.md` until explicitly confirmed. Full detail on the lite pipeline, its five output files, and how it differs from the full 13-chapter flow lives in [`profile-casual.md`](profile-casual.md). This schema file remains the single source of truth for every `D-xx` field regardless of profile; the casual profile changes *how* values are collected, never what a field means.
 
 ## Two kinds of information
 
@@ -104,11 +104,11 @@ An elaboration that *hinges on* a missing decision is not designed — it become
 
 ### Always asked, never presumed
 
-Regardless of profile, the following are still asked individually — a preset must never guess them: `D-02` (pitch), `D-03` (genre), `D-07` (art direction), `D-08` (tone), `D-11` (engine), `D-12` (gdd_language), `D-41` (rights holder), `D-37` (device floor), `D-45` (kpi_targets), `D-46` (ad_networks), `D-47` (build_size_target).
+Regardless of profile, the following are still asked individually — a preset must never guess them: `D-02` (pitch), `D-03` (genre), `D-07` (art direction), `D-08` (tone), `D-11` (engine), `D-12` (gdd_language), `D-41` (rights holder), `D-37` (device floor), `D-45` (kpi_targets), `D-46` (ad_networks), `D-47` (build_size_target) (asked, but `UNDECIDED` is accepted for D-11, D-37, D-41, D-45, D-46, D-47).
 
 ### Required-set — casual profile
 
-For both `--profile casual` and `--profile hyper-casual`, the brief cannot freeze until these are resolved (not `UNDECIDED`): `D-02, D-03, D-07, D-08, D-11, D-12, D-37, D-41, D-45, D-46, D-47`, plus every row in the Proposed Values table above — each must be confirmed, edited, or explicitly rejected to `UNDECIDED` by the user (silence is not acceptance). This required-set replaces the `D-15`-keyed table below only while a casual profile is active; the full profile's required-set table below is unaffected.
+For both `--profile casual` and `--profile hyper-casual`, the brief cannot freeze until these are resolved (not `UNDECIDED`): `D-02, D-03, D-07, D-08, D-12`, plus every row in the Proposed Values table above — each must be confirmed, edited, or explicitly rejected to `UNDECIDED` by the user (silence is not acceptance). `D-11, D-37, D-41, D-45, D-46, D-47` are still asked individually but may be left `UNDECIDED`: the lite contracts carry an explicit Depth rule for each (engine comparison table, `UNDECIDED` device floor, rights-holder placeholder, definitions-only KPIs, network-agnostic ad placement, no build-size target). This required-set replaces the `D-15`-keyed table below only while a casual profile is active; the full profile's required-set table below is unaffected.
 
 ## Required-set per version (D-15)
 

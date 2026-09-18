@@ -17,10 +17,10 @@ Written in the same run as ch 9, right after it, since tool choices follow from 
 ## 11.2 Editor & Engine Tooling
 <!-- guidance: level editor needs (ties to ch 6 §6.2 structure), custom inspectors, procgen tools if ch 6 §6.6 requires them.
 - DEPTH RULE: if D-11 = UNDECIDED, mark engine-specific rows "engine-dependent" rather than naming a specific engine's tools
-- list tooling per system: level, encounter, dialogue (ch 5 §5.8), AI behaviour (ch 8 §8.2) -->
+- list tooling per system named in your own ch 9 §9.3: level, encounter, dialogue (only if ch 9 §9.3 names a dialogue system), AI behaviour (ch 8 §8.2) -->
 
 ## 11.3 Content & Asset Pipeline Tools
-<!-- guidance: importers and validators enforcing the naming/metadata convention from ch 10 §10.8.
+<!-- guidance: importers and validators enforcing the naming/metadata convention from ch 7 §7.11 / ch 10 §10.8.
 - automated checks, not manual review, wherever feasible
 - state what happens on a validation failure (block commit / warn / block build)
 - cover audio/media profile validation from ch 7 §7.11 alongside art assets — one validator family, not two -->
@@ -34,15 +34,15 @@ Written in the same run as ch 9, right after it, since tool choices follow from 
 ## 11.5 Debug, Telemetry & Live Tools
 <!-- guidance: cover —
 - AI debug tooling requested in ch 8 §8.10 (perception gizmos, behaviour inspectors)
-- analytics/telemetry hooks feeding ch 12's KPIs (§12.6/§12.7)
+- analytics/telemetry hooks for the KPIs ch 12 will define after you — name the hook categories D-06/D-24 imply (monetisation events, retention events, liveops config), not ch 12 section numbers
 - in-game debug console/commands for QA and support
-- if D-24 (liveops) ≠ None, include the content-scheduling/remote-config tool that ch 12 §12.7 events rely on -->
+- if D-24 (liveops) ≠ None, include the content-scheduling/remote-config tool liveops will rely on -->
 
 ## 11.6 Localisation & QA Tooling
 <!-- guidance: cover —
 - string extraction/import tools for D-38 languages
-- test-case/checklist tooling supporting ch 12 §12.10's QA plan
-- pseudo-localisation or text-expansion check tooling tied to ch 7 §7.10 -->
+- test-case/checklist tooling for the QA plan ch 12 will write
+- pseudo-localisation / text-expansion check tooling for the D-38 languages -->
 
 ## 11.7 Tool Matrix
 <!-- guidance: consolidate every tool named in §11.1–§11.6 into one table — this is the chapter's single source of truth; §11.1–§11.6 explain, this table lists. -->
@@ -54,7 +54,7 @@ Written in the same run as ch 9, right after it, since tool choices follow from 
 
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter.
-Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-n — <what is needed> — §N.x".
+Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-11-<n> — <what is needed> — §N.x".
 If none: "None." D-11 = UNDECIDED must always appear here per the Depth rule, since it forces every engine-specific row above to read "engine-dependent" instead of a concrete tool name. -->
 
 <!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->

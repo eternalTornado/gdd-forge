@@ -9,7 +9,7 @@ GDD Forge là một plugin Claude Code biến một ý tưởng game (pitch) th�
 Ba cách, chọn một:
 
 - Thử nhanh, không cài đặt: `claude --plugin-dir ~/Downloads/gdd-forge`
-- Cài ở user scope: `claude plugin install ~/Downloads/gdd-forge`
+- Cài ở user scope: `claude plugin marketplace add ~/Downloads/gdd-forge` rồi `claude plugin install gdd-forge@birdybird-local` (`claude plugin install` chỉ nhận tên plugin từ một marketplace đã đăng ký, không nhận đường dẫn local trực tiếp)
 - Không dùng plugin: copy `skills/*` → `~/.claude/skills/` và `agents/*` → `~/.claude/agents/`. Lưu ý: khi cài theo cách này, lệnh **không có prefix** `gdd-forge:` — dùng `/forge`, `/name`, `/review` thay vì `/gdd-forge:forge` v.v.
 
 Khi cài dạng plugin (2 cách đầu), subagent xuất hiện với tên `gdd-forge:gdd-<role>`; khi copy thẳng, tên là `gdd-<role>`. Skill tự nhận diện dạng nào đang có — không cần cấu hình.
@@ -34,27 +34,27 @@ Ví dụ pitch: *"Một game platformer 2D phong cách pixel art: linh hồn m�
 ## 4. Luồng chạy
 
 ```
-W0 Gate ─► W1 Name ─► W2 ch3 ─► W3 ch4 ‖ ch5 ─► W4 ch6 ‖ ch7 ─► W5 ch8 ‖ ch10 ─► W6 ch9→ch11 ─► W7 ch12 ─► W8 Review ─► W9 Fix loop (≤1) ─► W10 ch1 ‖ ch2 ‖ ch13 ‖ 0_Index ─► Done
+W0 Gate ─► W1 Name ─► W2 ch3 ─► W3 ch4 → ch5 ─► W4 ch6 ‖ ch7 ─► W5 ch8 ‖ ch10 ─► W6 ch9 → ch11 ─► W7 ch12 ─► W8 Review ─► W9 Fix loop (≤1) ─► W10 ch1 ‖ ch2 ‖ ch13 → 0_Index ─► Done
 ```
-(`‖` = chạy song song trong một wave; `→` = cùng agent, chạy tuần tự)
+(`‖` = chạy song song trong một wave; `→` = tuần tự trong wave, file bên phải chỉ chạy khi file bên trái đã xong và GAP của nó đã xử lý)
 
 Các wave chạy tuần tự vì mỗi chương chỉ đọc file đã có trên đĩa; không gộp wave để chạy nhanh hơn.
 
 - **W0 Gate** — orchestrator hỏi các trường D-xx còn thiếu theo `brief-schema.md`, đóng băng `brief.md`.
 - **W1 Name** — sinh/chốt tên game (`gdd-namer` nếu D-01 = GENERATE), tính `slug`, tạo thư mục output.
 - **W2** — `gdd-concept-architect` viết chương 3 (Game Overview), chương neo cho mọi chương sau.
-- **W3** — chương 4 (Mechanics) và chương 5 (Narrative) viết song song, cùng đọc chương 3.
+- **W3** — chương 4 (Mechanics) trước, rồi chương 5 (Narrative) trong cùng wave: chương 5 đọc §4.1–4.3 của chương 4 nên phải chờ chương 4 xong và GAP của nó được xử lý.
 - **W4** — chương 6 (Levels) và chương 7 (Interface) viết song song, đọc chương 4 và 5.
 - **W5** — chương 8 (AI) và chương 10 (Art) viết song song; chờ W4 vì chương 8 đọc encounters ở chương 6, chương 10 đọc asset needs ở chương 6 và UI ở chương 7.
 - **W6** — chương 9 rồi chương 11 (cùng agent `gdd-tech-designer`, tuần tự), đọc chương 7, 8, 10.
 - **W7** — chương 12 (Management); chờ W6 vì chương 12 đọc risks ở chương 9 và tool matrix ở chương 11.
 - **W8 Review** — `gdd-reviewer` đọc toàn bộ 3–12 và mọi checklist, sinh `review-report.md`.
 - **W9 Fix loop** — tối đa một vòng: Blockers hỏi lại người dùng, Majors patch chương liên quan, Minors chỉ liệt kê.
-- **W10** — `gdd-scribe` lắp chương 1, 2, 13 và 0_Index từ mọi thứ đã hoàn tất.
+- **W10** — `gdd-scribe` lắp chương 1, 2, 13 song song (mỗi dispatch một file), rồi 0_Index sau cùng vì 0_Index cần abstract và word count của cả 13 chương.
 
 **Cắt input trước mỗi dispatch**: danh sách *Consumes* của mỗi chương chỉ tiêu thụ vài mục (§4.5, §4.8…), nhưng một agent nhận đường dẫn cả chương thì đọc cả chương. Trước mỗi dispatch W3–W7, orchestrator cắt sẵn đúng các mục đó bằng `scripts/extract-sections.sh` và chỉ truyền phần đã cắt. Riêng §3.2 (pillars) và §3.10 (Glossary) được cắt **một lần** sau W2 thành `_anchor.md` và truyền cho mọi dispatch phía sau — vì Rule 4 buộc mọi chương dùng lại Glossary, cắt thuần theo *Consumes* sẽ làm hỏng chính rule đó. Data file cũng chỉ truyền lát cần dùng: brief mobile-only nhận `data/platforms/mobile.md`, không nhận spec console/PC/VR.
 
-**Vòng lặp GAP**: subagent không được phép hỏi người dùng trực tiếp (không có quyền gọi `AskUserQuestion`). Khi một chương cần một quyết định còn thiếu, subagent viết một placeholder GAP và báo cáo về; **skill (orchestrator) hỏi thay** người dùng, ghi câu trả lời vào `brief.md`, rồi dispatch lại subagent ở chế độ PATCH để thay đúng chỗ đó — không viết lại cả chương.
+**Vòng lặp GAP**: subagent không được phép hỏi người dùng trực tiếp (không có quyền gọi `AskUserQuestion`). Khi một chương cần một quyết định còn thiếu, subagent viết một placeholder GAP và báo cáo về; **skill (orchestrator) hỏi thay** người dùng, ghi câu trả lời vào `brief.md`, rồi dispatch lại subagent ở chế độ PATCH để thay đúng chỗ đó — không viết lại cả chương. Mã GAP có dạng `G-<chương>-<n>` để hai agent chạy song song không trùng mã.
 
 ### Luồng rút gọn — `--profile casual`
 
@@ -67,6 +67,8 @@ W0 Gate (preset casual) ─► W1 1_Concept ─► W2 2_Core Gameplay
 ```
 
 Mỗi file gộp nhiều chương của luồng đầy đủ: `1_Concept` gộp ch3 + phần setting thay cho ch5 + header bản quyền/version thay cho ch1, ch2; `2_Core Gameplay` gộp ch4 + ch6 + hành vi obstacle thay cho ch8; `3_UX Art and Audio` gộp ch7 + ch10 + phần game feel; `4_Business and LiveOps` là ch12 viết lại theo thực tế casual (vị trí rewarded video, nhịp interstitial, IAP remove-ads, **định nghĩa** KPI, concept playable ad cho test CPI); `5_Tech Note` gộp ch9 + tool matrix của ch11 + danh sách SDK.
+
+Đặt tên trong luồng rút gọn: không có wave namer riêng — `1_Concept` §1.2 đề xuất 3 tên, orchestrator hỏi người dùng chọn ngay sau W1, ghi `game_name`/`slug` vào brief và đổi tên thư mục trước W2.
 
 Preset casual **không phá nguyên tắc không tự bịa**: orchestrator *đề xuất* một bảng giá trị thường gặp, người dùng xác nhận hoặc sửa trong một vòng, và chỉ giá trị đã xác nhận mới được ghi vào `brief.md` (nguồn ghi là `casual preset — confirmed by user`). Giá trị chưa xác nhận không bao giờ được dùng, và D-02 (pitch) vẫn là yêu cầu bắt buộc mà preset không thể thay thế.
 
@@ -120,6 +122,7 @@ deliverables/<slug>/GDD/<version>/
     ├── gap-log.md          # mọi câu hỏi GAP + câu trả lời
     ├── review-report.md    # Blockers/Majors/Minors + ma trận checklist
     ├── run-meta.md         # ngày, phiên bản kit, hash brief
+    ├── inputs/             # _anchor.md + lát cắt §mục cho từng dispatch (ch<N>/ cho luồng đầy đủ, tên file cho luồng rút gọn)
     └── reports/            # mỗi REPORT của agent lưu nguyên văn (<chapter>.report.md)
 ```
 
@@ -169,6 +172,7 @@ gdd-forge/
     │   │   ├── brief-template.md
     │   │   ├── chapter-contracts.md    # index mỏng: bảng chương → agent → contract
     │   │   ├── consistency-rules.md    # 8 rule cross-chapter cho reviewer
+    │   │   ├── consistency-rules-lite.md  # 8 rule cho luồng rút gọn (đánh số khác luồng đầy đủ)
     │   │   ├── pipeline.md             # luồng đầy đủ W0–W10
     │   │   ├── profile-casual.md       # luồng rút gọn casual/hyper-casual
     │   │   ├── contracts/              # ch00.md … ch13.md — mỗi dispatch đọc 1 file
@@ -205,7 +209,7 @@ Templates, checklists và data files được scavenge (đọc lại, rút gọn
 
 **What it is** — GDD Forge turns a game pitch into a 13-chapter Game Design Document. Its core principle: an input **gate** asks the user for missing decisions and never invents them (platform, audience, business model, engine, etc.); anything left open is recorded as `UNDECIDED` and surfaced in Open Decisions. Output: 13 Markdown chapters (0_Index … 13_Appendices) plus a chosen game name.
 
-**Install** — three ways: `claude --plugin-dir ~/Downloads/gdd-forge` (quick try) · `claude plugin install ~/Downloads/gdd-forge` (user-scope install) · copy `skills/*` to `~/.claude/skills/` and `agents/*` to `~/.claude/agents/` (no plugin — commands then have no prefix: `/forge`, `/name`, `/review`).
+**Install** — three ways: `claude --plugin-dir ~/Downloads/gdd-forge` (quick try) · `claude plugin marketplace add ~/Downloads/gdd-forge` then `claude plugin install gdd-forge@birdybird-local` (user-scope install — `claude plugin install` only accepts a plugin name from a registered marketplace, not a local path) · copy `skills/*` to `~/.claude/skills/` and `agents/*` to `~/.claude/agents/` (no plugin — commands then have no prefix: `/forge`, `/name`, `/review`).
 
 **Usage** — `/gdd-forge:forge <pitch>` · `/gdd-forge:forge <path/to/brief.md>` · `/gdd-forge:forge --chapter 6` · `/gdd-forge:forge --resume <out dir>` · `/gdd-forge:name <pitch>` · `/gdd-forge:review <gdd folder>`.
 

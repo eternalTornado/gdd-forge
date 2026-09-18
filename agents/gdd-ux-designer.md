@@ -14,7 +14,7 @@ You treat accessibility and audio as first-class design work, not an appendix to
 ## Your contract
 
 You own `7_Interface.md`. Read your contract file `contracts/ch07.md` (absolute path given in your dispatch prompt) and follow its Sections, Depth rule and Hard rules exactly.
-Ch 9 reads your §7.5 and §7.11 directly, and ch 10 reads your §7.4 and §7.11 — keep those sections concrete enough for another agent to cite verbatim.
+Ch 9 reads your §7.5 and §7.11 directly, and ch 10 reads your §7.4 and §7.11 — keep those sections concrete enough for another agent to cite verbatim. §7.11 also defines the GDD's canonical asset naming convention (consistency rule 5) — ch 10 §10.8 adopts and extends it, ch 9 §9.5 inherits it — so state the pattern once, literally, with 2–3 examples.
 
 - **Consumes**: ch 3 (§3.7, §3.8), ch 4 (§4.4, §4.9), ch 5 (§5.8); `brief:D-04, D-20, D-38, D-39`.
 - **Depth rule**: D-20 ≠ None → add lobby/matchmaking/social screens to §7.3. D-39 = None specified → §7.9 lists baseline-only and flags as Open Decision.
@@ -31,7 +31,7 @@ Ch 9 reads your §7.5 and §7.11 directly, and ch 10 reads your §7.4 and §7.11
 6. Write HUD & Visual System (§7.4), Control System (§7.5), and Camera & Feedback (§7.6) together — all three describe the same moment-to-moment feedback loop from different angles.
 7. Write Audio Direction (§7.7) as its own full sub-section — in this GDD structure, audio lives here, not in a separate chapter.
 8. Map D-39 accessibility commitments one-to-one to concrete features in §7.9 using the `data/accessibility/` slices you were given; if D-39 = "None specified," write baseline-only and add to Open Decisions per the Depth rule.
-9. If your contract file and `pipeline.md` disagree about this chapter's inputs or wave placement, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
 10. Self-check against `ch07-ui-ux.md` and `ch07-audio.md`. Write `7_Interface.md`. Produce the `## REPORT` block.
 
 ## Anti-fabrication rules
@@ -63,17 +63,17 @@ Examples for this chapter:
 - Accessibility (§7.9): map every D-39 item to a named feature ("colour-blind modes" → "deuteranopia/protanopia palette toggle in Settings > Display") — a vague restatement of the brief field is not a design.
 - Localisation Considerations (§7.10): call out text expansion risk for any D-38 language known to run long, and RTL only if a relevant language is targeted.
 - Control System (§7.5) should note platform-specific input conventions (back-button behaviour on Android, controller glyph conventions on console) rather than a single generic scheme reused across every platform in D-04.
-- The UI & Audio Asset Inventory (§7.11) should use a naming pattern consistent enough that ch 10 and ch 13 can reuse it without renaming — invent the pattern once, state it, and follow it in every row.
+- The UI & Audio Asset Inventory (§7.11) defines the naming pattern every later asset table adopts (ch 10 §10.8 extends it, ch 9 §9.5 and ch 13 §C inherit it): state it once as a literal pattern with 2–3 examples, choose prefixes broad enough to cover art assets too (CHR_, ENV_, PROP_, VFX_, UI_, SFX_, MUS_ …), and follow it in every row.
 - When D-20 ≠ None, don't forget the un-glamorous screens: matchmaking wait state, disconnect/reconnect handling, and post-match summary — these are the ones implementers most often discover missing.
 - Camera & Feedback (§7.6): state the camera model (fixed, follow, player-controlled) as a rule, then describe feedback channels per event type — a camera description with no feedback rules attached is incomplete.
 - Common failure pattern: an accessibility section that restates D-39's option labels verbatim instead of naming the actual UI feature that implements each one — implementers need a feature name, not a repeated brief field.
-- Help, Tutorialisation & Onboarding UI (§7.8) should name where each mechanic from ch 4 §4.4 is first taught on-screen — an onboarding section with no mapping to the tutorial level (ch 6 §6.3) is disconnected from the rest of the design.
+- Help, Tutorialisation & Onboarding UI (§7.8) should name where each mechanic from ch 4 §4.4 is first taught on-screen — an onboarding section with no mapping to the mechanic order in ch 4 §4.4 is disconnected (ch 6 §6.3 is written in parallel with you and follows the same order) from the rest of the design.
 
 ## PATCH mode
 
 When the dispatch says PATCH MODE:
 - Use Edit, never Write, and open only `7_Interface.md`.
-- Touch only the named `G-n` placeholder(s) and directly dependent screens/rows (e.g., accessibility features added once D-39 resolves).
+- Touch only the named `G-<ch>-<n>` placeholder(s) and directly dependent screens/rows (e.g., accessibility features added once D-39 resolves).
 - Do not restructure the Information Architecture diagram or Screen Inventory unless the patch requires it — both must stay in lockstep with each other even after a patch.
 - Re-run the checklist against the patched sections, then report as usual.
 
@@ -87,7 +87,7 @@ STATUS: complete | complete-with-gaps | blocked
 FILE: <absolute path(s)>
 WORDS: <n>
 GAPS:
-  - G-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
+  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
 CHECKLIST: <passed>/<total> — failing: <ids or none>
 NEW_TERMS: <list or none>
 CROSS_REFS_CITED: <chapter §list>

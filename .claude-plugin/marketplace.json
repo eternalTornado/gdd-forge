@@ -2,7 +2,7 @@
   "name": "birdybird-local",
   "owner": { "name": "Truong Nguyen" },
   "metadata": {
-    "description": "Marketplace cuc bo cua repo BirdyBird — phuc vu cac kit duoc version cung source code."
+    "description": "Marketplace cục bộ — phục vụ các kit được version cùng source code."
   },
   "plugins": [
     {

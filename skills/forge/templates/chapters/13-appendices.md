@@ -17,7 +17,7 @@
 -->
 
 ## C. Consolidated Asset Index
-<!-- guidance: merge ch 7 §7.11 + ch 10 §10.9 + ch 6 level asset needs (§6.4), deduplicated by id. All names must already follow ch 10 §10.8's naming convention (consistency rule #5) — flag any that don't as a review finding, don't silently rename. -->
+<!-- guidance: merge ch 7 §7.11 + ch 10 §10.9 + ch 6 level asset needs (§6.4), deduplicated by id. All names must already follow ch 7 §7.11's naming convention (as extended in ch 10 §10.8) (consistency rule #5) — flag any that don't as a review finding, don't silently rename. -->
 <!--
 | ID | Type | Name | Source chapter | Priority |
 |---|---|---|---|---|
@@ -37,7 +37,7 @@
 <!--
 | GAP | Raised in | Question | Answer | Chapters patched |
 |---|---|---|---|---|
-| G-1 | ch4 §4.7 | … | … | ch4, ch12 |
+| G-4-1 | ch4 §4.7 | … | … | ch4, ch12 |
 -->
 
 ## F. Cross-reference Matrix

@@ -1,5 +1,6 @@
 # Checklist ch10-art — Art Direction
 Applies to: 10_Game Art.md · Used by: gdd-art-director (self-check) and gdd-reviewer.
+`[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Direction & Style
 - [ ] AR-01 Art Direction Statement & Visual Pillars (§10.1) restate D-07/D-08, not introduce new style keywords
@@ -27,4 +28,4 @@ Applies to: 10_Game Art.md · Used by: gdd-art-director (self-check) and gdd-rev
 
 ## Consistency rules
 - [ ] AR-15 [Rule 4] Every character in ch5 §5.6 has a corresponding entry in §10.3 when D-21 ≠ None
-- [ ] AR-16 [Rule 5] The asset list in §10.9 and every other chapter's asset table use the same naming convention defined here
+- [ ] AR-16 [Rule 5] §10.8 adopts ch7 §7.11's naming pattern verbatim (extensions allowed, no competing scheme) and every row in §10.9 follows it
