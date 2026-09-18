@@ -1,0 +1,7 @@
+{
+  "name": "gdd-forge",
+  "version": "0.1.0",
+  "description": "Gate-driven Game Design Document generator: asks for missing decisions, never invents them, then forges a 13-chapter GDD with specialised subagents.",
+  "author": { "name": "Truong Nguyen" },
+  "license": "MIT"
+}
