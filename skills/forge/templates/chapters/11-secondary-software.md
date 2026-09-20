@@ -57,4 +57,4 @@ Written in the same run as ch 9, right after it, since tool choices follow from 
 Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-11-<n> — <what is needed> — §N.x".
 If none: "None." D-11 = UNDECIDED must always appear here per the Depth rule, since it forces every engine-specific row above to read "engine-dependent" instead of a concrete tool name. -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

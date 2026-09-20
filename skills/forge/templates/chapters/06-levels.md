@@ -39,7 +39,7 @@
 -->
 
 ## 6.6 Procedural Rules
-<!-- CONDITIONAL: only if D-23 ∈ {Procedural, Endless}. Otherwise write the single line: "Not applicable — level structure is not procedural (D-23)." -->
+<!-- CONDITIONAL: only if D-23 ∈ {Procedural, Endless}. Otherwise write the single line: "N/A — level structure is not procedural." -->
 <!-- guidance: cover —
 - which generators are used and what they produce (layout, encounters, loot)
 - constraints/guardrails they operate under so output stays playable
@@ -58,4 +58,4 @@
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-6-<n> — <what is needed> — §N.x". If none: "None." -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

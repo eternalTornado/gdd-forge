@@ -3,7 +3,7 @@ Applies to: 5_Story, Setting and Character.md · Used by: gdd-narrative-designer
 `[R]` = reviewer-only — depends on a chapter written after this one; at self-check count it as n/a (exclude from passed/total), never as a fail.
 
 ## Premise & Structure
-- [ ] NA-01 Narrative Premise & Themes (§5.1) is present whenever D-21 ≥ Light; when D-21 = None it is replaced by the one-line N/A statement (per Depth rule)
+- [ ] NA-01 Narrative Premise & Themes (§5.1) is present whenever D-21 ≥ Light; when D-21 = None the heading stays and is followed by the one-line N/A statement (per Depth rule)
 - [ ] NA-02 Main story arc (§5.5 Plot Structure) has a clearly labelled beginning, middle, and end
 - [ ] NA-03 Plot Structure table names where gameplay progression (ch4 §4.2) intersects each act/beat
 - [ ] NA-04 Narrative pacing is described as aligned with gameplay progression, not stated independently
@@ -15,10 +15,11 @@ Applies to: 5_Story, Setting and Character.md · Used by: gdd-narrative-designer
 - [ ] NA-08 Player-choice consequences, if any are described, are stated as logical outcomes, not arbitrary
 
 ## Depth Rule Compliance
-- [ ] NA-09 If D-21 = None, the chapter is written as N/A with one explanatory paragraph, keeping only §5.2 and §5.10
-- [ ] NA-10 If D-21 = Light, only §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only), and §5.10 are present
+- [ ] NA-09 If D-21 = None, the chapter opens with the N/A paragraph, §5.2 and §5.10 are written in full, and every other §5.x heading is present followed only by the one-line N/A statement
+- [ ] NA-10 If D-21 = Light, §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only) and §5.10 are written in full, and every other §5.x heading is present followed only by the one-line N/A statement
 - [ ] NA-11 If D-21 ≥ Medium, all ten sections (§5.1–§5.10) are present
 - [ ] NA-12 Any D-33 narrative given is reproduced unchanged, not altered or reinterpreted
+- [ ] NA-17 No numbered §5.x heading is deleted under any D-21 value (downstream slicing keys on heading numbers)
 
 ## Anti-fabrication
 - [ ] NA-13 No narrative element contradicts a D-33 given

@@ -15,7 +15,7 @@ You own `5_Story, Setting and Character.md`. Read your contract file `contracts/
 This chapter feeds ch 6 (level narrative beats and environmental hooks), ch 8 (NPC personalities), and ch 10 (character/environment art) directly — an inconsistency here fans out to three other chapters.
 
 - **Consumes**: ch 3, ch 4 (§4.1–4.3 only); `brief:D-05, D-08, D-21, D-33`.
-- **Depth rule**: D-21 = None → N/A chapter: keep §5.2 (setting still exists) and §5.10; drop the rest with the explanatory paragraph. D-21 = Light → §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only), §5.10. D-21 ≥ Medium → full. D-33 givens are immutable.
+- **Depth rule**: every §5.1–§5.10 heading is always reproduced, in every case — never delete a numbered heading, since ch 6/7/8/10 are sliced by heading number and a missing heading halts the pipeline. D-21 = None → §5.2 (setting still exists) and §5.10 are written in full; every other numbered heading (§5.1, §5.3–§5.9) stays, each followed by the single line `N/A — no narrative framing.` D-21 = Light → §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only), §5.10 are written in full; the remaining headings stay, each followed by `N/A — narrative weight is Light framing.` D-21 ≥ Medium → full. D-33 givens are immutable.
 - **Note**: you read only §4.1–4.3 of ch 4 (core loop, meta loop/progression, world rules), never the rest — the mechanics catalogue, economy, and interaction map are out of scope for this chapter.
 - **Note**: ch 3 and the three named ch 4 sections are your only upstream inputs — you are dispatched in W3b, after the mechanics designer's ch 4 is on disk and its GAPs are handled; ch 6/7/8/10 do not exist yet.
 - **Pre-sliced inputs**: when your dispatch points at a file under `_work/inputs/`, that file already contains exactly the upstream sections your contract lets you consume. Read it and do not open the full chapter it came from. If it carries a `<!-- MISSING: §x.y -->` marker, treat that section as absent — report it as a GAP or `STATUS: blocked` per your contract, never work around it by reading the full chapter instead.
@@ -24,8 +24,8 @@ This chapter feeds ch 6 (level narrative beats and environmental hooks), ch 8 (N
 
 1. Read `brief.md` — D-05 (audience), D-08 (tone/theme), D-21 (narrative weight — check this first, it gates everything else), D-33 (narrative givens, if triggered).
 2. Read `3_Game Overview.md` in full (pillars, tone, audience). Read only §4.1–4.3 of `4_Gameplay and Mechanics.md` (or the pre-sliced file) — core loop verbs, progression, world rules — do not read the rest of ch 4.
-3. Determine the Depth rule outcome from D-21 before drafting anything — this decides which sections you write in full versus which you drop.
-4. Read the template `05-story-setting-character.md`, reproduce only the headings the Depth rule keeps.
+3. Determine the Depth rule outcome from D-21 before drafting anything — this decides which sections you write in full versus which you write as the single `N/A — …` line.
+4. Read the template `05-story-setting-character.md`; reproduce every §5.1–§5.10 heading regardless of the Depth rule outcome — a section the Depth rule removes still gets its numbered heading, followed by the applicable `N/A — …` line from the Depth rule above.
 5. Draft in order: Premise & Themes → Setting (must intersect the ch 4 §4.3 world rules you read) → World Map & Regions → Backstory/Timeline → Plot Structure (map against the ch 4 §4.1 loop cadence and §4.2 progression) → Characters → Factions → Dialogue Systems → Environmental Storytelling hooks → Cultural Notes.
 6. D-33 givens are immutable: any fixed protagonist, setting, or ending stated there must appear unchanged — you elaborate around them, never replace them.
 7. Before drafting Characters (§5.6), re-check the Depth rule's cast limit for the resolved D-21 tier — writing more than the tier allows is not generosity, it is a contract miss.
@@ -36,12 +36,12 @@ This chapter feeds ch 6 (level narrative beats and environmental hooks), ch 8 (N
 
 ## Anti-fabrication rules
 
-Rules 1–6 arrive verbatim in your dispatch envelope — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
+The dispatch rules (`dispatch-rules.md`, path in your dispatch prompt) apply — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
 
 1. Narrative weight (D-21) and any fixed narrative givens (D-33) are decisions — you cannot decide there is more or less story than D-21 states, nor override a D-33 given.
 2. Character names, backstory specifics, faction structure, dialogue delivery style — all elaboration once the premise is set.
 3. No external facts beyond the `data/cultural/` slices you were given for §5.10 — do not cite real-world cultural claims from memory.
-4. Reuse ch 3 §3.10 terms; region/faction names you invent become candidates for the Glossary via "New terms."
+4. Reuse ch 3 §3.10 terms; region/faction names you invent become candidates for the Glossary under a `## New Terms` heading.
 5. **The Depth rule is a Hard rule, not a suggestion.** Writing a full cast when D-21 = Light is the narrative equivalent of inventing a decision — it is scope the brief never granted.
 
 Examples for this chapter:
@@ -69,24 +69,10 @@ Examples for this chapter:
 
 ## PATCH mode
 
-When the dispatch says PATCH MODE:
-- Use Edit, never Write, and open only `5_Story, Setting and Character.md`.
+When the dispatch says PATCH MODE (see `dispatch-rules.md` §3 for the generic rules):
 - Touch only the named `G-<ch>-<n>` placeholder(s) and directly dependent sentences (e.g., a character's arc paragraph that referenced an unresolved D-33 given).
 - Do not re-derive the Depth rule outcome unless the patch itself changes D-21 — a patch to one character does not license rewriting the whole cast.
-- Re-run the checklist against the patched sections, then report as usual.
 
 ## Report format
 
-Close your final message with exactly this block and nothing after it:
-
-```
-## REPORT
-STATUS: complete | complete-with-gaps | blocked
-FILE: <absolute path(s)>
-WORDS: <n>
-GAPS:
-  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
-CHECKLIST: <passed>/<total> — failing: <ids or none>
-NEW_TERMS: <list or none>
-CROSS_REFS_CITED: <chapter §list>
-```
+Close your final message with the REPORT block exactly as `dispatch-rules.md` §4 defines it.

@@ -63,4 +63,4 @@ Intent · Rules · Inputs · Outputs · Edge cases
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-4-<n> — <what is needed> — §N.x". If none: "None." -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

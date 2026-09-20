@@ -3,22 +3,22 @@
 
 # 1. Concept
 
-<!-- 2–3 lines: the anchor file for the lite profile — header, pitch, pillars, feature set, scope and glossary. Every other lite file reads at least §1.4 and §1.9. -->
+<!-- 2–3 lines: header, pitch, pillars, feature set, scope and glossary — the anchor every other lite file reads. -->
 
 ## 1.1 Document Header
-<!-- game name (D-01 if a real title; else the literal `[GAME NAME — pending §1.2]` placeholder, filled by the orchestrator after the user picks) · GDD version (D-15) · profile (hyper-casual/casual) · date · rights holder (D-41, or "[RIGHTS HOLDER — UNDECIDED]") · language (D-12) · platforms (D-04). One-line copyright notice · one-line confidentiality statement. Seed a single-row version table (version · date · summary) for future runs to append to. Replaces the full kit's 1_Copyright Information.md and 2_Version History.md. -->
+<!-- Game name (D-01, else `[GAME NAME — pending §1.2]`) · version (D-15) · profile · date · rights holder (D-41, or "[RIGHTS HOLDER — UNDECIDED]") · language (D-12) · platforms (D-04). One-line copyright + confidentiality. Seed a single-row version table (version · date · summary). -->
 
 ## 1.2 Name Candidates
-<!-- CONDITIONAL: only if D-01 = GENERATE or UNDECIDED. Propose exactly 3 candidates, each: name · one-line rationale · "cannot verify trademark/app-store availability" caveat. Otherwise: "Not applicable — working title already set (D-01)." -->
+<!-- CONDITIONAL: only if D-01 = GENERATE/UNDECIDED. 3 candidates: name · rationale · trademark-caveat. Else: "N/A — working title set." -->
 
 ## 1.3 Game Concept
-<!-- D-02 verbatim one-liner, then a 3–5 sentence expansion (player role, core-loop hint, primary challenge). Shorter than the full kit's ch3 §3.1 — casual pitches don't need 5–7 sentences. -->
+<!-- D-02 verbatim one-liner + 3–5 sentence expansion (role, loop hint, challenge). -->
 
 ## 1.4 Design Pillars
-<!-- 3–5 pillars: name + one sentence of meaning + one sentence of what it forbids. Derivable only from D-02/D-08/D-43 — never invented. Every later lite file cites these by name. -->
+<!-- 3–5 pillars: name + meaning sentence + forbid sentence. Derivable only from D-02/D-08/D-43. Every later file cites these by name. -->
 
 ## 1.5 Feature Set
-<!-- Top 6–10 features, each tagged P0/P1/P2, mapped to a §1.4 pillar. D-43 items are P0. D-44 items listed under "Explicitly out," never as features. -->
+<!-- Top 6–10 features, tagged P0/P1/P2, mapped to a §1.4 pillar. D-43 items = P0. D-44 items only under "Explicitly out." -->
 <!--
 | ID | Feature | Priority | Pillar |
 |---|---|---|---|
@@ -26,16 +26,22 @@
 -->
 
 ## 1.6 Genre & Comparables
-<!-- D-03 genre + D-13 comparables, each with one thing to borrow and one to avoid. If D-13 = none, say so plainly. -->
+<!-- Table only, no essay. D-13 = none → say so plainly. -->
+<!--
+| Comparable | Borrow | Avoid |
+|---|---|---|
+| … | … | … |
+-->
 
 ## 1.7 Target Audience & Platforms
-<!-- One paragraph: D-05 audience/motivations + D-04 platform list + D-06 business model (one line — mechanism detail lives in 4_Business and LiveOps.md). -->
+<!-- One paragraph: D-05 + D-04 + one-line D-06 (mechanism detail lives in 4_Business and LiveOps.md). -->
 
 ## 1.8 Setting & Theme
-<!-- Thin narrative substitute for the full kit's ch5. D-21 = None → one line, no framing. D-21 = Light framing → short paragraph: tone (D-08), setting flavour, one line on the player-character if any. D-21 above Light framing is an escalation signal — see profile-casual.md § When not to use this profile; note it in Open Decisions. -->
+<!-- D-21 = None → one line. Light framing → short paragraph (D-08 tone, setting flavour, player-character line). Above Light framing → escalation signal, note in Open Decisions. -->
 
 ## 1.9 Scope & Glossary Seed
-<!-- D-09 scope statement + a project-scope estimate line (levels/stages, characters if any — every number (est.)). Then 8–15 glossary terms this GDD uses consistently — every later lite file reuses these verbatim (Lite Consistency rule 1). -->
+<!-- D-09's two parts: session length (per app session, never per run/level) + content ambition, every number (est.); replay-driven → no "hours of content" line. Then 8–15 glossary terms, ≤ 20 words each — every later file reuses these verbatim. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED field, GAP, (proposal). Format: "- D-xx <field> — UNDECIDED — affects §N.x" / "- G-1-<n> — <what is needed> — §N.x". None → "None." -->
+<!-- ## New Terms — add only if this file introduces a term the glossary above doesn't already cover. -->

@@ -6,7 +6,7 @@
 <!-- 2–3 lines: the consolidated reference section — glossary, feature/asset indices, open items and cross-references gathered from every other chapter. Read last, cited by all. -->
 
 ## A. Glossary
-<!-- guidance: merge ch 3 §3.10 with every term defined elsewhere in the GDD. Alphabetical, one line each: **Term** — one-sentence definition — source chapter. Consistency rule #1: no synonyms for a defined term; if two chapters define the same concept differently, that is a review-report finding, not something to silently merge. -->
+<!-- guidance: merge ch 3 §3.10 with every chapter's `## New Terms` block (present only where a chapter introduced one). Alphabetical, one line each: **Term** — one-sentence definition — source chapter. Consistency rule #1: no synonyms for a defined term; if two chapters define the same concept differently, that is a review-report finding, not something to silently merge. -->
 
 ## B. Consolidated Feature List
 <!-- guidance: merge ch 4 §4.11 with the P-tags from ch 3 §3.3. One row per feature, deduplicated by id. -->
@@ -25,11 +25,12 @@
 -->
 
 ## D. Open Decisions Register
-<!-- guidance: every UNDECIDED brief field and every Open Decisions box item from every chapter, one row each. Consistency rule #6: every UNDECIDED in brief.md must appear at least once here. -->
+<!-- guidance: every UNDECIDED brief field, every Open Decisions box item and every `(proposal)` from every chapter, one row each. Consistency rule #6: every UNDECIDED in brief.md must appear at least once here. -->
 <!--
 | ID | Field / item | Status | Chapter(s) affected |
 |---|---|---|---|
 | D-41 | rights_holder | UNDECIDED | ch1 §1.1 |
+| — | difficulty curve shape | (proposal) | ch4 §4.10 |
 -->
 
 ## E. GAP Log
@@ -41,7 +42,7 @@
 -->
 
 ## F. Cross-reference Matrix
-<!-- guidance: chapter × chapter table showing which sections cite which — used by gdd-reviewer to check consistency rules 2–5. Only list real citations found in the text, not hypothetical ones. -->
+<!-- guidance: chapter × chapter table showing which sections cite which — used by gdd-reviewer to check consistency rules 2–5. Built from the `CROSS_REFS_CITED` line of each `WORK/reports/<file>.report.md`; only add a citation you can also find in the chapter text. -->
 <!--
 | From → To | Cited sections |
 |---|---|
@@ -64,4 +65,4 @@
 
 <!-- Section D above is this chapter's Open Decisions box — no separate trailing box is needed. -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

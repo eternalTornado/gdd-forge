@@ -5,7 +5,7 @@
 
 <!-- 2–3 lines: behaviour specification for every non-player actor — enemies, NPCs, directors — so it can be implemented and tuned consistently with the design and performance budget. -->
 
-<!-- CONDITIONAL: if D-22 = None, this whole chapter becomes an N/A chapter — keep only §8.1 (stating why there is no designed AI) plus a short note on any trivial automated behaviour that still exists (ambient traffic, wildlife, decorative motion). Drop §8.2–§8.11 with a one-line explanation each. -->
+<!-- CONDITIONAL: if D-22 = None, §8.1 is written in full (stating why there is no designed AI, plus a short note on any trivial automated behaviour that still exists — ambient traffic, wildlife, decorative motion); §8.2–§8.11 each keep their numbered heading, followed only by the single line "N/A — no designed AI." Never delete a heading — downstream dispatches are sliced by heading number. -->
 
 ## 8.1 AI Goals & Player Experience Intent
 <!-- guidance: what the AI must make the player *feel* (threatened, outsmarted, supported, immersed) — not a technical section, a design-intent one. -->
@@ -28,7 +28,7 @@
 - cross-reference personalities from ch 5 §5.6 so behaviour matches characterisation -->
 
 ## 8.5 Director / Procedural Systems
-<!-- CONDITIONAL: only if D-22 includes "Procedural/director systems". Otherwise write the single line: "Not applicable — no director/procedural AI system (D-22)." -->
+<!-- CONDITIONAL: only if D-22 includes "Procedural/director systems". Otherwise write the single line: "N/A — no director/procedural AI system." -->
 <!-- guidance: what the director observes (player state, pacing), what it adjusts, and the rules bounding its adjustments. -->
 
 ## 8.6 Perception & Awareness Model
@@ -58,4 +58,4 @@
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-8-<n> — <what is needed> — §N.x". If none: "None." If D-20 is competitive-only with no stated bot support, flag that here as an Open Decision. -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

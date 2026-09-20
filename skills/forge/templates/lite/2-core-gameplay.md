@@ -3,44 +3,44 @@
 
 # 2. Core Gameplay
 
-<!-- 2–3 lines: the systemic + spatial heart of the design — loop, mechanics, economy, obstacles, and stage/level structure in one file. Reads 1_Concept.md. -->
+<!-- 2–3 lines: loop, mechanics, economy, obstacles, stage structure — the systemic heart of the design. Reads 1_Concept.md whole. -->
 
 ## 2.1 Core Loop
-<!-- The session loop as a numbered verb cycle, citing a §1.4 pillar per beat. Add a second (meta-progression) tier only if D-09 genuinely needs it — casual sessions rarely support three nested loops the way the full kit's ch4 does. -->
+<!-- Session loop as ≤ 8 one-line verb beats. No per-beat pillar citation. -->
 
 ## 2.2 World Rules
-<!-- 3–5 short declaratives on what is always true — movement, collision, fail state. Condensed from the full kit's ch4 §4.3. -->
+<!-- 3–5 short declaratives: movement, collision, fail state. -->
 
 ## 2.3 Mechanics Catalogue
-<!-- One sub-section per mechanic: intent · rules · inputs/outputs · a tunables table. Every mechanic cites a §1.4 pillar (hard rule) — a mechanic with no pillar is a GAP. Casual scope typically yields 2–5 mechanics. -->
+<!-- One sub-section per mechanic: Pillar line · intent · rules · I/O · one tunables table. A mechanic with no pillar is a GAP. Casual scope: ≤ 5 mechanics, each tunable in exactly one table file-wide. -->
 <!--
 ### Mechanic: <name>
-Intent · Rules · Inputs/Outputs
+Pillar: <§1.4 pillar> — Intent · Rules · Inputs/Outputs
 
-| Tunable | Default | Range |
+| Tunable | Default (tunable) | Range |
 |---|---|---|
-| … | … (tunable) | … |
+| … | … | … |
 -->
 
 ## 2.4 Economy
-<!-- Sources/sinks table for every currency. If D-06 is F2P/hybrid, mark monetised sinks using only D-30 mechanisms — anything else is a GAP. -->
+<!-- Sources/sinks table per currency. Monetised sinks use only D-30 mechanisms — anything else is a GAP. -->
 <!--
 | Currency | Sources | Sinks | Monetised? (D-30) |
 |---|---|---|---|
 | … | … | … | No |
 -->
 
-## 2.5 Obstacle & Spawn Patterns
-<!-- Replaces the full kit's ch8 entirely. Patterns and spawn rules ONLY — obstacle archetypes, spawn-rate/difficulty scaling, simple enemy movement if D-22 includes it. No perception model, navmesh, or behaviour tree — that's an escalation signal, not something to elaborate around (profile-casual.md § When not to use this profile). CONDITIONAL: D-22 = None → "No enemies or scripted obstacles beyond terrain/level geometry (D-22)." -->
+## 2.5 Obstacles & Generator
+<!-- Always designs the non-enemy obstacle/hazard archetypes implied by §2.3/§2.6; enemy patterns only if D-22 includes Enemies; nothing at all → one-line N/A, heading stays. D-23 generator-driven (Endless/arena, Procedural) → also owns every spawn/generator tunable + guardrails here, one table — §2.6–§2.8 point here instead of repeating values. No perception/navmesh/behaviour-tree language — that's an escalation GAP, not something to write around. -->
 
 ## 2.6 Level / Stage Structure
-<!-- Reflects D-23. Discrete structure (level select etc.): a structure map + how stages group into difficulty bands. Endless: the meta-structure of a run (start/end conditions, what escalates). -->
+<!-- Discrete D-23: structure map + difficulty bands. Generator-driven: only the run's start/end flow — spawn/generator content lives in §2.5. -->
 
 ## 2.7 Difficulty & Pacing Curve
-<!-- Short table/paragraph plotting difficulty across §2.6. Qualitative — name the tunables that drive it, never fabricate benchmark numbers. -->
+<!-- Qualitative table/paragraph. Name the tunables that drive it (§2.3/§2.5) — never fabricate benchmark numbers. -->
 
-## 2.8 First Stages / Generator Rules
-<!-- CONDITIONAL on D-23. Discrete structure → first 10 stages as compact rows (id · name · mechanic taught/tested · tier · duration (est.)) — no full prose entries. Endless/generator-driven → generator rules instead (what generates, guardrails, authored-vs-generated share per D-35); state there is no fixed stage list. -->
+## 2.8 First Stages
+<!-- Discrete → first 10 stages as compact rows. Generator-driven → "N/A — generator-driven; rules are in §2.5." -->
 <!--
 | ID | Name | Mechanic | Tier | Duration (est.) |
 |---|---|---|---|---|
@@ -48,7 +48,8 @@ Intent · Rules · Inputs/Outputs
 -->
 
 ## 2.9 Feature List Table
-<!-- Every feature this file designs: id · feature · §1.4 pillar · priority · depends-on. Cross-referenced to §1.5. -->
+<!-- Every feature this file designs: id · feature · §1.4 pillar · priority · depends-on. ≤ 12 rows. Cross-ref §1.5. -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." -->
+<!-- One bullet per UNDECIDED field, GAP, (proposal). None → "None." -->
+<!-- ## New Terms — add only if this file introduces a term the glossary (1_Concept.md §1.9) doesn't already cover. -->

@@ -29,7 +29,7 @@
 <!-- guidance: import rules and compression per platform (D-04), naming convention inherited from ch 7 §7.11 (as extended by ch 10 §10.8) — do not invent a separate naming scheme. -->
 
 ## 9.6 Networking
-<!-- CONDITIONAL: only if D-20 ≠ None. Otherwise write the single line: "Not applicable — single-player only (D-20)." -->
+<!-- CONDITIONAL: only if D-20 ≠ None. Otherwise write the single line: "N/A — single-player only." -->
 <!-- guidance: topology (client-server/P2P), authority model, sync/prediction strategy, anti-cheat stance, scale target per D-32. -->
 
 ## 9.7 Performance Budgets
@@ -57,4 +57,4 @@
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-9-<n> — <what is needed> — §N.x". If none: "None." D-11 = UNDECIDED must always appear here per the Depth rule. -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

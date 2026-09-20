@@ -26,7 +26,7 @@ Applies to: 8_Artificial Intelligence.md · Used by: gdd-ai-designer (self-check
 - [ ] AI-13 Performance envelope requests (§8.11) are qualitative asks (e.g. "many concurrent agents") with no invented numeric benchmark
 
 ## N/A Handling
-- [ ] AI-14 If D-22 = None, the chapter is written as N/A with §8.1 explaining why, plus any trivial automated behaviour that still exists
+- [ ] AI-14 If D-22 = None, §8.1 explains why there is no designed AI (plus any trivial automated behaviour), and every §8.2–§8.11 heading is present followed only by the one-line N/A statement — no heading deleted
 - [ ] AI-15 If D-20 is competitive-only with no bots, the absence of bots is flagged as an Open Decision, not silently omitted
 
 ## Anti-fabrication

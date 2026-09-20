@@ -7,7 +7,7 @@ Selector field: **D-05 `audience`** region sub-field (free text region attached 
 |---|---|
 | `east-asia.md` | Dispatch when D-05's region is China / Japan / South Korea (CN/JP/KR), or D-38 includes `zh-CN`, `zh-TW`, `ja`, or `ko`. |
 | `western.md` | Dispatch when D-05's region is North America (US/Canada), Europe/EU, or United Kingdom, or D-38 includes `en`, `de`, or `fr`. |
-| `emerging.md` | Dispatch when D-05's region is Southeast Asia, Latin America, or India, or D-38 includes `th`, `id`, `es`, or `pt-BR`. |
+| `emerging.md` | Dispatch when D-05's region is Southeast Asia, Latin America, or India, or D-38 includes `vi`, `th`, `id`, `es`, or `pt-BR`. |
 | `cross-cultural-principles.md` | **Always passed.** Universal design elements, cultural-adaptation strategy, and sensitive-content guardrails apply regardless of which regions are targeted. |
 | `implementation.md` | **Always passed.** Process/team-composition/QA guidance for integrating cultural design work is region-agnostic. |
 

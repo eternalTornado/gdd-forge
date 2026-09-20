@@ -3,8 +3,8 @@ Applies to: 3_UX Art and Audio.md · Used by: gdd-ux-designer (self-check) and g
 
 ## Screens & UX
 - [ ] LU-01 UX Principles (§3.1) are each testable against a screen, not generic maxims
-- [ ] LU-02 Screen Flow & Inventory (§3.2) lists 4–8 screens, each with purpose and key elements
-- [ ] LU-03 Every screen traces to a §2.3 mechanic, a D-04 platform requirement, or an explicit brief need
+- [ ] LU-02 Screen Flow & Inventory (§3.2) lists 4–8 screens, each with purpose and key elements; every player choice file 2 requires (item/skin, mode, account linking, every §3.5 toggle) has a home screen here, reachable from the menu and — where the loop needs it — the end-of-run screen
+- [ ] LU-03 Every screen traces to a §2.3 mechanic, a D-04 platform requirement, or an explicit brief need; every screen or asset named anywhere in this file appears in §3.2/§3.7
 - [ ] LU-04 HUD & Controls (§3.3) names the input model per D-04 and ties HUD elements to §2.3 mechanics
 - [ ] LU-05 FTUE & Onboarding (§3.4) states which §2.3 mechanic is taught first and how
 
@@ -23,3 +23,10 @@ Applies to: 3_UX Art and Audio.md · Used by: gdd-ux-designer (self-check) and g
 ## Consistency rules
 - [ ] LU-14 [Lite rule 4] Every asset row in §3.7 uses the naming convention stated in that same section, applied consistently
 - [ ] LU-15 [Lite rule 5] Every UNDECIDED field touched by this file appears in its Open Decisions box
+- [ ] LU-16 [Lite rule 10] Every player choice file 2 requires has a home screen in §3.2; this file never restates a gameplay rule or tunable from file 2 — it points to file 2's §
+
+## Writing discipline
+- [ ] LU-17 File and every section within its word ceiling, or declared OVER_BUDGET
+- [ ] LU-18 No fact restated outside its owning section — pointers only
+- [ ] LU-19 No kit/process vocabulary in the deliverable; no inline `(D-xx)`/`(G-xx)` tags on sentences
+- [ ] LU-20 N/A/baseline-only sections are one line; Open Decisions lists only what is open

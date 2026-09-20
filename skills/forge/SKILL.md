@@ -14,9 +14,9 @@ you never write chapter prose yourself and you are the only party that talks to 
 - empty → start the gate from scratch (W0).
 - free-text pitch → seed D-02 (and any other D-xx you can parse out of it) and start the gate.
 - a path to an existing brief file → load it, treat every filled field as answered, resume the gate for what's missing.
-- `--chapter N` → re-run a single chapter (see "Re-run a single chapter" below), skip the gate.
-- `--resume <OUT dir>` → resume an interrupted run (see "Resume" below).
-- `--profile casual` (or `--profile lite`) → run the lightweight casual / hyper-casual flow instead: 4 waves, 6 dispatches, 6 files. Follow [profile-casual.md](references/profile-casual.md) end to end and ignore W1–W10 below. Everything in "Non-negotiables" still applies.
+- `--chapter N` → re-run a single chapter (pipeline.md § Re-running a single chapter later), skip the gate.
+- `--resume <OUT dir>` → resume an interrupted run (pipeline.md § Resume).
+- `--profile casual` (or `--profile lite`) → run the lightweight casual / hyper-casual flow instead: 4 waves, 6 dispatches, 6 files. Follow [profile-casual.md](references/profile-casual.md) end to end and ignore the full-flow waves (W1–W10) below. Everything in "Non-negotiables" still applies.
 - `--profile hyper-casual` → same lite flow, sub-profile pre-selected (skips the sub-profile question).
 - `--profile casual --file N` → re-run one lite output file (N ∈ 1–5); see profile-casual.md § Single-file re-run.
 - `--profile casual --resume <OUT dir>` → resume an interrupted lite run; see profile-casual.md § Resume.
@@ -25,213 +25,47 @@ you never write chapter prose yourself and you are the only party that talks to 
 
 - Only you (the main agent) talk to the user. Subagents never see the user and cannot call `AskUserQuestion`.
 - Decisions (`D-xx`) come only from the user's words or explicit `UNDECIDED`. Never invent, default, or infer a decision on the user's behalf — not even a "reasonable" one.
-- Subagents report **GAPs** instead of deciding; you ask the user on their behalf and patch.
+- Reversible, local choices that the brief doesn't make are written by agents as tagged `(proposal)`s, listed under Open Decisions with 1–2 alternatives (`dispatch-rules.md` §1) — never silently, and never for a `D-xx` field.
+- Subagents report **GAPs** instead of deciding; you ask the user on their behalf and resolve by class (pipeline.md / profile-casual.md § GAP handling).
 - Pass **absolute paths** to every subagent for every input and output. Subagents never guess paths.
 - Never paste chapter bodies into a subagent prompt — give the path and let the subagent read it.
 - Chapter bodies are written in `D-12` language; chapter headings keep the English numbered prefix (e.g. `# 4. Gameplay and Mechanics`) in every language.
+- You (the orchestrator) never write chapter prose yourself, with exactly four exceptions: (1) substituting the user's answer for a `value`-class GAP directly via `Edit`; (2) fixing a reviewer Minor that is ≤ 2 lines and needs no design judgement; (3) the lite `0_Index.md` (assembled from `contracts-lite/lite-0.md`, never dispatched); (4) the lite `1_Concept.md` §1.1 game-name line, filled in after the user picks a name (profile-casual.md § W1 naming step). Everything else goes to the owning agent.
 
-## Paths (compute once, reuse for the whole run)
+Path variables (`KIT`, `OUT`, `WORK`, `INPUTS`) are computed once per run — full detail: pipeline.md § Paths the orchestrator computes once (full profile) or profile-casual.md § Paths (lite profile). `slug` = kebab-case of the chosen game name, ASCII only, in both.
 
-| Var | Value |
-|---|---|
-| `KIT` | `${CLAUDE_SKILL_DIR}` (this skill's folder: `references/`, `templates/`, `checklists/`, `data/`, `scripts/`) |
-| `OUT` | `brief:D-14` resolved to an absolute path, default `<cwd>/deliverables/<slug>/GDD/<D-15>/` |
-| `WORK` | `OUT/_work/` — `brief.md`, `gap-log.md`, `review-report.md`, `run-meta.md`, `reports/<chapter file>.report.md` |
-| `INPUTS` | `WORK/inputs/` — pre-sliced upstream sections, one subfolder per dispatch |
+For the full profile (no `--profile` flag), read [pipeline.md](references/pipeline.md) in full before W0 and follow it section by section — it is the procedure; this file is the map. Where this file and pipeline.md ever differ, pipeline.md wins. For `--profile casual|lite|hyper-casual`, read only [profile-casual.md](references/profile-casual.md) — it is self-sufficient, and where it differs from this file, profile-casual.md wins.
 
-`slug` = kebab-case of the chosen game name, ASCII only. Full detail: [pipeline.md](references/pipeline.md).
+## Waves at a glance
 
-## W0 — Gate
+| Wave | Dispatch(es) (bare agent role → file) | Blocks on | `pipeline.md` § |
+|---|---|---|---|
+| W0 | orchestrator runs the gate — no subagent dispatch | — | § W0 — Gate (orchestrator) |
+| W1 | `gdd-namer` → name candidates (only if `D-01 ∈ {GENERATE, UNDECIDED}`) | brief frozen | § W1 — Name |
+| W2 | `gdd-concept-architect` → `3_Game Overview.md` | brief frozen, name chosen, dirs renamed | § W2–W7 — Chapter generation |
+| W3a | `gdd-mechanics-designer` → `4_Gameplay and Mechanics.md` | ch 3 | § W2–W7 — Chapter generation |
+| W3b | `gdd-narrative-designer` → `5_Story, Setting and Character.md` | ch 4 (§4.1–4.3, GAPs handled) | § W2–W7 — Chapter generation |
+| W4 | `gdd-level-designer` → `6_Levels.md` ‖ `gdd-ux-designer` → `7_Interface.md` | ch 4, ch 5 | § W2–W7 — Chapter generation |
+| W5 | `gdd-ai-designer` → `8_Artificial Intelligence.md` ‖ `gdd-art-director` → `10_Game Art.md` | ch 6, ch 7 | § W2–W7 — Chapter generation |
+| W6 | `gdd-tech-designer` → `9_Technical.md` then `11_Secondary Software.md` | ch 7, ch 8, ch 10 | § W2–W7 — Chapter generation |
+| W7 | `gdd-producer` → `12_Management.md` | ch 9, ch 11 | § W2–W7 — Chapter generation |
+| W8 | `gdd-reviewer` → `review-report.md` | all of 3–12 | § W8 — Review |
+| W9 | fix loop — Blockers / Majors / Minors, ≤ 1 iteration | review | § W9 — Fix loop |
+| W10a | `gdd-scribe` → `1_Copyright Information.md` then `2_Version History.md` (one run, two files) ‖ `gdd-scribe` → `13_Appendices.md` | fixes applied | § W10 — Boilerplate & assembly |
+| W10b | `gdd-scribe` → `0_Index.md` | ch 1, 2, 13 | § W10 — Boilerplate & assembly |
 
-Follow [pipeline.md § W0](references/pipeline.md) and [brief-schema.md](references/brief-schema.md) exactly.
+GAP handling (collect, ask, resolve by class — `value`/`structural`, `dispatch-rules.md` §1) runs after every wave and after W3a before W3b — full procedure: pipeline.md § GAP handling. Re-running a single chapter, resuming an interrupted run, and every failure mode are documented once, in pipeline.md only: § Re-running a single chapter later, § Resume, § Failure modes.
 
-1. Parse the opening message (or the loaded brief file). Fill every `D-xx` you can find verbatim — do not paraphrase into a different meaning.
-2. Refuse to proceed while D-02 (pitch) is empty — it is the one hard requirement.
-3. Ask only for missing fields, via `AskUserQuestion`, ≤ 4 questions per call, grouped by brief-schema section (A → B → C), in the default order given in brief-schema.md "Gate question ordering". Always offer the listed options ("Other" is automatic). Skip any field already answered.
-4. Ask trigger fields (D-20…D-24, marked ⚡) before their dependants; skip a dependant whose trigger is off.
-5. Accept `UNDECIDED` whenever the user declines ("skip", "TBD", "chưa biết") — record it verbatim, never substitute a default.
-6. Check the required-set table for the chosen D-15 (version). Every field in that set must be resolved (not `UNDECIDED`) before you can freeze; if one is missing, ask for it even if it wasn't in the default order.
-7. Render the brief using [brief-template.md](references/brief-template.md), show it to the user, and ask the final confirmation: *Freeze this brief?* Do not proceed until they confirm.
-8. Write the frozen text to `WORK/brief.md` (brief-template.md format) and write `WORK/run-meta.md` (date, kit version, D-15, sha256 of the frozen Section A/B/C tables as shown at freeze time (later `game_name` and `Gate additions` do not change this hash — it identifies the freeze, not the file)). Create `OUT`/`WORK` with a provisional slug (kebab-case of D-01 if it is a real title, else `untitled-game`); after W1 fixes the real name, rename the `<slug>` directory and update `run-meta.md`; never write chapters into a provisional directory.
+## Rules that are easy to get wrong
 
-## W1 — Name
+- **`subagent_type` is namespaced under a plugin install, bare otherwise.** Resolve it once at the start of the run from the available agent types, then reuse that exact string for the whole run. pipeline.md § Paths the orchestrator computes once.
+- **Full profile only — slice inputs before every W3–W7 dispatch**, and build `_anchor.md` once right after W2 (rebuild only if ch 3 is patched). A `MISSING:` line is a stop — never dispatch around it — but a Depth-rule N/A section that kept its numbered heading is a valid slice, not a MISSING. pipeline.md § Input slicing. The lite profile never slices.
+- **`AskUserQuestion` shows at most 4 options.** For a field with a longer list, write the full list into the question text and chunk it across questions — follow the rule in pipeline.md § W0.
 
-Follow [pipeline.md § W1](references/pipeline.md).
+## Done
 
-- If `D-01 = GENERATE` (or `UNDECIDED`): dispatch `gdd-namer` (`subagent_type`: the resolved name — `gdd-forge:gdd-namer` under a plugin install, `gdd-namer` otherwise) with `WORK/brief.md`. It returns 8 candidates, each with rationale, pronounceability note, and a "possible conflicts to check" line.
-- Ask the user with `AskUserQuestion`: top 4 candidates as options (label = name, description = rationale). If they pick "Other" with free text, that is the name.
-- If `D-01` is a real title, skip the agent but still ask once: *Keep "<title>" as the game name?* (options: Keep / Generate alternatives). "Generate alternatives" falls back to the `gdd-namer` path above.
-- Write the final name into `brief.md` (`game_name`) and compute `slug`. Finalize `OUT` and `WORK` at their real paths (rename from the provisional W0 paths if they differ).
-
-## W2–W7 — Chapter generation
-
-For every subagent dispatch in W2–W7, assemble the prompt from this **dispatch envelope**
-(verbatim from [§ W2–W7](references/pipeline.md), fill in the placeholders):
-
-```
-ROLE: you are <agent> writing <file> for the GDD of "<game_name>".
-LANGUAGE: write the body in <D-12>. Keep heading numbers in English ("# 4. Gameplay and Mechanics").
-CONTRACT: read <KIT>/references/contracts/ch<NN>.md. Obey Sections, Depth rule, Hard rules.
-INPUTS (read all of these, read nothing else — the slices already contain every upstream
-section your contract lets you consume, so never open the full chapter they came from):
-  - <WORK>/brief.md
-  - <INPUTS>/_anchor.md — ch 3 §3.2 pillars + §3.10 glossary; reuse these terms verbatim
-  - <INPUTS>/ch<N>/<sliced upstream files...>
-  - template: <KIT>/templates/chapters/<tmpl>
-  - checklists: <KIT>/checklists/<...>
-  - data: <KIT>/data/<dir>/<only the slices the brief selects>
-OUTPUT: write exactly one file <OUT>/<file> (or two for the tech-designer run: ch9 then ch11).
-RULES:
-  1. DECISIONS come only from brief.md. If a section needs a decision that is missing or UNDECIDED and the Depth rule does not tell you what to do, do NOT invent it — write the section header, a one-line placeholder "⟂ GAP G-<ch>-<n>: <what is needed>" and list it under GAPS in your report.
-  2. Design elaborations are yours. Mark tunables "(tunable)", estimates "(est.)", targets "(target)".
-  3. No external facts (market sizes, benchmarks, sales numbers, legal claims) unless present in brief.md or the data files you were given. Otherwise write "no data available".
-  4. Use the Glossary from 3_Game Overview §3.10 verbatim. If you must introduce a new term, add it under a "New terms" note at the end of your file.
-  5. End every chapter with an "Open Decisions" box listing each UNDECIDED brief field you touched and each GAP placeholder.
-  6. Self-check against the checklists before reporting. Items tagged `[R]` are reviewer-only (they depend on a chapter written after yours): count them as n/a, not as failing, and exclude them from passed/total. Fix what you can; report the rest.
-REPORT (last thing in your final message, exact format):
-  ## REPORT
-  STATUS: complete | complete-with-gaps | blocked
-  FILE: <absolute path(s)>
-  WORDS: <n>
-  GAPS:
-    - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
-  CHECKLIST: <passed>/<total> — failing: <ids or none>
-  NEW_TERMS: <list or none>
-  CROSS_REFS_CITED: <chapter §list>
-```
-
-Dispatch every subagent with the `Agent` tool. **Resolve the `subagent_type` string first**: when the kit is loaded as a plugin the agents are namespaced — `gdd-forge:gdd-concept-architect`, `gdd-forge:gdd-namer`, … — while a copy installed into `~/.claude/agents/` exposes the bare names (`gdd-concept-architect`). Look at the agent types available to you, pick the exact string that matches the role, and use that same form for the whole run. Every `subagent_type: "gdd-…"` below means "the resolved name for that role". For a wave with more
-than one dispatch, put every `Agent` call for that wave in **one message**, `run_in_background: true`,
-then wait for every completion notification before doing anything else. Read only the `## REPORT`
-block of each result — never the chapter body — to decide next steps. Save each REPORT block verbatim
-to `WORK/reports/<chapter file>.report.md` as it arrives, then append its GAPS to `WORK/gap-log.md`.
-
-### Input slicing — do this before every W3–W7 dispatch
-
-A contract's *Consumes* list names sections, not files; an agent handed a whole chapter reads the
-whole chapter. Slice first with `KIT/scripts/extract-sections.sh <source> <dest> <spec>...`
-(specs: `4.5`, `4.3-4.6`, `all`) and pass only the slices. The full slice map per dispatch is the
-table in [pipeline.md § Input slicing](references/pipeline.md).
-
-Two rules that are easy to get wrong:
-
-- **Build the anchor once, right after W2**: `extract-sections.sh "<OUT>/3_Game Overview.md" "<INPUTS>/_anchor.md" 3.2 3.10`. Envelope rule 4 makes every chapter reuse ch 3's Glossary (§3.10) and most must cite a pillar (§3.2), but neither is in most *Consumes* lists — slicing strictly by contract would break rule 4. Pass `_anchor.md` to every W3–W7 dispatch. Rebuild it only if ch 3 is patched.
-- **A `MISSING:` line on the script's stdout is a stop, not a warning.** Either the upstream agent never wrote that section (re-dispatch it) or the contract and template disagree (record it in `run-meta.md`). Never dispatch around it.
-
-Data files are sliced by file, not script: pass only what the brief selects (a mobile-only `D-04`
-gets `data/platforms/mobile.md`, not the console, PC and VR specs). Each `data/<dir>/_index.md`
-gives the selector rule.
-
-### W2 — Chapter 3
-
-Dispatch `gdd-concept-architect` → `3_Game Overview.md`. Blocks on: brief frozen, name chosen,
-directories renamed to the final slug.
-
-### W3 — Chapter 4, then chapter 5 (sequential)
-
-W3a: dispatch `gdd-mechanics-designer` → `4_Gameplay and Mechanics.md`. Blocks on: ch 3. Run GAP
-handling for ch 4 before continuing. W3b: dispatch `gdd-narrative-designer` →
-`5_Story, Setting and Character.md`. Blocks on: ch 4 (its §4.1–4.3 slice). Do not run W3b in
-parallel with W3a — ch 5 reads ch 4.
-
-### W4 — Chapters 6 + 7 (parallel)
-
-One message, two `Agent` calls: `gdd-level-designer` → 6, `gdd-ux-designer` → 7. Blocks on: ch 4, ch 5.
-
-### W5 — Chapters 8 + 10 (parallel)
-
-One message, two `Agent` calls: `gdd-ai-designer` → 8, `gdd-art-director` → 10. Blocks on: ch 6, ch 7 —
-ch 8 reads ch 6 §6.4; ch 10 reads ch 6 §6.4 and ch 7 §7.4/§7.11.
-
-### W6 — Chapters 9 then 11
-
-Single `gdd-tech-designer` dispatch: writes `9_Technical.md` then, in the same run, `11_Secondary
-Software.md` (sequential inside that one dispatch — ch 11 needs ch 9's finished content). Blocks on:
-ch 7, ch 8, ch 10.
-
-### W7 — Chapter 12
-
-Dispatch `gdd-producer` → `12_Management.md`. Blocks on: ch 9, ch 11 (reads §9.10 and §11.7).
-
-Waves are serial because every chapter's *Consumes* list must already be on disk; do not merge waves
-to save time.
-
-## GAP handling (after each wave, before the next)
-
-Follow [pipeline.md § GAP handling](references/pipeline.md):
-
-1. Collect every `G-n` from the wave's REPORT blocks. De-duplicate by field. GAP ids are `G-<ch>-<n>` — `<ch>` is the chapter number the agent owns (`G-4-1`, `G-11-2`), `<n>` restarts at 1 per chapter — so parallel agents never collide.
-2. Ask the user with `AskUserQuestion`, ≤ 4 per call, using each agent's *suggested options* plus an explicit "Leave UNDECIDED" option.
-3. Write answers into `brief.md` under `## Gate additions (W<n>)` with the G-id. Log the Q/A in `gap-log.md`.
-4. If the answer is a real value, re-dispatch the owning agent in **PATCH mode**:
-   ```
-   PATCH MODE: <file> exists. Replace only the placeholder(s) G-<ch>-<n> and any sentence that directly depends on them. Do not rewrite other sections. Re-run your checklist. Report as usual.
-   ```
-   Wait for the patch to complete before starting the next wave — downstream chapters must read the patched text.
-5. If the answer is "Leave UNDECIDED", the placeholder stays as-is; do not re-dispatch. It surfaces later in the Appendices Open Decisions register.
-
-## W8 — Review
-
-Dispatch `gdd-reviewer` with: every chapter path (3–12), `brief.md`, `gap-log.md`,
-`KIT/references/consistency-rules.md` (the 8 rules), the contract files of the chapters under
-review, and every checklist in `KIT/checklists/`. Chapters go to the reviewer **whole, not sliced**. It writes `WORK/review-report.md`:
-
-```
-# Review report — <game_name> <version>
-## Blockers   (decision missing → needs the user)          — id · chapter § · what · suggested options
-## Majors     (cross-chapter contradiction / contract miss) — id · chapters · what · owner agent
-## Minors     (wording, formatting, checklist nits)         — id · chapter · what
-## Checklist matrix   chapter × checklist → pass %
-## Consistency rules  1–8 → PASS/FAIL + evidence
-```
-
-## W9 — Fix loop (maximum one iteration)
-
-- **Blockers** → treat exactly like GAPs above (ask user, patch owner).
-- **Majors** → re-dispatch each owner agent once in PATCH mode with the Major items verbatim. If two chapters contradict, patch the *downstream* chapter (higher number) to match the upstream one, unless the Major says otherwise.
-- **Minors** → do not auto-fix; list the count and let the Appendices §G record them.
-- After patches, do **not** re-run the full review. Re-run only the Consistency rules check: a short "RECHECK" dispatch to `gdd-reviewer` limited to the patched chapters.
-
-## W10 — Boilerplate & assembly
-
-W10a — one message, three `Agent` calls to `gdd-scribe`, `run_in_background: true`, one file each:
-`1_Copyright Information.md`, `2_Version History.md`, `13_Appendices.md`. Every dispatch needs
-`run-meta.md`, `gap-log.md`, `review-report.md`; 13 also needs every chapter 3–12. Wait for all three.
-W10b — one `gdd-scribe` dispatch for `0_Index.md`, needing every finished chapter 1–13,
-`run-meta.md`, `gap-log.md`, `review-report.md` and `WORK/reports/*`. Each scribe dispatch names
-exactly one file and returns exactly one REPORT block.
-
-## Done — tell the user
-
-- Absolute path of `OUT`, the file list with word counts (from the REPORTs).
-- Number of Open Decisions and where they live (Appendices §D).
-- Number of Minors left unfixed.
-- One line offering to: (a) re-run a single chapter with new inputs, (b) bump the version, (c) run `/gdd-forge:review` later.
-
-## Re-run a single chapter
-
-`--chapter N` (or the equivalent natural-language request): load `WORK/brief.md`, ask the user only
-for fields that chapter N consumes and that are currently `UNDECIDED`, re-dispatch that chapter's
-owner agent (fresh dispatch, not PATCH mode), then re-run `gdd-scribe` for `13_Appendices.md` and
-`0_Index.md` only. Bump the patch version in `2_Version History.md`.
-
-## Resume
-
-`--resume <OUT dir>`: read `WORK/run-meta.md`, `WORK/brief.md`, `WORK/gap-log.md`, and
-`WORK/review-report.md` if present. List `OUT/*.md` to see which chapters already exist. A chapter
-counts as done only if its file exists **and** `WORK/reports/<file>.report.md` shows `STATUS: complete`
-or `complete-with-gaps`. Resume at the first wave whose chapters are not all done — re-dispatch only
-that wave's missing/blocked chapters, then continue W2–W10 forward as normal. If `brief.md` was never
-frozen, resume at W0 instead. If `review-report.md` exists but the W10 files do not, resume at W9/W10.
-
-## Failure modes
-
-| Situation | Orchestrator does |
-|---|---|
-| Agent returns `blocked` | Read its GAPS; ask user; re-dispatch (fresh, not PATCH). |
-| Agent wrote to the wrong path | Move the file; note in run-meta; do not re-run. |
-| Agent invented a decision (reviewer rule 7 FAIL) | PATCH mode with the exact sentence to remove; add to gap-log as "fabrication caught". |
-| User abandons mid-run | Everything so far is on disk in `OUT`/`WORK`; say so and how to resume (`--resume <OUT>`). |
+Full profile: follow [pipeline.md § Done](references/pipeline.md). Lite profile: follow
+[profile-casual.md § Done](references/profile-casual.md).
 
 ## Casual / hyper-casual profile
 
@@ -248,23 +82,27 @@ Everything under "Non-negotiables" above still holds. Follow
 [profile-casual.md](references/profile-casual.md) for the wave table, contracts, templates and the
 preset itself.
 
-Two orchestrator-written exceptions to "you never write chapter prose yourself", both boilerplate
-assembly: the lite `0_Index.md` (per `contracts-lite/lite-0.md`) and the game-name line in
-`1_Concept.md` §1.1 after the user picks a name from §1.2 (see profile-casual.md § W1 naming step).
-
 ## Agent roster
 
-| Agent | Model | Chapters |
-|---|---|---|
-| `gdd-concept-architect` | opus | 3 |
-| `gdd-mechanics-designer` | opus | 4 |
-| `gdd-narrative-designer` | opus | 5 |
-| `gdd-level-designer` | opus | 6 |
-| `gdd-ux-designer` | sonnet | 7 |
-| `gdd-ai-designer` | opus | 8 |
-| `gdd-tech-designer` | sonnet | 9 + 11 |
-| `gdd-art-director` | sonnet | 10 |
-| `gdd-producer` | sonnet | 12 |
-| `gdd-reviewer` | sonnet | review |
-| `gdd-scribe` | haiku | 0 / 1 / 2 / 13 |
-| `gdd-namer` | opus | naming |
+The `model:` line in each agent's frontmatter is authoritative; this table mirrors it for reference — if
+the two ever disagree, the frontmatter wins.
+
+| Agent | Model | Full chapters | Lite file |
+|---|---|---|---|
+| `gdd-concept-architect` | opus | 3 | 1 |
+| `gdd-mechanics-designer` | opus | 4 | 2 |
+| `gdd-narrative-designer` | opus | 5 | — |
+| `gdd-level-designer` | opus | 6 | — |
+| `gdd-ux-designer` | sonnet | 7 | 3 |
+| `gdd-ai-designer` | opus | 8 | — |
+| `gdd-tech-designer` | opus | 9 + 11 | 5 |
+| `gdd-art-director` | sonnet | 10 | — |
+| `gdd-producer` | sonnet | 12 | 4 |
+| `gdd-reviewer` | opus | review | review |
+| `gdd-scribe` | sonnet | 0 / 1 / 2 / 13 | — |
+| `gdd-namer` | opus | naming | — |
+
+No `gdd-namer`, `gdd-narrative-designer`, `gdd-level-designer`, `gdd-ai-designer`, `gdd-art-director` or
+`gdd-scribe` dispatch exists in the lite profile — their full-profile responsibilities are folded into the
+five lite agents above, or out of scope (profile-casual.md § When NOT to use this profile). The lite
+`0_Index.md` has no dispatch at all: the orchestrator assembles it directly.

@@ -5,7 +5,7 @@
 
 <!-- 2–3 lines: narrative, world and cast bible. Read by writers, level and art teams pulling region/character detail, and by ch 8 for NPC personalities. -->
 
-<!-- CONDITIONAL: if D-21 = None, this whole chapter becomes an N/A chapter — keep only §5.2 and §5.10, drop §5.1/§5.3–§5.9 and replace each with one paragraph stating "No narrative framing (D-21 = None)." If D-21 = Light, keep only §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only) and §5.10 — drop the rest the same way. Full chapter (all sections) only when D-21 ≥ Medium. -->
+<!-- CONDITIONAL: if D-21 = None, the chapter opens with a short paragraph explaining why (no narrative framing); §5.2 and §5.10 are written in full; §5.1 and §5.3–§5.9 each keep their numbered heading, followed only by the single line "N/A — no narrative framing." Never delete a heading — downstream dispatches are sliced by heading number. If D-21 = Light, §5.1, §5.2, §5.3, §5.6 (protagonist + antagonist only) and §5.10 are written in full; §5.4, §5.5, §5.7, §5.8, §5.9 each keep their heading followed only by the single line "N/A — narrative weight is Light framing." Full chapter (every section written in full) only when D-21 ≥ Medium. -->
 
 ## 5.1 Narrative Premise & Themes
 <!-- guidance: the story's central premise and 2–4 themes it explores, tied to D-08 tone and D-33 givens if any. DECISION: any D-33 given (fixed protagonist/setting/ending) is immutable — never contradict it. -->
@@ -46,7 +46,7 @@
 - name and role in the conflict
 - relationship to the player (ally / neutral / hostile / conditional)
 - what gameplay interaction it enables (quests, vendors, hostility, reputation)
-Skip with a one-line note if D-21 < Medium and no factions exist. -->
+If D-21 < Medium and no factions exist, keep the heading and write the one-line N/A statement. -->
 
 ## 5.8 Dialogue & Delivery Systems
 <!-- guidance: how narrative reaches the player — cutscenes, barks, codex/lore entries, none. State which delivery systems exist, how they're triggered, and which characters from §5.6 use which system. -->
@@ -60,4 +60,4 @@ Skip with a one-line note if D-21 < Medium and no factions exist. -->
 ## Open Decisions
 <!-- One bullet per UNDECIDED brief field touched and per GAP placeholder in this chapter. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-5-<n> — <what is needed> — §N.x". If none: "None." -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

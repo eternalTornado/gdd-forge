@@ -3,30 +3,30 @@
 
 # 4. Business and LiveOps
 
-<!-- 2–3 lines: turns the design into a casual monetisation, KPI and release plan — ads, IAP, CPI test, roadmap, risk, liveops. Reads only 1_Concept.md and 2_Core Gameplay.md. -->
+<!-- 2–3 lines: casual monetisation, KPI and release plan — ads, IAP, UA, roadmap, risk, liveops. Reads 1_Concept.md and 2_Core Gameplay.md whole. -->
 
 ## 4.1 Business Model Summary
-<!-- One paragraph restating D-06 and how it maps to §4.2/§4.3. No re-derivation of audience/platform — already in 1_Concept.md §1.7. -->
+<!-- One paragraph restating D-06 and how it maps to §4.2/§4.3. No audience/platform re-derivation. -->
 
 ## 4.2 Ad Placement Design
-<!-- Rewarded video: where it appears, tied to a moment in §2.1/§2.6. Interstitial cadence as a named tunable ("every N stage completions (tunable)"), never a fixed invented number. Banner policy, or "no banners." Name the mediation network from D-46 if resolved; if UNDECIDED, describe placement network-agnostically and flag D-46 in Open Decisions. -->
+<!-- Rewarded video tied to a moment in §2.1/§2.6. Interstitial cadence as a named tunable, never a fixed number. Banner policy or "no banners." Name D-46's network if resolved, else network-agnostic + flag D-46. -->
 
-## 4.3 IAP & Remove-Ads
-<!-- Remove-ads price tier and any consumable IAP, using only D-30 mechanisms — never invent one D-30 doesn't list. -->
+## 4.3 IAP Catalogue
+<!-- Products and real-money prices, using only D-30 mechanisms. Mention remove-ads only if D-30 lists it. A price absent from the brief is a GAP. -->
 
 ## 4.4 KPI Definitions & Targets
-<!-- Pull every metric definition from data/casual/metrics-definitions.md — never restate a definition differently elsewhere. Target values come ONLY from D-45; if UNDECIDED, definitions only, no target column, and D-45 listed in Open Decisions. Any target present is tagged (target) and cites D-45. -->
+<!-- Only metrics with a D-45 target, plus ≤ 5 monitoring metrics the design depends on — meaning from data/casual/metrics-definitions.md, never pasted. D-48 = No/UNDECIDED → omit acquisition metrics (CPI, IPM, CTR, CVR). -->
 <!--
 | Metric | Definition | Target |
 |---|---|---|
-| CPI | see data/casual/metrics-definitions.md | (target, D-45) or — |
+| … | … | (target, D-45) or — |
 -->
 
 ## 4.5 Creative & Playable Ad Concept
-<!-- Concept for the CPI-test creative/playable: which §2.3 mechanic it demonstrates, the first-5-second hook, the CTA moment. Grounded in §2.1/§2.3 — never invent a mechanic not in 2_Core Gameplay.md. -->
+<!-- CONDITIONAL on D-48. Yes → the §2.3 mechanic demonstrated, first-5-second hook, CTA moment. No/UNDECIDED → "N/A — no paid user acquisition planned." / "…undecided." (also list D-48 in Open Decisions). -->
 
 ## 4.6 Roadmap
-<!-- Phases: prototype → CPI test → soft launch → global launch. Each: goal · exit criteria (a testable condition). Durations stay relative ("T+n") unless the brief gives team/timeline info — never invent calendar dates. -->
+<!-- D-48 = Yes: prototype → CPI test → soft launch → global launch. Else: prototype → soft launch → global launch. Each: goal · testable exit criterion. Durations relative ("T+n") unless the brief gives timeline info. -->
 <!--
 | Phase | Goal | Exit criteria |
 |---|---|---|
@@ -34,7 +34,7 @@
 -->
 
 ## 4.7 Risk Register
-<!-- Casual-specific risks (ad-fill dependency, CPI volatility, ad-SDK policy changes) plus anything traceable to an earlier lite file. Every row needs a source and an owner. -->
+<!-- Casual-specific risks, every row sourced. ≤ 6 rows. Owner column only when D-10 is a team of 2+. -->
 <!--
 | Risk | Source | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|---|
@@ -42,10 +42,11 @@
 -->
 
 ## 4.8 LiveOps Plan
-<!-- CONDITIONAL: only if D-24 ≠ None. Cadence from D-36, content types scoped to D-09/D-23. Otherwise: "No live operations planned post-launch (D-24)." -->
+<!-- CONDITIONAL: only if D-24 ≠ None. Cadence from D-36, content scoped to D-09/D-23. Else: "N/A — no live operations planned." -->
 
 ## 4.9 Localisation & Compliance
-<!-- Launch languages (D-38) and rating/compliance path (D-40), condensed. -->
+<!-- Launch languages (D-38) and rating/compliance path (D-40). -->
 
 ## Open Decisions
-<!-- One bullet per UNDECIDED brief field touched and per GAP placeholder. Format: "- D-xx <field> — UNDECIDED — affects §N.x" or "- G-<file>-<n> — <what is needed> — §N.x". If none: "None." D-45/D-46 = UNDECIDED always appear here per the Depth rule. -->
+<!-- One bullet per UNDECIDED field, GAP, (proposal). None → "None." D-45/D-46/D-48 always appear when unresolved and gating a section. -->
+<!-- ## New Terms — add only if this file introduces a term the glossary (1_Concept.md §1.9) doesn't already cover. -->

@@ -30,16 +30,19 @@ free text) before doing anything else.
      matches the profile; the other one's ids will not resolve.
    - `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules.md` for a full GDD, or
      `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules-lite.md` for a lite one. The two files
-     number their 8 rules differently — pass only the one matching the profile, and cite its numbering
-     in the report.
+     both carry 12 rules; rules 1–8 are numbered differently between them, rules 9–12 share the same
+     numbers in both — pass only the one matching the profile, and cite its numbering in the report.
    - The contract files for the mapped files, from `contracts/` or `contracts-lite/`.
+   - `<folder>/_work/reports/` (each agent's self-check REPORT, one per file) when it exists — pass it
+     along so `gdd-reviewer` can reuse self-scores instead of re-running every checklist from scratch.
    - `<folder>/_work/brief.md` (or `<folder>/brief.md`) if present — pass it along; if absent, tell
      `gdd-reviewer` no brief is available and it must skip brief-dependent checks (full: rules 6, 7;
-     lite: rules 3, 5, 6, 7) rather than guessing brief content.
+     lite: rules 3, 5, 6, 7 — unchanged) and skip, with a note, the brief-dependent part of rules 9–12
+     (rule 11's `D-44` part, rule 12's `D-09`/`D-10` part); every other part of rules 9–12 needs no brief.
 
 4. **Dispatch.** Call the `Agent` tool with `subagent_type` set to the reviewer agent as it appears in your available agent types — `gdd-forge:gdd-reviewer` under a plugin install, `gdd-reviewer` if the agents were copied to `~/.claude/agents/`. Pass absolute paths to:
    every mapped chapter file, the matching checklists directory, the matching consistency-rules file (full or lite), the
-   relevant contract files, and brief.md (if found). Never paste chapter bodies into the prompt — paths only. Ask it
+   relevant contract files, `_work/reports/` (if found), and brief.md (if found). Never paste chapter bodies into the prompt — paths only. Ask it
    to write the same report shape `gdd-forge:forge` uses internally:
    ```
    # Review report — <game name if known, else folder name> <version if known>
@@ -47,14 +50,15 @@ free text) before doing anything else.
    ## Majors     (cross-chapter contradiction / contract miss) — id · chapters · what · owner agent
    ## Minors     (wording, formatting, checklist nits)         — id · chapter · what
    ## Checklist matrix   chapter × checklist → pass %
-   ## Consistency rules  1–8 → PASS/FAIL + evidence (numbered per the rules file passed)
+   ## Consistency rules  1–12 → PASS/FAIL + evidence (numbered per the rules file passed)
    ```
 
 5. **Write output.** Create `<folder>/_work/` if it doesn't exist. Write the reviewer's report to
-   `<folder>/_work/review-report.md`.
+   `<folder>/_work/review-report.md`; it writes its supporting fact ledger next to it, at
+   `<folder>/_work/fact-ledger.md`.
 
 6. **Summarise.** Report the counts of Blockers / Majors / Minors to the user, and the Consistency
-   rules pass/fail summary, naming the profile you reviewed and any rule you skipped. Offer, in one
-   line, to fix findings by re-running `/gdd-forge:forge --chapter N` (full) or
-   `/gdd-forge:forge --profile casual --file N` (lite) for each affected file — do not run it
+   rules pass/fail summary, naming the profile you reviewed and any rule (or rule part) you skipped for
+   missing inputs. Offer, in one line, to fix findings by re-running `/gdd-forge:forge --chapter N`
+   (full) or `/gdd-forge:forge --profile casual --file N` (lite) for each affected file — do not run it
    yourself unless asked.

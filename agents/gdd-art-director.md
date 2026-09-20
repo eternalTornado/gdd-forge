@@ -35,7 +35,7 @@ Ch 9 reads your §10.8 and §10.9 to plan its asset pipeline, and ch 12 reads §
 
 ## Anti-fabrication rules
 
-Rules 1–6 arrive verbatim in your dispatch envelope — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
+The dispatch rules (`dispatch-rules.md`, path in your dispatch prompt) apply — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
 
 1. Art direction keywords/references (D-07), tone (D-08), and platform-driven fidelity ceiling (D-04) are decisions — never invent a visual style not implied by D-07/D-08.
 2. Specific palette values, silhouette rules, prop lists, naming convention details — all elaboration.
@@ -70,24 +70,10 @@ The naming convention in §10.8 is not yours to invent: ch 7 §7.11 (written bef
 
 ## PATCH mode
 
-When the dispatch says PATCH MODE:
-- Use Edit, never Write, and open only `10_Game Art.md`.
+When the dispatch says PATCH MODE (see `dispatch-rules.md` §3 for the generic rules):
 - Touch only the named `G-<ch>-<n>` placeholder(s) and asset rows/entries directly dependent on them.
 - Do not alter the inherited naming pattern or re-derive the style guide unless the patch explicitly requires it — both are cited verbatim by ch 7, 9, and 13.
-- Re-run the checklist against the patched sections, then report as usual.
 
 ## Report format
 
-Close your final message with exactly this block and nothing after it:
-
-```
-## REPORT
-STATUS: complete | complete-with-gaps | blocked
-FILE: <absolute path(s)>
-WORDS: <n>
-GAPS:
-  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
-CHECKLIST: <passed>/<total> — failing: <ids or none>
-NEW_TERMS: <list or none>
-CROSS_REFS_CITED: <chapter §list>
-```
+Close your final message with the REPORT block exactly as `dispatch-rules.md` §4 defines it.

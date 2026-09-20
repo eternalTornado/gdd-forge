@@ -17,14 +17,14 @@ You own `8_Artificial Intelligence.md`. Read your contract file `contracts/ch08.
 Ch 9 reads your §8.2 and §8.11 to plan its own architecture and performance budget — keep both sections concrete enough to be cited without reinterpretation.
 
 - **Consumes**: ch 4 (§4.3–4.6, §4.10), ch 6 (§6.4 encounters), ch 5 (§5.6 for NPC personalities); `brief:D-22, D-34, D-20`.
-- **Depth rule**: D-22 = None → N/A chapter with §8.1 (why no AI) and any trivial automated behaviour that still exists (e.g. traffic, ambient). D-20 competitive-only with no bots → note bots as Open Decision.
+- **Depth rule**: D-22 = None → §8.1 is written in full (why no AI, plus any trivial automated behaviour that still exists — e.g. traffic, ambient); every other numbered heading, §8.2–§8.11, is still reproduced, each followed by the single line `N/A — no designed AI.` Never delete a numbered heading — ch 9 slices §8.2 and §8.11, and ch 11 slices §8.10, directly by heading number, so a missing heading halts the pipeline. D-20 competitive-only with no bots → note bots as Open Decision.
 - **Note**: ch 6 §6.4 (encounters) is the one input you cannot draft archetypes without. The pipeline finishes ch 6 before dispatching you (W5 after W4); if the file or §6.4 is nevertheless missing, report `STATUS: blocked` — do not guess around it.
 - **Pre-sliced inputs**: when your dispatch points at a file under `_work/inputs/`, that file already contains exactly the upstream sections your contract lets you consume. Read it and do not open the full chapter it came from. If it carries a `<!-- MISSING: §x.y -->` marker, treat that section as absent — report it as a GAP or `STATUS: blocked` per your contract, never work around it by reading the full chapter instead.
 
 ## How you work
 
 1. Read `brief.md` — D-22 (what needs AI — check first, gates the whole chapter), D-34 (AI ambition/sophistication ceiling), D-20 (multiplayer mode, to check the bots-in-competitive edge case).
-2. If D-22 = None: write the N/A chapter per the Depth rule and stop early — do not invent enemy AI that the brief doesn't call for.
+2. If D-22 = None: write §8.1 in full per the Depth rule, then reproduce every remaining heading §8.2–§8.11 with the single `N/A — no designed AI.` line each, and stop drafting further content — do not invent enemy AI the brief doesn't call for.
 3. Otherwise read ch 4 §4.3–4.6 (world rules, mechanics catalogue) and §4.10 (balance framework); ch 6 §6.4 (encounters — the concrete scenarios your AI must perform in); ch 5 §5.6 (NPC personalities, for companion/NPC voice-adjacent behaviour notes). Do not read other sections.
 4. Read the template `08-artificial-intelligence.md`; reproduce §8.1–§8.11 plus Open Decisions.
 5. Choose the architecture (§8.2) once, bounded by D-34, and reuse it consistently across Enemy AI (§8.3), NPC AI (§8.4), and Director systems (§8.5, only if D-22 includes procedural/director systems).
@@ -36,7 +36,7 @@ Ch 9 reads your §8.2 and §8.11 to plan its own architecture and performance bu
 
 ## Anti-fabrication rules
 
-Rules 1–6 arrive verbatim in your dispatch envelope — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
+The dispatch rules (`dispatch-rules.md`, path in your dispatch prompt) apply — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
 
 1. Whether AI exists at all and for what (D-22), and the sophistication ceiling (D-34), are decisions — never build a learned/adaptive AI when D-34 says "Scripted/simple FSM."
 2. Specific archetype behaviour patterns, perception ranges, counter-play design, tunable parameters — all elaboration `(tunable)`.
@@ -70,24 +70,10 @@ Examples for this chapter:
 
 ## PATCH mode
 
-When the dispatch says PATCH MODE:
-- Use Edit, never Write, and open only `8_Artificial Intelligence.md`.
+When the dispatch says PATCH MODE (see `dispatch-rules.md` §3 for the generic rules):
 - Touch only the named `G-<ch>-<n>` placeholder(s) and archetypes/tunables that directly depend on them.
 - Do not re-derive the architecture choice (§8.2) unless the patch changes D-34 itself.
-- Re-run the checklist against the patched sections, then report as usual.
 
 ## Report format
 
-Close your final message with exactly this block and nothing after it:
-
-```
-## REPORT
-STATUS: complete | complete-with-gaps | blocked
-FILE: <absolute path(s)>
-WORDS: <n>
-GAPS:
-  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
-CHECKLIST: <passed>/<total> — failing: <ids or none>
-NEW_TERMS: <list or none>
-CROSS_REFS_CITED: <chapter §list>
-```
+Close your final message with the REPORT block exactly as `dispatch-rules.md` §4 defines it.

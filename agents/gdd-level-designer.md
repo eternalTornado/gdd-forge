@@ -36,7 +36,7 @@ Procgen split (D-35) only matters when D-23 ∈ {Procedural, Endless}; for every
 
 ## Anti-fabrication rules
 
-Rules 1–6 arrive verbatim in your dispatch envelope — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
+The dispatch rules (`dispatch-rules.md`, path in your dispatch prompt) apply — do not restate them, apply them. What follows is what those rules mean **for this chapter specifically**.
 
 1. Level structure (D-23), scope-driven level count (via ch 3 §3.9), and procgen split (D-35) are decisions — never invent an open-world structure when D-23 says "Linear levels."
 2. Individual level layouts, encounter placement, target duration estimates, asset need lists — all elaboration.
@@ -70,24 +70,10 @@ Examples for this chapter:
 
 ## PATCH mode
 
-When the dispatch says PATCH MODE:
-- Use Edit, never Write, and open only `6_Levels.md`.
+When the dispatch says PATCH MODE (see `dispatch-rules.md` §3 for the generic rules):
 - Touch only the named `G-<ch>-<n>` placeholder(s) and levels whose fields directly depend on them (e.g., a level count changed by a resolved D-09 answer).
 - Do not re-lay-out unaffected levels or renumber the Level List unless the patch requires it.
-- Re-run the checklist against the patched entries, then report as usual.
 
 ## Report format
 
-Close your final message with exactly this block and nothing after it:
-
-```
-## REPORT
-STATUS: complete | complete-with-gaps | blocked
-FILE: <absolute path(s)>
-WORDS: <n>
-GAPS:
-  - G-<ch>-<n> | field: <D-xx or description> | section: <§> | why: <one line> | suggested options: <a / b / c>
-CHECKLIST: <passed>/<total> — failing: <ids or none>
-NEW_TERMS: <list or none>
-CROSS_REFS_CITED: <chapter §list>
-```
+Close your final message with the REPORT block exactly as `dispatch-rules.md` §4 defines it.

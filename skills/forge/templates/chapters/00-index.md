@@ -9,7 +9,7 @@
 <!-- guidance: game name (D-01) · GDD version (D-15) · date of this run · rights holder (D-41, or literally "[RIGHTS HOLDER — UNDECIDED]") · language this GDD is written in (D-12). ELABORATION: none — every value is pulled verbatim from brief.md / run metadata, never invented. -->
 
 ## 0.2 Chapter Abstracts
-<!-- guidance: one line per chapter 1–13 · each a link + a single-sentence abstract of what that chapter decides. Pull the abstract from the chapter's own opening paragraph rather than re-summarizing from scratch. -->
+<!-- guidance: one line per chapter 1–13 · each a link + a single-sentence abstract of what that chapter decides. Pull the abstract from `INPUTS/ch00/abstracts.md` (each chapter's opening paragraph, pre-extracted) rather than re-summarizing from scratch. -->
 <!--
 | Ch | Title | Abstract |
 |---|---|---|
@@ -17,11 +17,11 @@
 -->
 
 ## 0.3 Status Table
-<!-- guidance: one row per chapter (1–13) · columns: chapter · owner agent · model · word count · checklist pass % (sourced from review-report.md, never estimated). -->
+<!-- guidance: one row per chapter (1–13) · columns: chapter · status · open items. Status = that chapter's dispatch Status from `run-meta.md` § Waves, annotated "(patched)" for a chapter fixed in the W9 fix loop. Open items = that chapter's UNDECIDED + unresolved GAP + `(proposal)` count, counted from `13_Appendices.md` §D. No owner agent, model, word count or checklist %. -->
 <!--
-| Ch | Owner agent | Model | Word count | Checklist pass % |
-|---|---|---|---|---|
-| 4 | gdd-mechanics-designer | opus | 1,850 | 100% |
+| Ch | Status | Open items |
+|---|---|---|
+| 4 | complete | 2 |
 -->
 
 ## 0.4 How to Read
@@ -30,4 +30,4 @@
 ## Open Decisions
 <!-- This box doubles as the contract's required "Open Decisions count, GAP log summary": report the total count of UNDECIDED brief fields across the whole GDD and the total GAP count, each linking to Appendices §D and §E respectively. Do not re-list every individual item here — the full register lives in 13-appendices.md. If both counts are zero: "None." -->
 
-<!-- New terms (only if you introduced a term not in 3_Game Overview §3.10): -->
+<!-- Optional: add a real `## New Terms` heading here (after Open Decisions) only if this chapter introduces a term not already in 3_Game Overview §3.10 — one line per term: **Term** — one-sentence definition. Omit entirely if no new term. -->

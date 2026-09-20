@@ -52,6 +52,7 @@
 | D-45 | kpi_targets | | casual profile only — `—` in full profile |
 | D-46 | ad_networks | | casual profile only — `—` in full profile |
 | D-47 | build_size_target | | casual profile only — `—` in full profile |
+| D-48 | paid_ua | | casual profile only — `—` in full profile |
 
 ## Chosen game name
 `game_name`: <final name> · `slug`: <kebab-case>
