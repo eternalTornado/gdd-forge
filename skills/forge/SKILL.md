@@ -1,108 +1,172 @@
 ---
 name: forge
-description: Generate a complete 13-chapter Game Design Document from a pitch. Runs an input gate that asks only for missing decisions (never invents them), then dispatches specialised design subagents chapter by chapter, reviews for consistency, and assembles the deliverable. Use when the user wants a GDD, game design document, design bible, or to turn a game idea into a spec.
+description: Generate a complete 13-chapter Game Design Document (or a 6-file casual / hyper-casual GDD) from a pitch. Runs an input gate that asks only for missing decisions (never invents them), then drives the gdd-forge:forge-run workflow segment by segment — design agents write each wave, every new file is adversarially verified, a verified multi-lens review and a fix loop run until clean — stopping at checkpoints (name, anchor approval, GAPs, review Blockers, residual Majors) to ask the user. Use when the user wants a GDD, game design document, design bible, or to turn a game idea into a spec.
 ---
 
 # Forge — GDD generation orchestrator
 
-This skill turns a pitch into a 13-chapter GDD by running an input gate, then dispatching one
-specialised subagent per chapter (or wave of chapters), reviewing the result for consistency,
-and assembling the final files. You (the agent running this skill) are the **orchestrator** —
-you never write chapter prose yourself and you are the only party that talks to the user.
+You (the agent running this skill) are the **orchestrator**: you run the input gate, then drive the
+`forge-run` workflow segment by segment, asking the user at every checkpoint until done.
 
 `$ARGUMENTS` selects the entry point:
 - empty → start the gate from scratch (W0).
 - free-text pitch → seed D-02 (and any other D-xx you can parse out of it) and start the gate.
 - a path to an existing brief file → load it, treat every filled field as answered, resume the gate for what's missing.
-- `--chapter N` → re-run a single chapter (pipeline.md § Re-running a single chapter later), skip the gate.
-- `--resume <OUT dir>` → resume an interrupted run (pipeline.md § Resume).
-- `--profile casual` (or `--profile lite`) → run the lightweight casual / hyper-casual flow instead: 4 waves, 6 dispatches, 6 files. Follow [profile-casual.md](references/profile-casual.md) end to end and ignore the full-flow waves (W1–W10) below. Everything in "Non-negotiables" still applies.
-- `--profile hyper-casual` → same lite flow, sub-profile pre-selected (skips the sub-profile question).
-- `--profile casual --file N` → re-run one lite output file (N ∈ 1–5); see profile-casual.md § Single-file re-run.
-- `--profile casual --resume <OUT dir>` → resume an interrupted lite run; see profile-casual.md § Resume.
+- `--chapter N` → skip the gate (pipeline.md § Re-running a single chapter later); `mode: 'chapter'`, `target: N`, `from: 'RERUN'`.
+- `--resume <OUT dir>` → decide `from` per pipeline.md § Resume.
+- `--profile casual` (or `--profile lite`, passed as `profile: 'casual'`) → the lite casual / hyper-casual flow, 6 files. Follow [profile-casual.md](references/profile-casual.md) instead of pipeline.md; "Non-negotiables" still apply.
+- `--profile hyper-casual` → same lite flow, sub-profile pre-selected.
+- `--profile casual --file N` → `mode: 'file'`, `target: N` (1–5), `from: 'RERUN'` (profile-casual.md § Single-file re-run).
+- `--profile casual --resume <OUT dir>` → decide `from` per profile-casual.md § Resume.
 
 ## Non-negotiables
 
-- Only you (the main agent) talk to the user. Subagents never see the user and cannot call `AskUserQuestion`.
-- Decisions (`D-xx`) come only from the user's words or explicit `UNDECIDED`. Never invent, default, or infer a decision on the user's behalf — not even a "reasonable" one.
-- Reversible, local choices that the brief doesn't make are written by agents as tagged `(proposal)`s, listed under Open Decisions with 1–2 alternatives (`dispatch-rules.md` §1) — never silently, and never for a `D-xx` field.
-- Subagents report **GAPs** instead of deciding; you ask the user on their behalf and resolve by class (pipeline.md / profile-casual.md § GAP handling).
-- Pass **absolute paths** to every subagent for every input and output. Subagents never guess paths.
-- Never paste chapter bodies into a subagent prompt — give the path and let the subagent read it.
-- Chapter bodies are written in `D-12` language; chapter headings keep the English numbered prefix (e.g. `# 4. Gameplay and Mechanics`) in every language.
-- You (the orchestrator) never write chapter prose yourself, with exactly four exceptions: (1) substituting the user's answer for a `value`-class GAP directly via `Edit`; (2) fixing a reviewer Minor that is ≤ 2 lines and needs no design judgement; (3) the lite `0_Index.md` (assembled from `contracts-lite/lite-0.md`, never dispatched); (4) the lite `1_Concept.md` §1.1 game-name line, filled in after the user picks a name (profile-casual.md § W1 naming step). Everything else goes to the owning agent.
+- Only you talk to the user. The workflow cannot ask anything; subagents never see the user and cannot call `AskUserQuestion`.
+- Decisions (`D-xx`) come only from the user's words or explicit `UNDECIDED`. Never invent, default, or infer one — not even a "reasonable" one.
+- Reversible, local choices the brief doesn't make are written by agents as tagged `(proposal)`s with 1–2 alternatives (`dispatch-rules.md` §1) — never silently, never for a `D-xx` field. **PROPOSALs are never asked mid-run.**
+- Subagents report **GAPs** (class `value` / `structural`, `dispatch-rules.md` §1) instead of deciding; you ask at a checkpoint and resolve by class (§ Checkpoints).
+- Every path in `args` and in every dispatch is **absolute**. Never paste chapter bodies into a prompt or `args` — give the path.
+- Chapter bodies are written in `D-12`; headings keep the English numbered prefix (`# 4. Gameplay and Mechanics`) in every language.
+- You, and the workflow's clerk and assembly steps, never write chapter prose, with exactly four exceptions: (1) you substitute the user's answer for a `value`-class GAP via `Edit`; (2) a reviewer Minor ≤ 2 lines needing no design judgement (workflow clerk step); (3) the lite `0_Index.md` (workflow assembly from `contracts-lite/lite-0.md`, never a designer dispatch); (4) the lite `1_Concept.md` §1.1 game-name line, which you `Edit` at the anchor checkpoint. Everything else goes to the owning agent.
 
-Path variables (`KIT`, `OUT`, `WORK`, `INPUTS`) are computed once per run — full detail: pipeline.md § Paths the orchestrator computes once (full profile) or profile-casual.md § Paths (lite profile). `slug` = kebab-case of the chosen game name, ASCII only, in both.
+`KIT`, `OUT`, `WORK`, `INPUTS` are computed once — pipeline.md § Paths the orchestrator computes once / profile-casual.md § Paths. `slug` = kebab-case of the game name, ASCII only.
 
-For the full profile (no `--profile` flag), read [pipeline.md](references/pipeline.md) in full before W0 and follow it section by section — it is the procedure; this file is the map. Where this file and pipeline.md ever differ, pipeline.md wins. For `--profile casual|lite|hyper-casual`, read only [profile-casual.md](references/profile-casual.md) — it is self-sufficient, and where it differs from this file, profile-casual.md wins.
+Full profile: read [pipeline.md](references/pipeline.md) in full before W0. Lite: read only [profile-casual.md](references/profile-casual.md). They hold the procedures and win on them; this file is the map and the workflow contract. On stage ids, args, checkpoint kinds and model routing, `workflows/forge-run.js` wins.
+
+## How a run works
+
+This skill's instructions are the user's opt-in to the `Workflow` tool — call it as described, without asking separately. Never run this skill with `context: fork`: checkpoints need `AskUserQuestion` and the user.
+
+1. **W0 gate** — pipeline.md § W0 / profile-casual.md § W0. `need_name` = D-01 ∈ {GENERATE, UNDECIDED}; full profile with a real D-01: right after the freeze ask *Keep "<title>"?* (Keep / Generate alternatives) and set `need_name` from it.
+2. **Resolve once**, record in `run-meta.md`:
+   - `agent_ns` — `"gdd-forge:"` under a plugin install (agents listed as `gdd-forge:gdd-<role>`), `""` when copied to `~/.claude/agents/`. (`agent_namespace:`)
+   - invocation — plugin install: `Workflow({name: "gdd-forge:forge-run", args})`; otherwise, or if that name is not found: `Workflow({scriptPath, args})` with `${CLAUDE_SKILL_DIR}/../../workflows/forge-run.js` resolved to an absolute path. (`workflow:`)
+   - `paths`, `flags`, `lang`, `version`, `game_name`, and `data` — only the slices the brief selects, per each `data/<dir>/_index.md` (a mobile-only D-04 → `platforms/mobile.md` + `platforms/selection-criteria.md`, not the console / PC / VR specs).
+3. **Loop** — first call: `from: 'W1'` unless the entry point says otherwise, `resolutions: []` (on `--resume`: the answers to what the interrupted checkpoint left open). On each result:
+   - `done` → § Done.
+   - `error` → tell the user `message`, fix what it names (or ask), call again: `stage: 'resolve'` or a missing-args error → the same call (args fixed); otherwise `from: stage` and `resolutions: []` (already applied).
+   - `checkpoint` → § Checkpoints, then call again with `from: checkpoint.next` (`residual`: § Checkpoints) and the answers as `resolutions`. Other args unchanged, except: after a name pick, the new `paths` / `game_name` and `need_name: false`; after a Gate addition changing a field that feeds `flags` or `data`, recompute them; `extra_round` only on the one call right after *One more round*.
+
+State lives on disk, never in the workflow, so runs resume across sessions; `resumeFromRunId` is never used.
+
+## Workflow contract
+
+Pass `args` as JSON values, not strings.
+
+| Arg | Value |
+|---|---|
+| `mode` | `run` · `chapter` (full `--chapter N`) · `file` (lite `--file N`) |
+| `profile` | `full` · `casual` · `hyper-casual` |
+| `from` | stage id this segment starts at |
+| `target`, `date` | modes `chapter`/`file`: N, and the ISO date for the version row |
+| `paths` | `{kit, out, work, inputs}`, absolute; `inputs` = `WORK/inputs`, full only |
+| `agent_ns` | `"gdd-forge:"` or `""` |
+| `game_name`, `lang`, `version` | brief `game_name` — D-01 until named; omit when D-01 ∈ {GENERATE, UNDECIDED} · D-12 · D-15 |
+| `flags` | `{d21, d22, f2p_or_hybrid, need_name}` — `d21` = the D-21 option without its parenthetical; `d22` = `None` or the D-22 selection; `f2p_or_hybrid` = D-06 is F2P or Hybrid |
+| `data` | `{platforms, monetization, cultural, accessibility}` — brief-selected slice paths |
+| `resolutions` | `[RESOLUTION]` from the last checkpoint, else `[]` |
+| `extra_round` | `true` only on the call right after the user chose one more fix round; omit otherwise |
+| `model_override` | only when the user explicitly asks for one model for every dispatch |
+
+```
+{ status: 'checkpoint', checkpoint: { kind, stage, next, items, file?, anchor?, candidates?, blocked?, note? } }
+{ status: 'done', summary: { out, files: [{file, words}], open_decisions, proposals, minors_left, issues, stale? } }
+{ status: 'error', stage, message }
+ITEM       = { id, file, owner, class, field, section, why, options[] }
+RESOLUTION = { id, file, owner, class: 'value'|'structural', answer, action, cascade: bool, sections: '§x.y …' }
+```
+`stage` raised the checkpoint (`resolve` = while applying answers); `next` = where to continue. Ids: GAP `G-<ch>-<n>`, verify decision `V-<ch>-…`, review `R-<n>`. `issues` = findings the workflow could not close; `stale` = files consuming a re-run one.
+
+**Actions:** `edited` (you already Edited it — no dispatch) · `patch` (PATCH to the owner) · `fresh` (fresh owner re-dispatch, re-verified) · `undecided` · `approved` · `another_round` · `accept`. `cascade: true` (fact owned by `file`, cited downstream) → the workflow PATCHes every citing file after the owner. A file in `checkpoint.blocked` always gets `fresh`. **Special ids:** `ANCHOR` — `approved` (or omitted) | `fresh`; `RESIDUAL` — `another_round` | `accept`.
+
+**Stage ids, in order:** full `run` — `W1` `W2` `W3a` `W3b` `W4` `W5` `W6` `W7` `W8` `W9` `W10`; lite `run` — `W1` `W2` `W3` `W4` `FIX` `INDEX`; full `chapter` (N 3–12) and lite `file` (N 1–5) — `RERUN` `RERUN-POST`. Chapters 0/1/2/13 are rebuilt by `mode: 'run'` from `W10`.
+
+## Checkpoints
+
+Before asking, for every kind:
+- De-duplicate `items` against `gap-log.md` (same id or field already answered → reuse, don't re-ask); a field raised by several files is asked once and resolved in each.
+- `AskUserQuestion`: ≤ 4 questions per call, ≤ 4 options each, from the item's `options`, plus "Leave UNDECIDED" on every decision item; longer lists go into the question text (pipeline.md § W0). An answer contradicting a frozen brief value or a pillar → ask which yields before writing.
+- Write each answer into `brief.md` `## Gate additions (<checkpoint.stage>)` (lite `(lite)`) with its id, and into `gap-log.md` (Question asked · Answer · Answered on; add the row for a `V-`/`R-` id — the workflow logs only `G-` rows; fill Patched files for `edited`).
+- Resolve by class: **`value`** → `Edit` the `⟂ GAP` line (value and unit, no prose), drop it from that file's Open Decisions → `edited`; more than ~3 dependent lines → `patch`. **`structural`** → `fresh`; upgrade `value` → `structural` when the answer adds what the options did not (feature, mode, screen, flow). An upstream-owned fact → its **owning** file, `cascade: true`. "Leave UNDECIDED" → `undecided`.
+
+Per kind — what you ask, then what you write before calling again:
+- **`name`** (full W1) — top 4 of the 8 ranked `candidates` (rationale + pronounceability; trademarks unchecked); Other = the name. Write `game_name`/`slug` under brief `## Chosen game name`, rename the provisional dir, update run-meta `slug:`/`out:`.
+- **`anchor`** (full W2 / lite W1, always) — `anchor.pillars` (name · meaning · forbids) and `anchor.features` (name · priority · pillar) as a table, then *Approve* / *Request changes* (notes via Other), plus any `items`; lite with `candidates`: the name too (3 + Other). Changes → notes under `## Gate additions (W2 anchor review)` (lite `(W1 anchor review)`) and `{id: 'ANCHOR', file: checkpoint.file, owner: 'concept-architect', class: 'structural', action: 'fresh'}`; the anchor file's items get `fresh` too (never `Edit` a file about to be rewritten) — rewritten, re-verified, asked again. Approve → `{id: 'ANCHOR', action: 'approved'}`. Lite name → as `name`, plus `Edit` `[GAME NAME — pending §1.2]` in 1_Concept.md §1.1 (exception 4; re-apply after an ANCHOR `fresh`).
+- **`gaps`** (after a writing wave, `RERUN` or `resolve`; only with items or `blocked` files) — `G-` and `V-` items. One RESOLUTION per item; `fresh` for every `blocked` file.
+- **`blockers`** (review W8 / W4, or a fix-loop RECHECK) — `R-` items, resolved like GAPs.
+- **`residual`** (W9 / FIX after the round cap) — open Majors (id · file · what), then *One more round* / *Accept as known issues*. More → `{id: 'RESIDUAL', action: 'another_round'}`, call from `checkpoint.stage` with `extra_round: true`. Accept → `action: 'accept'`, call from `next`; the Majors stay open for § Done.
 
 ## Waves at a glance
 
-| Wave | Dispatch(es) (bare agent role → file) | Blocks on | `pipeline.md` § |
-|---|---|---|---|
-| W0 | orchestrator runs the gate — no subagent dispatch | — | § W0 — Gate (orchestrator) |
-| W1 | `gdd-namer` → name candidates (only if `D-01 ∈ {GENERATE, UNDECIDED}`) | brief frozen | § W1 — Name |
-| W2 | `gdd-concept-architect` → `3_Game Overview.md` | brief frozen, name chosen, dirs renamed | § W2–W7 — Chapter generation |
-| W3a | `gdd-mechanics-designer` → `4_Gameplay and Mechanics.md` | ch 3 | § W2–W7 — Chapter generation |
-| W3b | `gdd-narrative-designer` → `5_Story, Setting and Character.md` | ch 4 (§4.1–4.3, GAPs handled) | § W2–W7 — Chapter generation |
-| W4 | `gdd-level-designer` → `6_Levels.md` ‖ `gdd-ux-designer` → `7_Interface.md` | ch 4, ch 5 | § W2–W7 — Chapter generation |
-| W5 | `gdd-ai-designer` → `8_Artificial Intelligence.md` ‖ `gdd-art-director` → `10_Game Art.md` | ch 6, ch 7 | § W2–W7 — Chapter generation |
-| W6 | `gdd-tech-designer` → `9_Technical.md` then `11_Secondary Software.md` | ch 7, ch 8, ch 10 | § W2–W7 — Chapter generation |
-| W7 | `gdd-producer` → `12_Management.md` | ch 9, ch 11 | § W2–W7 — Chapter generation |
-| W8 | `gdd-reviewer` → `review-report.md` | all of 3–12 | § W8 — Review |
-| W9 | fix loop — Blockers / Majors / Minors, ≤ 1 iteration | review | § W9 — Fix loop |
-| W10a | `gdd-scribe` → `1_Copyright Information.md` then `2_Version History.md` (one run, two files) ‖ `gdd-scribe` → `13_Appendices.md` | fixes applied | § W10 — Boilerplate & assembly |
-| W10b | `gdd-scribe` → `0_Index.md` | ch 1, 2, 13 | § W10 — Boilerplate & assembly |
+Every new or fresh file is verified: one finder, three perspective-diverse voters per Major (≥ 2 upholds), one auto-PATCH to the owner for confirmed Majors needing no decision; the rest become `V-` items (`WORK/checks/`). Full W3–W7 inputs are sliced (`SLICES` in workflows/forge-run.js, plus `INPUTS/_anchor.md` from W2); lite never slices. Waves are serial.
 
-GAP handling (collect, ask, resolve by class — `value`/`structural`, `dispatch-rules.md` §1) runs after every wave and after W3a before W3b — full procedure: pipeline.md § GAP handling. Re-running a single chapter, resuming an interrupted run, and every failure mode are documented once, in pipeline.md only: § Re-running a single chapter later, § Resume, § Failure modes.
+| Full | Dispatch(es) → chapter | Checkpoint |
+|---|---|---|
+| W1 | `gdd-namer` → 8 names (only if `need_name`) | `name` |
+| W2 | `gdd-concept-architect` → 3 (bookkeeping builds `_anchor.md`) | `anchor` |
+| W3a | `gdd-mechanics-designer` → 4 | `gaps` |
+| W3b | `gdd-narrative-designer` → 5 | `gaps` |
+| W4 | `gdd-level-designer` → 6 ‖ `gdd-ux-designer` → 7 | `gaps` |
+| W5 | `gdd-ai-designer` → 8 ‖ `gdd-art-director` → 10 | `gaps` |
+| W6 | `gdd-tech-designer` → 9 then 11 (one dispatch) | `gaps` |
+| W7 | `gdd-producer` → 12 | `gaps` |
+| W8 | `gdd-reviewer` ‖ 4 lens finders → merge → 3 voters each → `review-report.md` | `blockers` |
+| W9 | fix loop: PATCH per owner, clerk Minors, RECHECK ‖ regression → voters; ≤ 2 rounds | `blockers` / `residual` |
+| W10 | `gdd-scribe` 1+2 ‖ 13, then 0_Index; completeness critic | — |
+
+| Lite | Dispatch(es) → file | Checkpoint |
+|---|---|---|
+| W1 | `gdd-concept-architect` → 1 | `anchor` (+ name) |
+| W2 | `gdd-mechanics-designer` → 2 | `gaps` |
+| W3 | `gdd-ux-designer` → 3 ‖ `gdd-producer` → 4 ‖ `gdd-tech-designer` → 5 | `gaps` |
+| W4 / FIX | review and fix loop as W8 / W9 (structural Major → fresh) | `blockers` / `residual` |
+| INDEX | 0_Index assembly; completeness critic | — |
+
+Re-run: `RERUN` (fresh owner dispatch, verify) → `RERUN-POST` (version row, index rebuilt, regression recheck).
 
 ## Rules that are easy to get wrong
 
-- **`subagent_type` is namespaced under a plugin install, bare otherwise.** Resolve it once at the start of the run from the available agent types, then reuse that exact string for the whole run. pipeline.md § Paths the orchestrator computes once.
-- **Full profile only — slice inputs before every W3–W7 dispatch**, and build `_anchor.md` once right after W2 (rebuild only if ch 3 is patched). A `MISSING:` line is a stop — never dispatch around it — but a Depth-rule N/A section that kept its numbered heading is a valid slice, not a MISSING. pipeline.md § Input slicing. The lite profile never slices.
-- **`AskUserQuestion` shows at most 4 options.** For a field with a longer list, write the full list into the question text and chunk it across questions — follow the rule in pipeline.md § W0.
-
-## Done
-
-Full profile: follow [pipeline.md § Done](references/pipeline.md). Lite profile: follow
-[profile-casual.md § Done](references/profile-casual.md).
-
-## Casual / hyper-casual profile
-
-`--profile casual` replaces W1–W10 with a 4-wave, 6-dispatch flow producing 6 files instead of 14.
-Use it when the game is a casual or hyper-casual mobile title: no real narrative, no AI architecture,
-no multiplayer, mobile-only. Escalate back to the full flow the moment one of those stops being true.
-
-The gate changes shape but not principle: the orchestrator **proposes** a preset of typical casual
-values, the user confirms or edits it in one round, and only confirmed values reach `brief.md`
-(recorded as `Source: casual preset — confirmed by user`). An unconfirmed preset value is never used,
-and D-02 (pitch) is still a hard requirement no preset can supply.
-
-Everything under "Non-negotiables" above still holds. Follow
-[profile-casual.md](references/profile-casual.md) for the wave table, contracts, templates and the
-preset itself.
+- **`agentType` needs the exact namespaced name** — the workflow builds `agent_ns + "gdd-<role>"`; a wrong `agent_ns` fails every dispatch.
+- **Named workflow vs scriptPath** — `gdd-forge:forge-run` exists only under a plugin install; a local copy uses an absolute `scriptPath`. Never pass the script inline.
+- **`AskUserQuestion`: ≤ 4 questions per call, ≤ 4 options each.** Chunk; put long lists in the question text; never pre-select.
+- **PROPOSALs are never asked** — at no checkpoint. Done reports their count.
+- **One workflow call at a time** — never two segments at once, never edit `OUT` while one runs.
 
 ## Agent roster
 
-The `model:` line in each agent's frontmatter is authoritative; this table mirrors it for reference — if
-the two ever disagree, the frontmatter wins.
+No agent pins a model. Tiers live in MODEL ROUTING (`TIERS` / `ROLE_TIER` / `tierFor`) in workflows/forge-run.js: `deep` = the session's model, `spec` / `clerk` = sonnet; ch 5 and ch 8 drop to `spec` when mostly `N/A —` (D-21 ∈ {None, Light framing}; D-22 = None). Re-dispatches use the owner's tier. `args.model_override` only when the user explicitly asks for one model for every dispatch.
 
-| Agent | Model | Full chapters | Lite file |
+| Agent | Default tier | Full chapters | Lite file |
 |---|---|---|---|
-| `gdd-concept-architect` | opus | 3 | 1 |
-| `gdd-mechanics-designer` | opus | 4 | 2 |
-| `gdd-narrative-designer` | opus | 5 | — |
-| `gdd-level-designer` | opus | 6 | — |
-| `gdd-ux-designer` | sonnet | 7 | 3 |
-| `gdd-ai-designer` | opus | 8 | — |
-| `gdd-tech-designer` | opus | 9 + 11 | 5 |
-| `gdd-art-director` | sonnet | 10 | — |
-| `gdd-producer` | sonnet | 12 | 4 |
-| `gdd-reviewer` | opus | review | review |
-| `gdd-scribe` | sonnet | 0 / 1 / 2 / 13 | — |
-| `gdd-namer` | opus | naming | — |
+| `gdd-concept-architect` | deep | 3 | 1 |
+| `gdd-mechanics-designer` | deep | 4 | 2 |
+| `gdd-narrative-designer` | deep | 5 | — |
+| `gdd-level-designer` | deep | 6 | — |
+| `gdd-ux-designer` | spec | 7 | 3 |
+| `gdd-ai-designer` | deep | 8 | — |
+| `gdd-tech-designer` | deep | 9 + 11 | 5 |
+| `gdd-art-director` | spec | 10 | — |
+| `gdd-producer` | spec | 12 | 4 |
+| `gdd-reviewer` | deep | review | review |
+| `gdd-scribe` | spec | 0 / 1 / 2 / 13 | — |
+| `gdd-namer` | deep | naming | — |
 
-No `gdd-namer`, `gdd-narrative-designer`, `gdd-level-designer`, `gdd-ai-designer`, `gdd-art-director` or
-`gdd-scribe` dispatch exists in the lite profile — their full-profile responsibilities are folded into the
-five lite agents above, or out of scope (profile-casual.md § When NOT to use this profile). The lite
-`0_Index.md` has no dispatch at all: the orchestrator assembles it directly.
+An agent with no lite file is never dispatched in the lite profile; the lite `0_Index.md` is a workflow assembly step.
+
+## Done
+
+Report from `summary` per [pipeline.md § Done](references/pipeline.md) (full) or
+[profile-casual.md § Done](references/profile-casual.md) (lite), plus accepted residual Majors (open rows of
+review-report.md § Fix loop) and every `issues` line. Re-run modes: list `stale` and offer to re-run those files — only on explicit
+confirmation, never cascade unasked.
+
+## Casual / hyper-casual profile
+
+`--profile casual` replaces W1–W10 with three writing waves, review, fix loop and index: 6 files instead
+of 14. Use it for a casual or hyper-casual mobile title: no real narrative, no AI architecture, no
+multiplayer, mobile-only. Escalate to the full flow the moment one of those stops being true.
+
+The gate **proposes** a preset of typical casual values; the user confirms or edits it in one round, and
+only confirmed values reach `brief.md` (`Source: casual preset — confirmed by user`). An unconfirmed
+preset value is never used; D-02 (pitch) is still required. Follow
+[profile-casual.md](references/profile-casual.md) for the gate, preset, contracts, resume and re-run.

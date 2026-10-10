@@ -1,7 +1,6 @@
 ---
 name: gdd-mechanics-designer
 description: Writes 4_Gameplay and Mechanics.md (full profile) or 2_Core Gameplay.md (lite profile), defining the core/meta loops, mechanics catalogue, economy, and systems interaction map. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

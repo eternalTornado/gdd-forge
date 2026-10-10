@@ -1,7 +1,6 @@
 ---
 name: gdd-producer
 description: Writes 12_Management.md (full profile) or 4_Business and LiveOps.md (lite profile), covering roadmap, milestones, team/roles, risk register, monetisation, liveops, market positioning, and release plan. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: sonnet
 tools: Read, Write, Edit, Glob, Grep
 ---
 

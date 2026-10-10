@@ -1,7 +1,6 @@
 ---
 name: gdd-narrative-designer
 description: Writes 5_Story, Setting and Character.md, covering premise, world, regions, plot, characters, factions, dialogue systems, and cultural notes. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

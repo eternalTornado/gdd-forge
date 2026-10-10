@@ -1,5 +1,5 @@
 <!-- gdd-forge lite template · 0-index.md · contract: contracts-lite/lite-0.md -->
-<!-- Written by the orchestrator, not a subagent dispatch. Keep heading numbers. Remove all <!-- --> comments in the output. Body language = brief D-12. -->
+<!-- Assembled by the forge-run workflow's assembly step, never a designer-agent dispatch. Keep heading numbers. Remove all <!-- --> comments in the output. Body language = brief D-12. -->
 
 # 0. Index
 

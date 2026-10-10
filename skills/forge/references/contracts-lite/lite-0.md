@@ -1,8 +1,8 @@
 # Contract — 0_Index.md (lite profile)
 Conventions and writing rules: `dispatch-rules.md`. Headings keep the English `0.` prefix; never delete a numbered heading.
 
-- **Owner**: the orchestrator itself — no agent dispatch, no `## REPORT` block for this file.
-- **Reads**: `1_Concept.md` … `5_Tech Note.md` whole, `WORK/brief.md`, `WORK/gap-log.md`, `WORK/review-report.md` (the lite review is mandatory, so this is always on disk).
+- **Owner**: the forge-run workflow's assembly step (`workflows/forge-run.js`) — mechanical assembly, never a designer-agent dispatch; no `## REPORT` block for this file.
+- **Reads**: `1_Concept.md` … `5_Tech Note.md` whole, `WORK/brief.md`, `WORK/gap-log.md`, `WORK/review-report.md` (the lite review is mandatory, so this is always on disk), `WORK/reports/*` (STATUS lines), `WORK/run-meta.md`.
 - **tmpl**: `templates/lite/0-index.md` · **check**: none (see Hard rules) · **data**: none.
 - **Owns**: the file abstracts (§0.2) and the status table (§0.3) — every value here is pulled verbatim from a file or report already on disk, never estimated.
 - **Budget**: none — assembly only; length follows its five inputs.

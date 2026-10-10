@@ -1,7 +1,6 @@
 ---
 name: gdd-ai-designer
 description: Writes 8_Artificial Intelligence.md, covering AI architecture, enemy/NPC behaviour, perception, navigation, difficulty adaptation, and tunables. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

@@ -1,7 +1,6 @@
 ---
 name: gdd-namer
 description: Generates 8 candidate game name/title options across four naming strategies, each with rationale, pronounceability, and a conflicts-to-check note, returned in the final message. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Glob, Grep
 ---
 

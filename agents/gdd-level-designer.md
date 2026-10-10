@@ -1,7 +1,6 @@
 ---
 name: gdd-level-designer
 description: Writes 6_Levels.md, covering level design philosophy, structure map, tutorial pacing, per-level entries, difficulty curve, and the level list. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

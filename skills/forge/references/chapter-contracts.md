@@ -1,10 +1,10 @@
 # Chapter Contracts
 
-A contract says who writes a chapter, what it may read, what it must contain, and how deep it goes given the brief. Each chapter's contract now lives in its own file under `contracts/chNN.md`, passed by the orchestrator to that agent. Agents read only their own contract, never this index.
+A contract says who writes a chapter, what it may read, what it must contain, and how deep it goes given the brief. Each chapter's contract now lives in its own file under `contracts/chNN.md`, named in that agent's dispatch prompt. Agents read only their own contract, never this index.
 
 ## Conventions
 - `brief:D-xx` — a decision field from `brief-schema.md`
-- `ch N` — the finished markdown of chapter N (path given by the orchestrator)
+- `ch N` — the finished markdown of chapter N (path given in your dispatch)
 - `tmpl` — the template skeleton you must follow (headings fixed, guidance comments removed in output); path given in your dispatch
 - `check` — the checklist you self-check against before reporting; path given in your dispatch
 - `data` — reference knowledge; the only allowed source of external facts
@@ -32,6 +32,6 @@ Contract files live under `contracts/`.
 
 \* same run as ch 9, after it.
 
-Model = the agent's frontmatter; the full roster (agent · model · full chapters · lite file) lives in `SKILL.md`.
+Model = the tier `ROLE_TIER` / `tierFor` in `workflows/forge-run.js` routes each dispatch to (no agent pins a model); the agent roster lives in `SKILL.md`.
 
 12 cross-chapter consistency rules enforced by `gdd-reviewer`: see `consistency-rules.md` (full profile) or `consistency-rules-lite.md` (lite profile — different numbering).

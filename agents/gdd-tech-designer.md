@@ -1,7 +1,6 @@
 ---
 name: gdd-tech-designer
 description: Writes 9_Technical.md then 11_Secondary Software.md (full profile) or 5_Tech Note.md alone (lite profile), covering platform targets, architecture, data, performance budgets, compliance, and tooling. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

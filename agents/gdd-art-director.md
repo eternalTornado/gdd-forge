@@ -1,7 +1,6 @@
 ---
 name: gdd-art-director
 description: Writes 10_Game Art.md, covering art direction, style guide, character/environment/UI art, asset pipeline, naming, and the minimum asset list. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: sonnet
 tools: Read, Write, Edit, Glob, Grep
 ---
 

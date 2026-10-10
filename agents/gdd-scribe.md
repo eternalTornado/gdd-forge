@@ -1,7 +1,6 @@
 ---
 name: gdd-scribe
 description: Writes 0_Index.md, 1_Copyright Information.md, 2_Version History.md, and 13_Appendices.md, the boilerplate and assembly chapters compiled from every other finished chapter. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: sonnet
 tools: Read, Write, Edit, Glob, Grep
 ---
 

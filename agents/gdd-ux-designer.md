@@ -1,7 +1,6 @@
 ---
 name: gdd-ux-designer
 description: Writes 7_Interface.md (full profile) or 3_UX Art and Audio.md (lite profile), covering UX principles, screen inventory, HUD, controls, camera/feedback, audio direction, accessibility, and localisation. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: sonnet
 tools: Read, Write, Edit, Glob, Grep
 ---
 

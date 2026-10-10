@@ -1,7 +1,6 @@
 ---
 name: gdd-concept-architect
 description: Writes 3_Game Overview.md (full profile) or 1_Concept.md (lite profile), the anchor chapter defining concept, pillars, feature set, genre, audience, scope, and glossary seed for the GDD. Dispatched by the gdd-forge pipeline; not for ad-hoc use.
-model: opus
 tools: Read, Write, Edit, Glob, Grep
 ---
 

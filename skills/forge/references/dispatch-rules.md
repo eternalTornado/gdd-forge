@@ -72,10 +72,10 @@ heading prefixes (`## 4.5 …`), `## Open Decisions`, `## New Terms`, `⟂ GAP`,
 ## 3. PATCH mode
 
 When the dispatch says `PATCH MODE`, your file already exists. Use Edit, never Write, and open only your
-own file. Change the named placeholder(s) or review item(s) **and every sentence, table row, count and
-cross-reference in your file that depends on them** — then re-read the file once top to bottom for what
-the change made stale (counts such as "five rules", lists, New Terms, Open Decisions). Leave unrelated
-sections alone. Re-run your checklist and report as usual.
+own file, `brief.md`, and any file a PATCH item names. Change the named placeholder(s) or review item(s)
+**and every sentence, table row, count and cross-reference in your file that depends on them** — then
+re-read the file once top to bottom for what the change made stale (counts such as "five rules", lists,
+New Terms, Open Decisions). Leave unrelated sections alone. Re-run your checklist and report as usual.
 
 ## 4. REPORT — the last thing in your final message, exact format
 
@@ -91,4 +91,9 @@ sections alone. Re-run your checklist and report as usual.
     CROSS_REFS_CITED: <chapter §list>
 
 `CROSS_REFS_CITED` is full-profile only (13_Appendices §F is built from it) — omit the line in the lite
-profile. There is no word-count line: the orchestrator measures the file with `wc -w`.
+profile. There is no word-count line: the pipeline measures the file with `wc -w`.
+
+When the dispatch supplies a StructuredOutput tool (workflow dispatches), the same block — one per file,
+in order, when you wrote two — goes verbatim in its `report` field and the other fields are filled from
+it; the block format itself is unchanged. A contract-vs-dispatch note goes in `report` after the block,
+on a line starting `NOTE:`.

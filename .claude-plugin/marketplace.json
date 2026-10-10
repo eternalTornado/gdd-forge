@@ -8,7 +8,7 @@
     {
       "name": "gdd-forge",
       "source": "./",
-      "description": "Gate-driven Game Design Document generator: asks for missing decisions, never invents them, then forges a 13-chapter GDD with specialised subagents.",
+      "description": "Gate-driven Game Design Document generator: asks for missing decisions, never invents them, then forges a 13-chapter GDD in one checkpointed multi-agent workflow — specialised subagents write, adversarial verifiers check every chapter, and a verified review drives fix rounds, pausing at checkpoints to ask you.",
       "author": { "name": "Truong Nguyen" },
       "category": "documentation"
     }
