@@ -30,7 +30,7 @@ Ch 9 reads your §8.2 and §8.11 to plan its own architecture and performance bu
 6. Build the Enemy/Opponent archetype table (§8.3) directly from ch 6 §6.4 encounters — every encounter needs an archetype behind it.
 7. Draft NPC & Companion AI (§8.4) using ch 5 §5.6 personalities only where D-22 lists NPCs/companions as needing AI — a personality note is not itself a request for AI.
 8. Write Performance envelope requests (§8.11) qualitatively — you are asking ch 9 for a budget, not fabricating one.
-9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy as a `NOTE:` line right after your `## REPORT` block (`dispatch-rules.md` §4).
 10. Self-check against `ch08-ai.md`. Write `8_Artificial Intelligence.md`. Produce the `## REPORT` block.
 
 ## Anti-fabrication rules

@@ -27,7 +27,7 @@ This chapter is dispatched in W4 alongside ch 7; ch 8 and ch 10 are dispatched i
 5. Count level entries against ch 3 §3.9: if ≤ 20, write every entry in full; if > 20, write the first 5 in full plus one full entry per act, and reduce the remainder to §6.7 table rows only.
 6. Write Procedural Rules (§6.6) only if D-23 ∈ {Procedural, Endless}, using D-35 for the authored-vs-generated split.
 7. Build the Difficulty & Pacing Curve (§6.5) and the Level List (§6.7) together, last — both must agree with every full entry you wrote above them.
-8. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+8. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy as a `NOTE:` line right after your `## REPORT` block (`dispatch-rules.md` §4).
 9. Self-check against `ch06-levels.md` — verify every level entry cites mechanics that actually exist in ch 4 §4.4 (the reviewer checks this too).
 10. Write `6_Levels.md`. Produce the `## REPORT` block.
 

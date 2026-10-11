@@ -75,24 +75,24 @@ Pass `args` as JSON values, not strings.
 ITEM       = { id, file, owner, class, field, section, why, options[] }
 RESOLUTION = { id, file, owner, class: 'value'|'structural', answer, action, cascade: bool, sections: '§x.y …' }
 ```
-`stage` raised the checkpoint (`resolve` = while applying answers); `next` = where to continue. Ids: GAP `G-<ch>-<n>`, verify decision `V-<ch>-…`, review `R-<n>`. `issues` = findings the workflow could not close; `stale` = files consuming a re-run one.
+`stage` raised the checkpoint (`resolve` = while applying answers); `next` = where to continue. Ids: GAP `G-<ch>-<n>` (a rewritten file numbers new GAPs after the highest logged), verify decision `V-<ch>-…` (`<ch>` = the file that raised it), review `R-<n>`, fix-loop RECHECK `R<round>-<n>`. `issues` = findings the workflow could not close; `stale` = files consuming a re-run one.
 
 **Actions:** `edited` (you already Edited it — no dispatch) · `patch` (PATCH to the owner) · `fresh` (fresh owner re-dispatch, re-verified) · `undecided` · `approved` · `another_round` · `accept`. `cascade: true` (fact owned by `file`, cited downstream) → the workflow PATCHes every citing file after the owner. A file in `checkpoint.blocked` always gets `fresh`. **Special ids:** `ANCHOR` — `approved` (or omitted) | `fresh`; `RESIDUAL` — `another_round` | `accept`.
 
-**Stage ids, in order:** full `run` — `W1` `W2` `W3a` `W3b` `W4` `W5` `W6` `W7` `W8` `W9` `W10`; lite `run` — `W1` `W2` `W3` `W4` `FIX` `INDEX`; full `chapter` (N 3–12) and lite `file` (N 1–5) — `RERUN` `RERUN-POST`. Chapters 0/1/2/13 are rebuilt by `mode: 'run'` from `W10`.
+**Stage ids, in order:** full `run` — `W1` `W2` `W3a` `W3b` `W4` `W5` `W6` `W7` `W8` `W9` `W10`; lite `run` — `W1` `W2` `W3` `W4` `FIX` `INDEX`; full `chapter` (N 3–12) and lite `file` (N 1–5) — `RERUN` `RERUN-POST`. Chapters 0/1/2/13 are rebuilt by `mode: 'run'` from `W10`. `ANCHOR` (both profiles, used by resume) re-shows the anchor checkpoint without rewriting anything.
 
 ## Checkpoints
 
 Before asking, for every kind:
-- De-duplicate `items` against `gap-log.md` (same id or field already answered → reuse, don't re-ask); a field raised by several files is asked once and resolved in each.
+- De-duplicate `items` against `gap-log.md` by id **and** field (both already answered → reuse, don't re-ask; same id with a different field → a new question, logged and resolved as `<id>~2`); a field raised by several files is asked once and resolved in each.
 - `AskUserQuestion`: ≤ 4 questions per call, ≤ 4 options each, from the item's `options`, plus "Leave UNDECIDED" on every decision item; longer lists go into the question text (pipeline.md § W0). An answer contradicting a frozen brief value or a pillar → ask which yields before writing.
 - Write each answer into `brief.md` `## Gate additions (<checkpoint.stage>)` (lite `(lite)`) with its id, and into `gap-log.md` (Question asked · Answer · Answered on; add the row for a `V-`/`R-` id — the workflow logs only `G-` rows; fill Patched files for `edited`).
-- Resolve by class: **`value`** → `Edit` the `⟂ GAP` line (value and unit, no prose), drop it from that file's Open Decisions → `edited`; more than ~3 dependent lines → `patch`. **`structural`** → `fresh`; upgrade `value` → `structural` when the answer adds what the options did not (feature, mode, screen, flow). An upstream-owned fact → its **owning** file, `cascade: true`. "Leave UNDECIDED" → `undecided`.
+- Resolve by class: **`value`** → `Edit` the `⟂ GAP` line (value and unit, no prose), drop it from that file's Open Decisions → `edited`; more than ~3 dependent lines → `patch`. **`structural`** → `fresh`; upgrade `value` → `structural` when the answer adds what the options did not (feature, mode, screen, flow). An upstream-owned fact → its **owning** file, `cascade: true` (a `V-` item about an upstream fault offers exactly that, or *align this file* → `patch` on the raising file). "Leave UNDECIDED" → `undecided`.
 
 Per kind — what you ask, then what you write before calling again:
 - **`name`** (full W1) — top 4 of the 8 ranked `candidates` (rationale + pronounceability; trademarks unchecked); Other = the name. Write `game_name`/`slug` under brief `## Chosen game name`, rename the provisional dir, update run-meta `slug:`/`out:`.
-- **`anchor`** (full W2 / lite W1, always) — `anchor.pillars` (name · meaning · forbids) and `anchor.features` (name · priority · pillar) as a table, then *Approve* / *Request changes* (notes via Other), plus any `items`; lite with `candidates`: the name too (3 + Other). Changes → notes under `## Gate additions (W2 anchor review)` (lite `(W1 anchor review)`) and `{id: 'ANCHOR', file: checkpoint.file, owner: 'concept-architect', class: 'structural', action: 'fresh'}`; the anchor file's items get `fresh` too (never `Edit` a file about to be rewritten) — rewritten, re-verified, asked again. Approve → `{id: 'ANCHOR', action: 'approved'}`. Lite name → as `name`, plus `Edit` `[GAME NAME — pending §1.2]` in 1_Concept.md §1.1 (exception 4; re-apply after an ANCHOR `fresh`).
-- **`gaps`** (after a writing wave, `RERUN` or `resolve`; only with items or `blocked` files) — `G-` and `V-` items. One RESOLUTION per item; `fresh` for every `blocked` file.
+- **`anchor`** (full W2 / lite W1, always) — `anchor.pillars` (name · meaning · forbids) and `anchor.features` (name · priority · pillar) as a table, then *Approve* / *Request changes* (notes via Other), plus any `items`; lite with `candidates`: the name too (3 + Other). Changes → notes under `## Gate additions (W2 anchor review)` (lite `(W1 anchor review)`) and `{id: 'ANCHOR', file: checkpoint.file, owner: 'concept-architect', class: 'structural', action: 'fresh'}`; the anchor file's items get `fresh` too (never `Edit` a file about to be rewritten) — rewritten, re-verified, asked again. Approve → `{id: 'ANCHOR', action: 'approved'}`, recorded as `ANCHOR · approved` in Gate additions and a gap-log `ANCHOR` row (resume reads it). Lite name → as `name`, plus `Edit` `[GAME NAME — pending §1.2]` in 1_Concept.md §1.1 (exception 4; re-apply after an ANCHOR `fresh`).
+- **`gaps`** (after a writing wave, `RERUN`, `resolve`, or a fix-loop PATCH; only with items or `blocked` files) — `G-` and `V-` items. One RESOLUTION per item; `fresh` for every `blocked` file (its reason is in `WORK/reports/<file>.report.md`); blocked again after that → tell the user and ask, never re-dispatch blindly.
 - **`blockers`** (review W8 / W4, or a fix-loop RECHECK) — `R-` items, resolved like GAPs.
 - **`residual`** (W9 / FIX after the round cap) — open Majors (id · file · what), then *One more round* / *Accept as known issues*. More → `{id: 'RESIDUAL', action: 'another_round'}`, call from `checkpoint.stage` with `extra_round: true`. Accept → `action: 'accept'`, call from `next`; the Majors stay open for § Done.
 
@@ -110,8 +110,8 @@ Every new or fresh file is verified: one finder, three perspective-diverse voter
 | W5 | `gdd-ai-designer` → 8 ‖ `gdd-art-director` → 10 | `gaps` |
 | W6 | `gdd-tech-designer` → 9 then 11 (one dispatch) | `gaps` |
 | W7 | `gdd-producer` → 12 | `gaps` |
-| W8 | `gdd-reviewer` ‖ 4 lens finders → merge → 3 voters each → `review-report.md` | `blockers` |
-| W9 | fix loop: PATCH per owner, clerk Minors, RECHECK ‖ regression → voters; ≤ 2 rounds | `blockers` / `residual` |
+| W8 | `gdd-reviewer` ‖ 4 lens finders → merge → 3 voters per Blocker/Major, 1 per Minor → `review-report.md` | `blockers` |
+| W9 | fix loop: PATCH per owner, clerk Minors, RECHECK ‖ regression → voters (answers applied at W9 start are rechecked too); ≤ 2 rounds | `blockers` / `gaps` / `residual` |
 | W10 | `gdd-scribe` 1+2 ‖ 13, then 0_Index; completeness critic | — |
 
 | Lite | Dispatch(es) → file | Checkpoint |
@@ -119,7 +119,7 @@ Every new or fresh file is verified: one finder, three perspective-diverse voter
 | W1 | `gdd-concept-architect` → 1 | `anchor` (+ name) |
 | W2 | `gdd-mechanics-designer` → 2 | `gaps` |
 | W3 | `gdd-ux-designer` → 3 ‖ `gdd-producer` → 4 ‖ `gdd-tech-designer` → 5 | `gaps` |
-| W4 / FIX | review and fix loop as W8 / W9 (structural Major → fresh) | `blockers` / `residual` |
+| W4 / FIX | review and fix loop as W8 / W9 (structural Major → fresh, with the Major's text) | `blockers` / `gaps` / `residual` |
 | INDEX | 0_Index assembly; completeness critic | — |
 
 Re-run: `RERUN` (fresh owner dispatch, verify) → `RERUN-POST` (version row, index rebuilt, regression recheck).

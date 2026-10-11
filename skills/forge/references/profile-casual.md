@@ -85,10 +85,10 @@ Unchanged from the full flow — this profile does not relax any of them:
   never sliced).
 - Chapter bodies are written in `D-12`; headings keep the English numbered prefix in every language.
 - No external facts without a data file backing them.
-- You — and the workflow's clerk and assembly steps — never write chapter prose; four exceptions apply
-  across the kit (SKILL.md § Non-negotiables). The two used only here: the lite `0_Index.md`, assembled
-  by the workflow's INDEX step from `contracts-lite/lite-0.md` (never a designer dispatch), and the
-  `1_Concept.md` §1.1 game-name line, which you `Edit` at the anchor checkpoint (§ W1).
+- You — and the workflow's clerk and assembly steps — never write chapter prose; four exceptions
+  (SKILL.md § Non-negotiables), two of them lite-only: `0_Index.md`, assembled by the workflow's INDEX
+  step from `contracts-lite/lite-0.md` (never a designer dispatch), and the `1_Concept.md` §1.1 name
+  line you `Edit` at the anchor checkpoint (§ W1).
 
 ## Paths
 
@@ -163,8 +163,9 @@ checkpoint, the end, or an error. State lives on disk, never in the workflow.
 2. **args** (SKILL.md § Workflow contract): `mode: 'run'`, `profile` = the W0 sub-profile (`casual` |
    `hyper-casual`; `--profile lite` → `casual`), `from: 'W1'`, `paths` without `inputs`; `game_name` =
    D-01 if a real title (slug final, no name question), else omitted until the anchor pick;
-   `flags.need_name` = `D-01 ∈ {GENERATE, UNDECIDED}`, `flags.f2p_or_hybrid` from `D-06`; `data` needs only the `monetization` (`D-06`) and `accessibility` (`D-39`) slices, per
-   each folder's `_index.md`. `model_override` only on explicit user request.
+   `flags.need_name` = `D-01 ∈ {GENERATE, UNDECIDED}`, `flags.f2p_or_hybrid` from `D-06`; `data` needs
+   only the `monetization` (`D-06`) and `accessibility` (`D-39`) slices, per each folder's `_index.md`.
+   `model_override` only on explicit user request.
 3. **Loop:** `checkpoint` → ask (§ W1, § GAP handling, § W4), write the answers to disk, call again
    with `from` = `checkpoint.next` and the answers as `resolutions`; `done` → § Done; `error` → tell the
    user its `message`, fix what it names (or ask), call again (`stage: 'resolve'` or missing args → the
@@ -172,9 +173,9 @@ checkpoint, the end, or an error. State lives on disk, never in the workflow.
 
 ## Stage table
 
-**No input slicing in this profile** — every dispatch reads its upstream lite files whole (per its
-contract's *Reads*) plus `brief.md` (files this small gain nothing from slicing; a sliced agent once
-denied a section existed). Models: MODEL ROUTING (`TIERS` / `ROLE_TIER`) in `workflows/forge-run.js`;
+**No input slicing** — every dispatch reads its upstream lite files whole (per its contract's *Reads*)
+plus `brief.md` (files this small gain nothing from slicing; a sliced agent once denied a section
+existed). Models: MODEL ROUTING (`TIERS` / `ROLE_TIER`) in `workflows/forge-run.js`;
 no agent pins one.
 
 | Stage | Work | Stops at |
@@ -187,9 +188,9 @@ no agent pins one.
 | INDEX | `0_Index.md` assembly → completeness critic | `done` |
 
 Stages are serial (each contract's *Reads* must be on disk); W3's writers read only files 1–2, so they
-run in parallel. Every new or fresh file gets **per-file verify**:
-finder → three voters per Major → one auto-PATCH for confirmed Majors needing no user decision; the rest
-become `V-` items. Bookkeeping (REPORTs, word counts, gap-log rows) is the workflow's job.
+run in parallel. Every new or fresh file gets **per-file verify**: finder → three voters per Major →
+one auto-PATCH for confirmed Majors needing no user decision; the rest become `V-` items. Bookkeeping
+(REPORTs, word counts, gap-log rows) is the workflow's.
 
 ## W1 — Concept, then the anchor checkpoint (main agent)
 
@@ -209,15 +210,21 @@ W1 always returns checkpoint `anchor` (`file`, pillars, features, items; with `n
    step 2 now, minus the §1.1 `Edit`); call from `W2`. File 1 is rewritten, re-verified and this
    checkpoint returns; do the §1.1 `Edit` then if the placeholder is there.
 4. **Approve** → `{id: 'ANCHOR', action: 'approved'}` (or none) plus item resolutions; call from `W2`.
+   Record it on disk: `brief.md` `## Gate additions (W1 anchor review)`: `ANCHOR · approved · <date>`,
+   and a `gap-log.md` row `ANCHOR | W1 | gdd-concept-architect | anchor approval | structural |
+   §1.4–§1.5 | Approve the anchor? | approved | <date> | —` (§ Resume reads it; Request changes logs
+   the notes as that row's Answer instead).
 
 ## GAP handling — your half (`gaps` / `blockers`)
 
 You ask and choose resolutions; the workflow applies them when the next segment starts. Classes:
-`dispatch-rules.md` §1. Ids: `G-<file>-<n>` (writer GAP; `<file>` = 1–5, `<n>` per file), `V-…`
-(verify decision), `R-<n>` (review).
+`dispatch-rules.md` §1. Ids: `G-<file>-<n>` (writer GAP; `<file>` = 1–5, `<n>` per file; a rewritten
+file numbers new GAPs after the highest logged), `V-<file>-…` (verify decision; `<file>` raised it),
+`R-<n>` (review), `R<round>-<n>` (fix-loop RECHECK).
 
-1. De-duplicate against `gap-log.md`: an id or field already answered reuses its answer. A field several
-   W3 files raise is asked once and resolved in each.
+1. De-duplicate against `gap-log.md` by id **and** field: same id and field already answered → reuse
+   the answer; same id, different field → a new question, logged and resolved as `<id>~2` (next free
+   suffix). A field several W3 files raise is asked once and resolved in each.
 2. Ask via `AskUserQuestion` (≤ 4 per call): the item's options plus "Leave UNDECIDED". If an answer
    contradicts a frozen brief value or a pillar, ask which yields before writing anything.
 3. Write the answer to `brief.md` under `## Gate additions (lite)` with the id; log Q/A, class and date
@@ -227,14 +234,17 @@ You ask and choose resolutions; the workflow applies them when the next segment 
      item from that file's Open Decisions → `edited`; more than ~3 dependent lines → `patch`.
    - **`structural`** → `fresh`: the owner integrates the change through the whole file. Upgrade
      `value` → `structural` when the answer adds what the options did not (a new feature, mode, screen,
-     flow). A `blocked` file → always `fresh`.
+     flow). A `blocked` file → always `fresh` after its items (reason: its saved REPORT); blocked again
+     after that → tell the user and ask, never re-dispatch blindly.
+   - A `V-` item about an upstream fault: *fix the upstream file* → `patch` on the item's `file` with
+     `cascade: true`; *align this file* → `patch` on the raising file.
    - "Leave UNDECIDED" → `undecided`; the placeholder stays in that file's own Open Decisions box
      (no central register).
 5. **Cascade:** an upstream-owned fact is fixed in the owning file first — its resolution names the
    owner, `cascade: true`, the changed `sections`; the workflow then PATCHes only on-disk files citing
    that `§x.y` or term (file 1 feeds 2–5, file 2 feeds 3–5). The raising file still gets its own
    resolution; the cascade PATCH only aligns citations.
-6. Call from `next`; new items (from re-verified fresh files) bring the same checkpoint back.
+6. Call from `next`; items from re-verified fresh files bring the checkpoint back.
 
 **PROPOSALS are never asked mid-run** (`dispatch-rules.md` §1): leave each `(proposal)` as written,
 count them in Done, treat a later answer like a GAP. **PATCH mode** edits only the named items and what
@@ -250,11 +260,14 @@ only, plus `## Verification`. Blockers (here or from a RECHECK) → checkpoint `
 
 **FIX** — until clean, ≤ 2 rounds per call. Per round: one PATCH per owner file, in parallel (a
 `structural` Major → that file fresh) → RECHECK (`gdd-reviewer` on patched files, rules 1–12,
-fact-ledger rows ‖ regression lens) → verified survivors feed the next round. Minors ≤ 2 lines, no
-judgement → clerk fix (exception 2); the rest stay listed. Majors left after the cap → checkpoint `residual`: show them, ask `Another round` /
-`Accept as known issues` → call from `FIX` with `extra_round: true` and `{id: 'RESIDUAL', action:
-'another_round'}`, or from `INDEX` with `action: 'accept'`; log the choice per R-id. The workflow
-records `## Fix loop` in `review-report.md` and `run-meta.md` (iterations 0–N).
+fact-ledger rows ‖ regression lens) → verified survivors feed the next round. Answers applied at the
+start of a FIX call (Blockers) are rechecked the same way even with no Major open; a Major with no
+lite file to patch, or a GAP a fix PATCH raised, comes back as a checkpoint. Minors ≤ 2 lines, no
+judgement → clerk fix (exception 2); the rest stay listed. Majors left after the cap → checkpoint
+`residual`: show them, ask `Another round` / `Accept as known issues` → call from `FIX` with
+`extra_round: true` and `{id: 'RESIDUAL', action: 'another_round'}`, or from `INDEX` with `action:
+'accept'`; log the choice per R-id. The workflow records `## Fix loop` in `review-report.md` and
+`run-meta.md` (iterations 0–N).
 
 ## INDEX — 0_Index.md, assembled by the workflow
 
@@ -267,16 +280,16 @@ in `summary.issues`.
 
 - Absolute path of `OUT`, the six-file list with word counts (`summary.files`).
 - Blockers/Majors/Minors counts from the verified review, and the fix-loop outcome (patched, accepted).
-- Open Decisions and `(proposal)`s summed across the five files, Minors left, and any critic `issues`.
-- One line offering to: (a) re-run a single file with new inputs (`--file N`), (b) bump the version, (c)
-  escalate to the full profile if scope grew, (d) run `/gdd-forge:review` later.
+- Open Decisions and `(proposal)`s across the five files, Minors left, and any critic `issues`.
+- One line offering: (a) `--file N` with new inputs, (b) a version bump, (c) escalating to the full
+  profile if scope grew, (d) `/gdd-forge:review` later.
 
 ## Single-file re-run — `--profile casual --file N`
 
 Counterpart of the full flow's `--chapter N`; `N` = lite file 1–5.
 
-1. Load `WORK/brief.md`; `run-meta.md` must show `profile: casual|hyper-casual` — else it is a
-   full-profile directory: point the user at `pipeline.md`'s `--chapter`.
+1. Load `WORK/brief.md`; `run-meta.md` must show `profile: casual|hyper-casual` — else point the user
+   at `pipeline.md`'s `--chapter`.
 2. First ask the `UNDECIDED` fields file `N`'s contract lists under *Reads*; record as § GAP handling
    step 3.
 3. Call with `mode: 'file'`, `target: N`, `from: 'RERUN'`, `date` (ISO), `flags.need_name: false`,
@@ -299,14 +312,18 @@ Counterpart of the full flow's `--chapter N`; `N` = lite file 1–5.
 4. A file is done only if it exists **and** `WORK/reports/<file>.report.md` shows `STATUS: complete` or
    `complete-with-gaps`. `from` =
    - `W1` — file 1 not done;
-   - file 1 done, no `2_Core Gameplay.md` → the anchor may be unapproved: offer § W1's review (from
-     the file) or continue; ask the name if `need_name` and the slug is provisional; then `W2`;
+   - no `ANCHOR` row answered `approved` in `gap-log.md` → `ANCHOR` (re-shows the anchor checkpoint
+     without rewriting file 1; pass `need_name: true` while the slug is still provisional so it carries
+     the §1.2 candidates);
    - else the first stage with a file not done (`W2`/`W3`; a stage re-runs all its files);
-   - no `## Verification` in `review-report.md` → `W4`; no `## Fix loop` → `FIX`; no `0_Index.md` →
-     `INDEX` (open Majors in `## Fix loop` → residual question first).
+   - no `W4` row in run-meta § Waves → `W4`; unanswered review Blockers → ask, then `FIX`; run-meta
+     § Fix loop `iterations: 0` while the report lists Majors → `FIX`; no `0_Index.md` → `INDEX` (open
+     Majors in review-report § Fix loop not accepted in gap-log → residual question first). Progress
+     comes from run-meta / gap-log, never from optional report sections — `/gdd-forge:review` may have
+     rewritten the report.
 5. First ask what the interrupted checkpoint left open (gap-log rows without an Answer, "asked the
-   user" findings in `WORK/checks/*.check.md` that gap-log does not answer, unanswered review
-   Blockers); pass the answers as `resolutions`.
+   user" lines in `WORK/checks/*.check.md` — they carry the `V-` id — that gap-log does not answer,
+   unanswered review Blockers); pass the answers as `resolutions`.
 
 ## Failure modes
 
@@ -320,7 +337,7 @@ Counterpart of the full flow's `--chapter N`; `N` = lite file 1–5.
 
 ## Token cost
 
-A clean run makes 6 design dispatches (five writers, `gdd-reviewer`) plus the verification, review,
+A clean run makes 6 design dispatches (five writers, `gdd-reviewer`) plus verification, review,
 assembly and clerk agents; GAP re-dispatches, cascades and fix rounds are extra. No token estimate is
 given.
 

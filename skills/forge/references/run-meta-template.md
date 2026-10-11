@@ -40,4 +40,4 @@ still open / new blockers); the per-item table is review-report.md § Fix loop. 
 <!-- written by the main agent, one bullet each: wrong-path moves, contract/template discrepancies (slice
 still MISSING after a PATCH) and other failure-mode notes. Agents' contract-vs-dispatch notes are the
 `NOTE:` lines inside their saved REPORTs (WORK/reports/<file>.report.md, dispatch-rules.md §4); the
-workflow does not copy them here. -->
+workflow's bookkeeping step copies each one here as a bullet prefixed with the file name. -->

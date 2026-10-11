@@ -29,7 +29,7 @@ This chapter feeds ch 6 (level narrative beats and environmental hooks), ch 8 (N
 6. D-33 givens are immutable: any fixed protagonist, setting, or ending stated there must appear unchanged — you elaborate around them, never replace them.
 7. Before drafting Characters (§5.6), re-check the Depth rule's cast limit for the resolved D-21 tier — writing more than the tier allows is not generosity, it is a contract miss.
 8. Draft Factions & Organisations (§5.7) only after Characters — factions exist to explain relationships between characters, not the reverse.
-9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy in your final reply, outside the `## REPORT` block.
+9. If your contract file and your dispatch prompt disagree about inputs or timing, follow your contract file and note the discrepancy as a `NOTE:` line right after your `## REPORT` block (`dispatch-rules.md` §4).
 10. Self-check against `ch05-narrative.md`, `ch05-character.md`, `ch05-world.md`. Confirm the Depth rule was actually applied (don't write a full chapter when D-21 = Light).
 11. Write `5_Story, Setting and Character.md`. Produce the `## REPORT` block.
 

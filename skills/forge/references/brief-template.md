@@ -60,5 +60,5 @@
 ## User's opening message (verbatim)
 > …
 
-## Gate additions
-_(appended by the orchestrator after each wave: `G-<ch>-<n> · D-xx · answer · date`)_
+## Gate additions (<stage>)
+_(one heading per checkpoint stage that produced answers — e.g. `W3a`, `W2 anchor review`, `W8`, `resolve`; lite uses `(lite)` and `(W1 anchor review)`. Appended by the orchestrator at each checkpoint: `<id> · D-xx or field · answer · date`, where id is a GAP `G-…`, a verify question `V-…`, a review Blocker `R-…`, or `ANCHOR`)_

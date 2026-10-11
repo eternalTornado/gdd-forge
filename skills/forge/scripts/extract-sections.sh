@@ -4,7 +4,8 @@
 # out of a chapter Markdown file, so a subagent receives only the upstream
 # sections its contract lets it consume instead of a whole chapter.
 #
-# The orchestrator runs this once per dispatch, before handing a subagent
+# The forge-run workflow's clerk steps run this before each wave (and for the
+# W10 extracts), before handing a subagent
 # its inputs.
 #
 # USAGE
@@ -60,7 +61,7 @@
 #     source produces a placeholder comment in the destination, in the
 #     position it would have occupied:
 #       <!-- MISSING: §4.5 not found in <source basename> -->
-#     and a matching notice on stdout so the orchestrator notices it:
+#     and a matching notice on stdout so the workflow notices it:
 #       MISSING: §4.5
 #   - A requested "intro" or "@<title>" that has no content/match in the
 #     source is normal, not an error: it produces a placeholder comment

@@ -126,7 +126,10 @@ const INT = { type: 'integer' }
 const SEV = { type: 'string', enum: ['blocker', 'major', 'minor'] }
 const obj = (properties, required) => ({ type: 'object', properties, required: required || Object.keys(properties) })
 
-const GAP = obj({ id: STR, class: { type: 'string', enum: ['structural', 'value'] }, field: STR, section: STR, why: STR, options: STRS })
+const GAP = obj({
+  id: STR, class: { type: 'string', enum: ['structural', 'value'] }, field: STR, section: STR, why: STR, options: STRS,
+  kept: { type: 'boolean', description: 'true when this GAP was already open in the earlier version of the file (same id)' },
+}, ['id', 'class', 'field', 'section', 'why', 'options'])
 const REPORT = obj({
   status: { type: 'string', enum: ['complete', 'complete-with-gaps', 'blocked'] },
   files: STRS,
@@ -161,7 +164,7 @@ const ANCHOR = obj({
 }, ['pillars', 'features'])
 const CITERS = obj({ citers: { type: 'array', items: obj({ file: STR, cites: STR, changed: STR }) } })
 const MINORFIX = obj({ applied: STRS, skipped: STRS })
-const OPEN = obj({ majors: { type: 'array', items: FINDING }, minors: { type: 'array', items: FINDING } })
+const OPEN = obj({ majors: { type: 'array', items: FINDING }, minors: { type: 'array', items: FINDING }, iterations: INT })
 const CRITIC = obj({ files: WORDS, open_decisions: INT, proposals: INT, minors_left: INT, findings: { type: 'array', items: FINDING } })
 
 // ---------------------------------------------------------------------------------------------
@@ -287,7 +290,7 @@ function patchPrompt(n, body) {
     RULES_LINE,
     `CONTRACT: ${contractOf(n)}.`,
     `INPUTS: ${j(WORK, 'brief.md')}; your own file. Open nothing else unless an item below names it.`,
-    `PATCH MODE: ${fileOf(n)} exists. ${body} Report as usual.`,
+    `PATCH MODE: ${fileOf(n)} exists. ${body} Report as usual — but GAPS lists only GAPs this PATCH newly raised (an older ⟂ GAP still in the file is not re-listed).`,
     RETURN_LINE,
   ].join('\n')
 }
@@ -295,10 +298,14 @@ function patchPrompt(n, body) {
 const itemLine = f => `- ${f.id} [${f.severity}] ${f.sections}: ${f.what} — evidence: ${f.evidence} — fix: ${f.fix}`
 const reviewItemsBody = items => `Fix only these review items, and everything in your file that depends on them:\n${items.map(itemLine).join('\n')}\n`
 
-async function writeUnit(chs, { update, phaseName = 'Write' } = {}) {
+async function writeUnit(chs, { update, items, phaseName = 'Write' } = {}) {
   const n = chs[0], role = T[n].role, tier = tierFor(role, n)
   const extra = update
-    ? `UPDATE: ${chs.map(fileOf).join(' and ')} already exist${chs.length > 1 ? '' : 's'} from an earlier dispatch — rewrite whole with Write.${update.length ? ` brief.md now carries new Gate additions (${update.join(', ')}); integrate them through the whole file.` : ''}`
+    ? [
+      `UPDATE: ${chs.map(fileOf).join(' and ')} already exist${chs.length > 1 ? '' : 's'} from an earlier dispatch — rewrite whole with Write.${update.length ? ` brief.md now carries new Gate additions (${update.join(', ')}); integrate them through the whole file.` : ''}`,
+      `GAP ids: a GAP still open from the earlier version keeps its id (mark it kept: true); number a new GAP after the highest G-${n}-<n> already in ${j(WORK, 'gap-log.md')} (read it for that only).`,
+      items && items.length ? `Also fix these review items through the whole file:\n${items.map(itemLine).join('\n')}` : '',
+    ].filter(Boolean).join('\n')
     : ''
   const rep = await run(writePrompt(chs, extra), { label: `write:${T[n].file}`, phase: phaseName, schema: REPORT, tier, role })
   return { chs, role, tier, rep }
@@ -328,10 +335,11 @@ const cmdBlock = cmds => cmds.map(c => `    ${c}`).join('\n')
 // MISSING is an error the main agent must look at.
 async function prepareSlices(nums, phaseName = 'Write') {
   if (!FULL) return
-  const cmds = [anchorCmd()]
+  const cmds = nums.some(n => n >= 4 && n <= 12) ? [anchorCmd()] : []   // ch 3 itself makes the anchor
   for (const n of nums) for (const [src, ...specs] of (SLICES[n] || { parts: [] }).parts) {
     cmds.push(`bash "${j(KIT, 'scripts/extract-sections.sh')}" "${fileOf(src)}" "${sliceFile(n, src)}" ${specs.join(' ')}`)
   }
+  if (!cmds.length) return
   for (let attempt = 1; attempt <= 2; attempt++) {
     const r = await clerk([
       'Run these commands in order and return every stdout line containing MISSING, prefixed with the source file name (e.g. "4_Gameplay and Mechanics.md: MISSING: §4.5"). Return words: [].',
@@ -367,7 +375,7 @@ async function bookkeep(stage, entries, { verifies = [], commands = [], resolved
     checks: verifies.filter(Boolean).map(v => ({
       path: j(WORK, `checks/${T[v.n].file}.check.md`),
       raised: v.raised, refuted: v.refuted,
-      confirmed: v.confirmed.map(c => ({ id: c.id, severity: c.severity, sections: c.sections, what: c.what, disposition: v.fixed.includes(c.id) ? 'patched' : 'asked the user' })),
+      confirmed: v.confirmed.map(c => ({ id: v.asked[c.id] || c.id, severity: c.severity, sections: c.sections, what: c.what, disposition: v.fixed.includes(c.id) ? 'patched' : v.asked[c.id] ? 'asked the user' : 'left for the review' })),
       minors_patched: v.minorsSent,
     })),
     resolved,
@@ -380,7 +388,8 @@ async function bookkeep(stage, entries, { verifies = [], commands = [], resolved
     `3. Append one row per dispatch to the \`## Waves\` table of ${j(WORK, 'run-meta.md')}: | ${stage} | <file names> | <agent> | <model> | <status> | <words> | <self_check> | <notes> | (notes: empty unless a step here failed).`,
     `4. Append one row per GAP to the table in ${j(WORK, 'gap-log.md')}: | <id> | ${stage} | <raised_by> | <field> | <class> | <section> | <why> |  |  |  | — skip an id already in the table.`,
     '5. For each `resolved` entry whose id is in the gap-log.md table, fill its `Patched files` cell with its files (append if already filled); skip ids not in the table.',
-    '6. For each `checks` entry, write its path: a short Markdown note listing raised / refuted counts and one line per confirmed finding with its disposition, then the Minors patched. Create the folder if needed.',
+    '6. For each `checks` entry, write its path: a short Markdown note listing raised / refuted counts and one line per confirmed finding (id, severity, sections, what, disposition), then the Minors patched. Create the folder if needed.',
+    `6b. Copy every line starting \`NOTE:\` in a dispatch's \`report\` to the \`## Discrepancies\` section of ${j(WORK, 'run-meta.md')} as one bullet each, prefixed with the file name (skip a bullet already there).`,
     commands.length ? `7. Run these commands in order; return every stdout line containing MISSING, prefixed with the source file name:\n${cmdBlock(commands)}` : '7. (no commands) Return missing: [].',
   ].join('\n'), { label: `book:${stage}`, phaseName })
   return r
@@ -459,16 +468,23 @@ async function verifyFile(n, tag, phaseName = 'Verify') {
   const minorsSent = fix.length ? [...confirmed.filter(x => x.severity === 'minor'), ...minors] : []
   let patch = null
   if (fix.length) patch = await patchFile(n, reviewItemsBody([...fix, ...minorsSent]), phaseName)
-  const items = ask.map((x, i) => ({
-    id: `V-${n}-${tag}${i + 1}`, file: absFile(x.file, n), owner: T[numOf(absFile(x.file, n))].role, class: x.class || 'structural',
-    field: x.what, section: x.sections, why: x.evidence, options: x.options || [],
-  }))
+  const asked = {}
+  const items = ask.map((x, i) => {
+    const id = `V-${n}-${tag}${i + 1}`
+    asked[x.id] = id
+    const file = absFile(x.file, n), up = numOf(file) !== n
+    // An upstream fault needs no design decision, only the user's call on which file yields.
+    const options = x.options && x.options.length ? x.options
+      : up ? [`Fix ${T[numOf(file)].file} as proposed: ${x.fix}`, `Keep ${T[numOf(file)].file}; align ${T[n].file} instead`] : []
+    return { id, file, owner: T[numOf(file)].role || 'orchestrator', class: x.class || (up ? 'value' : 'structural'), field: x.what, section: x.sections, why: x.evidence, options }
+  })
+  if (patch) items.push(...gapItems(patch))
   log(`verify ${T[n].file}: ${raw.length} raised, ${confirmed.length} confirmed, ${fix.length} auto-patched, ${items.length} for the user`)
-  return { n, raised: raw.length, refuted: majors.length - confirmed.length, confirmed, fixed: fix.map(x => x.id), minorsSent: minorsSent.map(m => m.id), items, patch }
+  return { n, raised: raw.length, refuted: majors.length - confirmed.length, confirmed, fixed: fix.map(x => x.id), asked, minorsSent: minorsSent.map(m => m.id), items, patch }
 }
 
 // A GAP belongs to the chapter in its id (G-<ch>-<n>) — matters for the two-file ch 9 + ch 11 dispatch.
-const gapItems = e => (e.rep.gaps || []).map(g => {
+const gapItems = e => (e.rep.gaps || []).filter(g => !g.kept).map(g => {
   const ch = Number((/^G-(\d+)-/.exec(g.id || '') || [])[1])
   return { ...g, file: fileOf(e.chs.includes(ch) ? ch : e.chs[0]), owner: e.role }
 })
@@ -479,6 +495,7 @@ const absFile = (name, fallback) => (numOf(name) !== null && T[numOf(name)] ? fi
 // Stage: apply the answers from the previous checkpoint
 
 const NO_DISPATCH = ['edited', 'undecided', 'approved', 'another_round', 'accept']
+const RESOLVED = []   // files changed while applying answers in this segment — the fix loop rechecks them
 
 async function applyResolutions() {
   const rs = A.resolutions || []
@@ -523,8 +540,10 @@ async function applyResolutions() {
       patchFile(n, `Upstream changed: ${cs.map(c => c.changed).join('; ')}. Align only what cites it (${cs.map(c => c.cites).join(', ')}).`, 'Resolve')))
   }
 
-  const verifies = await parallel(fresh.map(n => () => verifyFile(n, `U${A.from}.`, 'Resolve')))
+  const blockedNow = done.filter(d => !d.patched && d.rep.status === 'blocked').map(d => d.chs[0])
+  const verifies = await parallel(fresh.filter(n => !blockedNow.includes(n)).map(n => () => verifyFile(n, `U${A.from}.`, 'Resolve')))
   const entries = [...done, ...cascaded.filter(Boolean)]
+  RESOLVED.push(...entries.map(e => e.chs[0]))
   await bookkeep('resolve', entries, {
     verifies,
     commands: FULL && (nums.includes(3) || cascaded.some(c => c && c.chs[0] === 3)) ? [anchorCmd()] : [],
@@ -532,8 +551,11 @@ async function applyResolutions() {
     phaseName: 'Resolve',
   })
 
-  const items = [...done.filter(d => !d.patched).flatMap(gapItems), ...verifies.filter(Boolean).flatMap(v => v.items)]
-  const anchorRedo = rs.some(r => r.id === 'ANCHOR' && r.action === 'fresh')
+  const items = [...entries.flatMap(gapItems), ...verifies.filter(Boolean).flatMap(v => v.items)]
+  if (blockedNow.length) return cp('gaps', A.from, items, { blocked: blockedNow.map(fileOf), note: 'blocked again after a fresh re-dispatch — read its saved REPORT in WORK/reports/ for the reason before answering' })
+  // Back to the anchor approval after the anchor file is re-written before it was approved.
+  const anchorN = FULL ? 3 : 1
+  const anchorRedo = rs.some(r => r.id === 'ANCHOR' && r.action === 'fresh') || (fresh.includes(anchorN) && A.from === nextOf(ANCHOR_STAGE))
   if (anchorRedo) return anchorCheckpoint(A.from, items)
   if (items.length) return cp('gaps', A.from, items, { note: 'raised while applying the previous answers' })
   return null
@@ -590,7 +612,7 @@ async function waveStage(stage) {
   const items = [...results.flatMap(gapItems), ...verifies.flatMap(v => v.items)]
   const blocked = results.filter(r => r.rep.status === 'blocked').map(r => r.chs.map(fileOf)).flat()
   const next = nextOf(stage)
-  if (stage === ANCHOR_STAGE) return anchorCheckpoint(next, items)
+  if (stage === ANCHOR_STAGE && !blocked.length) return anchorCheckpoint(next, items)
   if (items.length || blocked.length) {
     return cp('gaps', next, items, blocked.length ? { blocked, note: 'a blocked file always gets action "fresh"' } : undefined)
   }
@@ -623,9 +645,11 @@ function reviewerPrompt(recheck) {
     `LANGUAGE: body in ${A.lang}; headings keep the English numbered prefix.`,
     RULES_LINE,
     `CONTRACT: ${rulesFile()} plus ${CONTENT.map(contractOf).join(', ')}.`,
-    `INPUTS (read all of these, read nothing else): ${CONTENT.map(fileOf).join(', ')} (whole); ${j(WORK, 'brief.md')}; ${j(WORK, 'gap-log.md')}; ${j(WORK, 'reports')}/*; ${checklists}; ${j(WORK, 'checks')}/* (per-file verification already done — do not re-raise a finding marked patched unless it is still present).`,
     recheck
-      ? `RECHECK: only these files were just patched: ${recheck.files.map(n => T[n].file).join(', ')} — for these items:\n${recheck.items.map(itemLine).join('\n')}\nRe-run rules 1–12 against the patched files only and update their rows in ${j(WORK, 'fact-ledger.md')}. Do not rewrite review-report.md.`
+      ? `INPUTS (read all of these, read nothing else): ${recheck.files.map(fileOf).join(', ')} (whole); ${j(WORK, 'fact-ledger.md')}; ${j(WORK, 'brief.md')}; ${j(WORK, 'gap-log.md')}; open another chapter only to check a ledger row a patched file cites.`
+      : `INPUTS (read all of these, read nothing else): ${CONTENT.map(fileOf).join(', ')} (whole); ${j(WORK, 'brief.md')}; ${j(WORK, 'gap-log.md')}; ${j(WORK, 'reports')}/*; ${checklists}; ${j(WORK, 'checks')}/* (per-file verification already done — do not re-raise a finding marked patched unless it is still present).`,
+    recheck
+      ? `RECHECK: only these files were just patched: ${recheck.files.map(n => T[n].file).join(', ')}${recheck.items.length ? ` — for these items:\n${recheck.items.map(itemLine).join('\n')}` : ''}\nRe-run rules 1–12 against the patched files only and update their rows in ${j(WORK, 'fact-ledger.md')}. Do not rewrite review-report.md or re-open the checklist matrix.`
       : `OUTPUT: write exactly ${j(WORK, 'review-report.md')} and ${j(WORK, 'fact-ledger.md')}.`,
     `RETURN: end by calling StructuredOutput — \`report\` = your ## REPORT block; \`findings\` = every ${recheck ? 'finding still failing or newly introduced' : 'Blocker, Major and Minor'} as an object (id, severity, rule, file = the file that must change, sections, evidence, what, fix, needs_user, options for Blockers).`,
   ].join('\n')
@@ -703,14 +727,19 @@ async function fixStage() {
   let state = REVIEW_STATE
   if (!state) {
     state = await run([
-      `Read ${j(WORK, 'review-report.md')}. Return every Major and every Minor that is still open: listed under ## Majors / ## Minors and not marked patched, fixed, listed or accepted in a "## Fix loop" table (if that table exists, its open rows are the Majors still open). Copy each as a finding object (id, severity, file = the file that must change, sections, evidence, what, fix, needs_user=false). Change nothing.`,
+      `Read ${j(WORK, 'review-report.md')}. Return every Major and every Minor that is still open: listed under ## Majors / ## Minors and not marked patched, fixed, listed or accepted in a "## Fix loop" table (if that table exists, its open rows are the Majors still open). Copy each as a finding object (id, severity, file = the file that must change, sections, evidence, what, fix, needs_user=false). Also return iterations = the number on the "iterations:" line of ${j(WORK, 'run-meta.md')} § Fix loop (0 if absent). Change nothing.`,
     ].join('\n'), { label: 'fix:load-open', phase: 'Fix', schema: OPEN, tier: 'spec' })
   }
-  let open = state.majors || []
+  const base = state.iterations || 0   // fix-loop rounds already run in earlier segments → unique R ids
+  const routable = f => numOf(f.file) !== null && T[numOf(f.file)]
+  let open = (state.majors || []).filter(routable)
+  let blockers = (state.majors || []).filter(f => !routable(f)).map(f => ({ ...f, needs_user: true }))   // no GDD file to patch → the user
   const minors = state.minors || []
   const cap = A.extra_round ? 1 : 2
   const history = []
   const scope = reviewInputs()
+  let recheckOnly = [...new Set(RESOLVED)].filter(n => T[n] && CONTENT.includes(n))   // answers applied at segment start
+  let newGaps = []
 
   let minorRes = { applied: [], skipped: [] }
   if (minors.length) {
@@ -722,46 +751,49 @@ async function fixStage() {
   }
 
   let round = 0
-  let blockers = []
-  while (open.length && round < cap) {
+  while ((open.length || recheckOnly.length) && round < cap && !blockers.length) {
     round++
     const byOwner = groupBy(open, f => numOf(f.file))
-    const owners = [...byOwner.keys()].filter(n => n !== null && T[n]).sort((a, b) => a - b)
-    const orphans = open.filter(f => !owners.includes(numOf(f.file)))
-    if (orphans.length) log(`no owner file for ${orphans.map(f => f.id).join(', ')} — left open`)
+    const owners = [...byOwner.keys()].sort((a, b) => a - b)
     const structural = FULL ? [] : owners.filter(n => byOwner.get(n).some(f => f.class === 'structural'))
     const patched = await parallel(owners.map(n => () => (structural.includes(n)
-      ? writeUnit([n], { update: [], phaseName: 'Fix' }).then(w => ({ ...w, patched: true }))
+      ? writeUnit([n], { update: [], items: byOwner.get(n), phaseName: 'Fix' }).then(w => ({ ...w, patched: true }))
       : patchFile(n, reviewItemsBody(byOwner.get(n)), 'Fix'))))
     if (patched.some(p => !p)) throw new Error(`a fix-loop PATCH failed twice (round ${round})`)
-    const recheck = { files: owners, items: open }
+    newGaps = patched.flatMap(gapItems)
+    const files = [...new Set([...owners, ...recheckOnly])].sort((a, b) => a - b)
+    const recheck = { files, items: open }
     const outs = await parallel([
       () => run(reviewerPrompt(recheck), { label: `recheck:gdd-reviewer:r${round}`, phase: 'Fix', schema: REVIEW, tier: 'deep', role: 'reviewer' }),
-      () => run(lensPrompt({ key: 'regression', ask: 'Check that every listed fix landed, and that nothing a patch touched now contradicts a file that cites it or that it cites (counts, names, values, §-references, inventories).' },
-        `just patched: ${owners.map(n => T[n].file).join(', ')} — items:\n${open.map(itemLine).join('\n')}`), { label: `recheck:regression:r${round}`, phase: 'Fix', schema: FINDINGS }),
+      () => run(lensPrompt({ key: 'regression', ask: 'Check that every listed fix landed, and that nothing a patch or an applied answer touched now contradicts a file that cites it or that it cites (counts, names, values, §-references, inventories).' },
+        `just changed: ${files.map(n => T[n].file).join(', ')}${open.length ? ` — items:\n${open.map(itemLine).join('\n')}` : ' (user answers applied)'}`), { label: `recheck:regression:r${round}`, phase: 'Fix', schema: FINDINGS }),
     ])
     const raw = outs.flatMap(o => (o ? o.findings || [] : []))
-    const merged = await mergeFindings(raw, 'Fix')
+    const merged = (await mergeFindings(raw, 'Fix')).map((f, k) => ({ ...f, id: `R${base + round}-${k + 1}` }))
     const confirmed = (await parallel(merged.map(f => () => judge(f, scope, 'Fix')))).filter(Boolean).filter(x => x.real)
-    blockers = confirmed.filter(x => x.severity === 'blocker' || x.needs_user)
+    blockers = confirmed.filter(x => x.severity === 'blocker' || x.needs_user || !routable(x))
     const fixedIds = open.map(f => f.id)
     open = confirmed.filter(x => x.severity === 'major' && !blockers.includes(x))
-    history.push({ round, patched_files: owners.map(n => T[n].file), fixed: fixedIds, still_open: open.map(f => f.id), new_blockers: blockers.map(f => f.id) })
-    await bookkeep(STAGE, patched, { phaseName: 'Fix' })
-    log(`fix round ${round}: patched ${owners.length} file(s); ${open.length} major(s) still open, ${blockers.length} blocker(s)`)
-    if (blockers.length) break
+    recheckOnly = []
+    history.push({ round: base + round, patched_files: owners.map(n => T[n].file), rechecked: files.map(n => T[n].file), fixed: fixedIds, still_open: open.map(f => f.id), new_blockers: blockers.map(f => f.id) })
+    if (patched.length) await bookkeep(STAGE, patched, { phaseName: 'Fix' })
+    log(`fix round ${base + round}: patched ${owners.length}, rechecked ${files.length} file(s); ${open.length} major(s) open, ${blockers.length} blocker(s)`)
+    if (newGaps.length) break
   }
 
   await clerk([
-    `1. In ${j(WORK, 'review-report.md')}, add or refresh a final "## Fix loop" section: a table id | severity | file | status | round, covering every Major (status patched or open), every Minor (fixed or listed) and every new Blocker (open). Keep the rest of the report as is.`,
-    `2. In ${j(WORK, 'run-meta.md')} § Fix loop set: iterations (add ${round} to the current number), patched_chapters (add the files below), recheck (one line: per round, fixed / still open / new blockers).`,
+    `1. In ${j(WORK, 'review-report.md')}, add or refresh a final "## Fix loop" section: a table id | severity | file | status | round, covering every Major (status patched or open), every Minor (fixed or listed) and every Blocker below (open). Keep the rest of the report as is.`,
+    `2. In ${j(WORK, 'run-meta.md')} § Fix loop set: iterations (add ${round} to the current number), patched_chapters (add the files below), recheck (one line per round: fixed / still open / new blockers).`,
     `HISTORY (JSON): ${json(history)}`,
     `MINORS (JSON): ${json({ fixed: minorRes.applied, listed: minorRes.skipped })}`,
     `STILL OPEN (JSON): ${json(open.map(f => ({ id: f.id, file: f.file, what: f.what })))}`,
+    `BLOCKERS (JSON): ${json(blockers.map(f => ({ id: f.id, file: f.file, what: f.what })))}`,
     'Return words: [] and missing: [].',
   ].join('\n'), { label: 'fix:book', phaseName: 'Fix' })
 
-  if (blockers.length) return cp('blockers', STAGE, blockers.map(toItem), { note: 'raised by the fix-loop RECHECK; the loop continues after the answers' })
+  if (newGaps.length || blockers.length) {
+    return cp(blockers.length ? 'blockers' : 'gaps', STAGE, [...blockers.map(toItem), ...newGaps], { note: 'raised inside the fix loop; it continues after the answers' })
+  }
   if (open.length) return cp('residual', nextOf(STAGE), open.map(toItem), { note: `Majors still open after ${round} round(s): call again from ${STAGE} with extra_round=true for one more round, or from ${nextOf(STAGE)} to accept them as known issues.` })
   return null
 }
@@ -895,7 +927,9 @@ async function rerunStage() {
   const v = w.rep.status === 'blocked' ? null : await verifyFile(n, 'RR.')
   await bookkeep('RERUN', [w, v && v.patch].filter(Boolean), { verifies: v ? [v] : [], commands: FULL && n === 3 ? [anchorCmd()] : [] })
   const items = [...gapItems(w), ...(v ? v.items : [])]
-  if (items.length || w.rep.status === 'blocked') return cp('gaps', 'RERUN-POST', items)
+  if (items.length || w.rep.status === 'blocked') {
+    return cp('gaps', 'RERUN-POST', items, w.rep.status === 'blocked' ? { blocked: [fileOf(n)], note: 'a blocked file always gets action "fresh"' } : undefined)
+  }
   return null
 }
 
@@ -937,6 +971,7 @@ async function rerunPost() {
 
 async function runStage(s) {
   STAGE = s
+  if (s === 'ANCHOR') return anchorCheckpoint(nextOf(ANCHOR_STAGE), [])   // re-show for approval, no rewrite
   if (FULL && s === 'W1') return nameStage()
   if (UNITS[s]) return waveStage(s)
   if ((FULL && s === 'W8') || (!FULL && s === 'W4')) return reviewStage()
@@ -960,7 +995,8 @@ try {
     }
     return await rerunPost()
   }
-  if (!ORDER.includes(A.from)) return { status: 'error', stage: A.from, message: `unknown stage "${A.from}"; stages: ${ORDER.join(', ')}` }
+  if (A.from === 'ANCHOR') return await runStage('ANCHOR')
+  if (!ORDER.includes(A.from)) return { status: 'error', stage: A.from, message: `unknown stage "${A.from}"; stages: ANCHOR, ${ORDER.join(', ')}` }
   for (let s = A.from; s; s = nextOf(s)) {
     const out = await runStage(s)
     if (out) return out
