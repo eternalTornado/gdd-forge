@@ -156,7 +156,8 @@ After the freeze, the run is one workflow called one **segment** at a time — f
 checkpoint, the end, or an error. State lives on disk, never in the workflow.
 
 1. **Resolve once, record in `run-meta.md`:** `agent_ns` (`gdd-forge:` under a plugin install, `''` for
-   agents copied into `~/.claude/agents/`) and the call — `Workflow({name: "gdd-forge:forge-run",
+   agents copied into `~/.claude/agents/`; neither listed → `agents_dir` = the kit's `agents/` folder,
+   absolute) and the call — `Workflow({name: "gdd-forge:forge-run",
    args})`; for a local copy `Workflow({scriptPath, args})` with
    `${CLAUDE_SKILL_DIR}/../../workflows/forge-run.js` made absolute (`workflow:` line). This is the
    user's opt-in.

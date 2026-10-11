@@ -39,7 +39,7 @@ This skill's instructions are the user's opt-in to the `Workflow` tool — call 
 
 1. **W0 gate** — pipeline.md § W0 / profile-casual.md § W0. `need_name` = D-01 ∈ {GENERATE, UNDECIDED}; full profile with a real D-01: right after the freeze ask *Keep "<title>"?* (Keep / Generate alternatives) and set `need_name` from it.
 2. **Resolve once**, record in `run-meta.md`:
-   - `agent_ns` — `"gdd-forge:"` under a plugin install (agents listed as `gdd-forge:gdd-<role>`), `""` when copied to `~/.claude/agents/`. (`agent_namespace:`)
+   - `agent_ns` — `"gdd-forge:"` under a plugin install (agents listed as `gdd-forge:gdd-<role>`), `""` when copied to `~/.claude/agents/`. Neither listed (a kit copy that is not installed) → `agents_dir` = the absolute path of the kit's `agents/` folder (`${CLAUDE_SKILL_DIR}/../../agents`): each dispatch then reads its role file instead. (`agent_namespace:`)
    - invocation — plugin install: `Workflow({name: "gdd-forge:forge-run", args})`; otherwise, or if that name is not found: `Workflow({scriptPath, args})` with `${CLAUDE_SKILL_DIR}/../../workflows/forge-run.js` resolved to an absolute path. (`workflow:`)
    - `paths`, `flags`, `lang`, `version`, `game_name`, and `data` — only the slices the brief selects, per each `data/<dir>/_index.md` (a mobile-only D-04 → `platforms/mobile.md` + `platforms/selection-criteria.md`, not the console / PC / VR specs).
 3. **Loop** — first call: `from: 'W1'` unless the entry point says otherwise, `resolutions: []` (on `--resume`: the answers to what the interrupted checkpoint left open). On each result:
@@ -60,7 +60,7 @@ Pass `args` as JSON values, not strings.
 | `from` | stage id this segment starts at |
 | `target`, `date` | modes `chapter`/`file`: N, and the ISO date for the version row |
 | `paths` | `{kit, out, work, inputs}`, absolute; `inputs` = `WORK/inputs`, full only |
-| `agent_ns` | `"gdd-forge:"` or `""` |
+| `agent_ns` · `agents_dir` | `"gdd-forge:"` or `""` · only when the agents are not registered: absolute path of the kit's `agents/` |
 | `game_name`, `lang`, `version` | brief `game_name` — D-01 until named; omit when D-01 ∈ {GENERATE, UNDECIDED} · D-12 · D-15 |
 | `flags` | `{d21, d22, f2p_or_hybrid, need_name}` — `d21` = the D-21 option without its parenthetical; `d22` = `None` or the D-22 selection; `f2p_or_hybrid` = D-06 is F2P or Hybrid |
 | `data` | `{platforms, monetization, cultural, accessibility}` — brief-selected slice paths |
@@ -126,7 +126,7 @@ Re-run: `RERUN` (fresh owner dispatch, verify) → `RERUN-POST` (version row, in
 
 ## Rules that are easy to get wrong
 
-- **`agentType` needs the exact namespaced name** — the workflow builds `agent_ns + "gdd-<role>"`; a wrong `agent_ns` fails every dispatch.
+- **`agentType` needs the exact namespaced name** — the workflow builds `agent_ns + "gdd-<role>"`; a wrong `agent_ns` fails every dispatch. Agents not listed at all → `agents_dir`, never a guessed name.
 - **Named workflow vs scriptPath** — `gdd-forge:forge-run` exists only under a plugin install; a local copy uses an absolute `scriptPath`. Never pass the script inline.
 - **`AskUserQuestion`: ≤ 4 questions per call, ≤ 4 options each.** Chunk; put long lists in the question text; never pre-select.
 - **PROPOSALs are never asked** — at no checkpoint. Done reports their count.

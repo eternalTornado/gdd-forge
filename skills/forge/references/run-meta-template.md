@@ -12,7 +12,7 @@ lite index assembly). Never written by a chapter-writing agent. -->
 - gdd_version: <D-15>
 - slug: <provisional slug> → <final slug after W1>
 - out: <absolute OUT path>
-- agent_namespace: gdd-forge:gdd-<role> | gdd-<role>   (resolved once at W0)
+- agent_namespace: gdd-forge:gdd-<role> | gdd-<role>   (resolved once at W0) | agents_dir <abs path>   (role files read per dispatch when the agents are not registered)
 - workflow: named gdd-forge:forge-run | scriptPath <absolute path to workflows/forge-run.js>   (resolved once at W0)
 
 ## Waves

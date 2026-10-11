@@ -26,6 +26,7 @@ const KIT = P.kit, OUT = P.out, WORK = P.work, INPUTS = P.inputs
 const FULL = A.profile === 'full'
 const MODE = A.mode || 'run'
 const NS = A.agent_ns || ''
+const AGENTS_DIR = A.agents_dir || ''   // set when the gdd-* agents are not registered: dispatches read their role file
 const FLAGS = A.flags || {}
 const DATA = A.data || {}
 const GAME = A.game_name || '(working title pending — see §1.2)'
@@ -198,13 +199,17 @@ function groupBy(items, key) {
   return m
 }
 
-// Every agent call goes through here: model routing, agentType, one retry on a null result.
+// Every agent call goes through here: model routing, agentType (or the role file when the agents
+// are not registered), one retry on a null result.
 async function run(prompt, { label, phase: ph, schema, tier = 'deep', role } = {}) {
   const opts = { label, phase: ph, ...route(tier) }
   if (schema) opts.schema = schema
-  if (role) opts.agentType = NS + 'gdd-' + role
+  if (role && !AGENTS_DIR) opts.agentType = NS + 'gdd-' + role
+  const text = role && AGENTS_DIR
+    ? `ROLE FILE: read ${j(AGENTS_DIR, `gdd-${role}.md`)} first — everything after its frontmatter is your role definition; follow it as your system prompt.\n${prompt}`
+    : prompt
   for (let attempt = 1; attempt <= 2; attempt++) {
-    const r = await agent(prompt, opts)
+    const r = await agent(text, opts)
     if (r) return r
     log(`${label}: no result${attempt === 1 ? ' — retrying once' : ''}`)
   }

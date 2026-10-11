@@ -17,7 +17,7 @@ W0 Gate ─► W1 Name ─► W2 ch3 ✓ ─► ◆ anchor ─► W3a ch4 ✓ �
 | `OUT` | `brief:D-14` resolved to an absolute path, default `<cwd>/deliverables/<slug>/GDD/<D-15>/` |
 | `WORK` | `OUT/_work/` — `brief.md`, `gap-log.md`, `run-meta.md`, `review-report.md`, `fact-ledger.md`, `reports/` (REPORT blocks), `checks/` (verification notes) |
 | `INPUTS` | `WORK/inputs/` — workflow-built slices |
-| `agent_ns` | `gdd-forge:` when the available agent types list `gdd-forge:gdd-<role>` (plugin install); `''` when they list bare `gdd-<role>` (copied into `~/.claude/agents/`) |
+| `agent_ns` | `gdd-forge:` when the available agent types list `gdd-forge:gdd-<role>` (plugin install); `''` when they list bare `gdd-<role>` (copied into `~/.claude/agents/`). Neither listed → pass `agents_dir` = absolute path of the kit's `agents/` folder instead (each dispatch reads its role file) |
 | workflow | `Workflow({name: "gdd-forge:forge-run", args})` under a plugin install; for a local copy, or when the name is not found, `Workflow({scriptPath: "<absolute KIT>/../../workflows/forge-run.js", args})` |
 
 Resolve `agent_ns` and the workflow form once, before W0 step 8, and record both in `run-meta.md` (`agent_namespace:`, `workflow:`). `slug` = kebab-case of the chosen game name, ASCII only. Every path in `args` is absolute — subagents never guess paths. This document writes bare role names.
