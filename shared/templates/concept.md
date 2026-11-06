@@ -31,10 +31,10 @@
 <!-- D-44 plus anything the pillars rule out that a reader might expect. One line each. -->
 
 ## Systems
-<!-- Every system the game has. Tier: core (needed for the core loop) | later. Doc: systems/<slug>.md once written, else "—". -->
+<!-- Every system the game has. Type: mechanics | progression | economy | level | enemy-behavior | ui-flow | narrative | presentation. Tier: core (needed for the core loop) | later. Doc: systems/<slug>.md once written, else "—". -->
 
-| System | One line | Pillar | Tier | Doc |
-| --- | --- | --- | --- | --- |
+| System | Type | One line | Pillar | Tier | Doc |
+| --- | --- | --- | --- | --- | --- |
 
 ## Glossary
 <!-- 5–15 terms, one-sentence definitions. Every document reuses these verbatim. -->

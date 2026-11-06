@@ -13,7 +13,8 @@ Owner: `gdd-system`. Read `shared/writing-rules.md` first.
 
 ## System types and guidance
 
-The skill picks one type per system and passes its guidance file.
+The type comes from the system's row in `concept.md` § Systems. The skill passes the matching
+`shared/guidance/<type>.md`.
 
 | Type | Covers |
 | --- | --- |
@@ -28,7 +29,7 @@ The skill picks one type per system and passes its guidance file.
 
 ## Output
 
-Budget: **≤ 1,200 words** per system. A simple system should land well under.
+Budget: **≤ 1,200 words** per system, counted like `wc -w` on the file. A simple system should land well under.
 
 Required headings, in order: `Purpose`, `Rules`, `Player-Observable Behaviors`, `Open Questions`.
 Optional, in template order: `Tunables`, `States and Edge Cases`, `Content`, `UI Touchpoints`,
@@ -47,7 +48,9 @@ Rules:
    do>." Observable in play, no internals.
 6. **New decisions** go to `decisions.md` § Design as `proposal` rows; **new terms** go to the
    `concept.md` glossary (`writing-rules.md` §1, §2.4).
-7. After writing, set this system's Doc cell in `concept.md` § Systems to `systems/<slug>.md`.
+7. After writing, set this system's Doc cell in `concept.md` § Systems to `systems/<slug>.md`. If the
+   system has no row yet (the user asked for a new one), add the row with Tier `later` and add a
+   `decisions.md` § Design row recording that the system was added (Source `user`).
 
 ## Update mode
 

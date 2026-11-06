@@ -1,64 +1,47 @@
 ---
 name: review
-description: Review an existing GDD folder (gdd-forge output or any 13-chapter markdown GDD) against the kit's chapter checklists and consistency rules; produces review-report.md. Use when the user asks to check, audit, or QA a game design document.
+description: Check a gdd-forge GDD or one document of it. Runs gdd_check.py, then an independent reviewer, and lists documents affected by changed decisions. Read-only. Use when the user asks to check, review, audit or QA their GDD.
+argument-hint: "[<document path>] [--gdd <GDD dir>]"
 ---
 
-# Review — GDD QA pass
+# Review — check a GDD
 
-`$ARGUMENTS` is a path to a GDD folder. If missing, ask for it with `AskUserQuestion` (one question,
-free text) before doing anything else.
+You run this skill in the main conversation. It never edits documents.
 
-1. **Detect the profile first.** Read `<folder>/_work/run-meta.md` if it exists and look for a
-   `profile:` line. Otherwise infer from the file set: a folder holding `1_Concept.md` and
-   `2_Core Gameplay.md` is a **casual (lite)** GDD; one holding `3_Game Overview.md` and
-   `4_Gameplay and Mechanics.md` is a **full** 13-chapter GDD. If the folder matches neither shape,
-   say so and ask the user which to review rather than guessing.
+## Resolve once
 
-2. **Resolve and map files.** Resolve the folder to an absolute path, list its markdown files and map
-   each by its leading number, tolerating close name variants. Note any number missing entirely —
-   report it, do not block on it.
-   - **Full**: `0_...` → Index, `1_...` → Copyright, … `13_...` → Appendices, per the contract files
-     in [`references/contracts/`](../forge/references/contracts/).
-   - **Lite**: `0_Index`, `1_Concept`, `2_Core Gameplay`, `3_UX Art and Audio`,
-     `4_Business and LiveOps`, `5_Tech Note`, per
-     [`references/contracts-lite/`](../forge/references/contracts-lite/). A lite folder is complete
-     at 6 files — do not report chapters 6–13 as missing.
+- `SHARED` = absolute path of `${CLAUDE_SKILL_DIR}/../../shared`.
+- Agent `gdd-reviewer`: `gdd-forge:gdd-reviewer` if listed, else `gdd-reviewer`; if neither, a
+  general-purpose agent told to read `<abs path of ${CLAUDE_SKILL_DIR}/../../agents/gdd-reviewer.md>`
+  and act as it.
+- `GDD`: `--gdd <dir>`; else the folder of the given document (for `systems/x.md`, its parent's parent);
+  else the only `**/GDD/concept.md` under the current folder (several: ask which). A folder without
+  `concept.md` and `decisions.md` is not a gdd-forge GDD: say so and stop.
 
-3. **Locate supporting inputs.**
-   - Checklists — `${CLAUDE_SKILL_DIR}/../forge/checklists/` for a full GDD, or
-     `${CLAUDE_SKILL_DIR}/../forge/checklists/lite/` for a lite one. Pass only the directory that
-     matches the profile; the other one's ids will not resolve.
-   - `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules.md` for a full GDD, or
-     `${CLAUDE_SKILL_DIR}/../forge/references/consistency-rules-lite.md` for a lite one. The two files
-     both carry 12 rules; rules 1–8 are numbered differently between them, rules 9–12 share the same
-     numbers in both — pass only the one matching the profile, and cite its numbering in the report.
-   - The contract files for the mapped files, from `contracts/` or `contracts-lite/`.
-   - `<folder>/_work/reports/` (each agent's self-check REPORT, one per file) when it exists — pass it
-     along so `gdd-reviewer` can reuse self-scores instead of re-running every checklist from scratch.
-   - `<folder>/_work/brief.md` (or `<folder>/brief.md`) if present — pass it along; if absent, tell
-     `gdd-reviewer` no brief is available and it must skip brief-dependent checks (full: rules 6, 7;
-     lite: rules 3, 5, 6, 7 — unchanged) and skip, with a note, the brief-dependent part of rules 9–12
-     (rule 11's `D-44` part, rule 12's `D-09`/`D-10` part); every other part of rules 9–12 needs no brief.
+## Steps
 
-4. **Dispatch.** Call the `Agent` tool with `subagent_type` set to the reviewer agent as it appears in your available agent types — `gdd-forge:gdd-reviewer` under a plugin install, `gdd-reviewer` if the agents were copied to `~/.claude/agents/`. Pass absolute paths to:
-   every mapped chapter file, the matching checklists directory, the matching consistency-rules file (full or lite), the
-   relevant contract files, `_work/reports/` (if found), and brief.md (if found). Never paste chapter bodies into the prompt — paths only. Ask it
-   to write the same report shape `gdd-forge:forge` uses internally:
-   ```
-   # Review report — <game name if known, else folder name> <version if known>
-   ## Blockers   (decision missing → needs the user)          — id · chapter § · what · suggested options
-   ## Majors     (cross-chapter contradiction / contract miss) — id · chapters · what · owner agent
-   ## Minors     (wording, formatting, checklist nits)         — id · chapter · what
-   ## Checklist matrix   chapter × checklist → pass %
-   ## Consistency rules  1–12 → PASS/FAIL + evidence (numbered per the rules file passed)
-   ```
+1. **Script.** Run `python3 SHARED/scripts/gdd_check.py GDD --changed`, adding `--file <rel path>` when
+   one document was given. Keep the full output.
+2. **Reviewer.** Dispatch `gdd-reviewer` with: read first `SHARED/writing-rules.md`, the checklist(s) —
+   `SHARED/checklists/concept.md` when reviewing `concept.md`/`decisions.md` or the whole GDD,
+   `SHARED/checklists/system.md` when reviewing any system doc; `GDD/concept.md`, `GDD/decisions.md`;
+   the documents under review (the one given, or `concept.md` plus every `systems/*.md`); the script
+   output verbatim.
+3. **Report** to the user, in their language:
+   - Script errors first, then warnings (group by file; skip the `words:` line unless a doc is over).
+   - Reviewer findings by file, as returned (severity · § · what · fix).
+   - `changed:` lines: decisions changed since the last commit and the documents they affect.
+   - Open questions still listed in the reviewed documents.
 
-5. **Write output.** Create `<folder>/_work/` if it doesn't exist. Write the reviewer's report to
-   `<folder>/_work/review-report.md`; it writes its supporting fact ledger next to it, at
-   `<folder>/_work/fact-ledger.md`.
+## Next step
 
-6. **Summarise.** Report the counts of Blockers / Majors / Minors to the user, and the Consistency
-   rules pass/fail summary, naming the profile you reviewed and any rule (or rule part) you skipped for
-   missing inputs. Offer, in one line, to fix findings by re-running `/gdd-forge:forge --chapter N`
-   (full) or `/gdd-forge:forge --profile casual --file N` (lite) for each affected file — do not run it
-   yourself unless asked.
+End with one line, choosing the first case that applies (README's next-step convention):
+
+| Result | Next |
+| --- | --- |
+| Script errors | `/gdd-forge:system --update <name> "<the errors>"` (or `/gdd-forge:concept --update` for concept/decisions), then `/gdd-forge:review <file>` |
+| `high` findings | `/gdd-forge:system --update <name> "<the findings>"`, then `/gdd-forge:review <file>` |
+| Changed decisions affect system docs | `/gdd-forge:system --update <name> "<D-xx changed to …>"` for each listed doc |
+| Clean, open questions remain | The user answers them, then `/gdd-forge:system --update <name> "<answers>"` |
+| Clean, a system in concept § Systems has Doc `—` | `/gdd-forge:system <next system, core tier first>` |
+| Clean, every system has a doc | "GDD xong ở tier hiện tại." |

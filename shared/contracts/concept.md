@@ -15,12 +15,12 @@ Before dispatching, the skill fills every Core row it can from the pitch, then a
 the rows below that the pitch does not settle. Zero questions is the goal; four is the maximum, in one
 `AskUserQuestion` call.
 
-| ID | Ask when | Why it is asked, not proposed |
-| --- | --- | --- |
-| D-04 Platforms | the pitch names no platform | Changes controls, session shape and UI everywhere. |
-| D-06 Business model | the pitch names none | Changes economy, progression and UI everywhere. |
-| D-20 Multiplayer | the pitch does not make it clear | Changes almost every system. |
-| D-09 Scope | the pitch gives no hint of session length or content size | Sizes every system. |
+| ID | Ask when | Options to offer (Other is added automatically) | Why it is asked, not proposed |
+| --- | --- | --- | --- |
+| D-04 Platforms (multi) | the pitch names no platform | iOS + Android · PC (Steam) · Console · Web | Changes controls, session shape and UI everywhere. |
+| D-06 Business model | the pitch names none | Premium · F2P + IAP · F2P + Ads · Hybrid (ads + IAP) | Changes economy, progression and UI everywhere. |
+| D-20 Multiplayer | the pitch does not make it clear | Single-player · Local co-op/versus · Online co-op · Online competitive | Changes almost every system. |
+| D-09 Scope | the pitch gives no hint of session length or content size | Micro (<5 min, replay-driven) · Small (5–15 min) · Medium (15–45 min) · Large (45+ min) | Sizes every system. |
 
 Everything else is proposed. The user sees every proposal when reviewing `decisions.md`.
 
@@ -36,7 +36,7 @@ Everything else is proposed. The user sees every proposal when reviewing `decisi
 
 ## Output 2 — concept.md
 
-Budget: **≤ 1,000 words** (excluding tables' header rows). A hyper-casual game should land near 500.
+Budget: **≤ 1,000 words**, counted like `wc -w` on the file. A hyper-casual game should land near 500.
 
 Required headings, in order: `Pitch`, `Pillars`, `Core Loop`, `Target`, `Experience`, `Out of Scope`,
 `Systems`, `Glossary`, `Open Questions`. Optional: `References` (only if D-13 names games).
@@ -47,8 +47,9 @@ Rules:
    not a pillar.
 2. **Core Loop:** numbered steps, each a player verb. No system internals.
 3. **Target:** restates D-04, D-05, D-06, D-09 exactly as in `decisions.md`.
-4. **Systems:** every system the game needs, each tied to one pillar. Tier `core` only for what the
-   core loop cannot run without; everything else `later`. Doc column `—` until a system doc exists.
+4. **Systems:** every system the game needs, each tied to one pillar and one Type from the system
+   contract's type list. Tier `core` only for what the core loop cannot run without; everything else
+   `later`. Doc column `—` until a system doc exists. A hyper-casual game usually has 2–4 systems.
 5. **Glossary:** 5–15 terms the systems will reuse.
 6. **Open Questions:** at most 3, each with your recommended answer.
 

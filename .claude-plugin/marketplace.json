@@ -1,6 +1,8 @@
 {
   "name": "birdybird-local",
-  "owner": { "name": "Truong Nguyen" },
+  "owner": {
+    "name": "Truong Nguyen"
+  },
   "metadata": {
     "description": "Marketplace cục bộ — phục vụ các kit được version cùng source code."
   },
@@ -8,8 +10,10 @@
     {
       "name": "gdd-forge",
       "source": "./",
-      "description": "Gate-driven Game Design Document generator: asks for missing decisions, never invents them, then forges a 13-chapter GDD in one checkpointed multi-agent workflow — specialised subagents write, adversarial verifiers check every chapter, and a verified review drives fix rounds, pausing at checkpoints to ask you.",
-      "author": { "name": "Truong Nguyen" },
+      "description": "System-based Game Design Document generator: turns a pitch into a short concept, a decision table and one document per game system, asking at most four questions up front; every kit-made choice is a visible proposal, and a deterministic checker plus one independent reviewer check each document.",
+      "author": {
+        "name": "Truong Nguyen"
+      },
       "category": "documentation"
     }
   ]
