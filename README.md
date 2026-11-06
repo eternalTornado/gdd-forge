@@ -206,14 +206,14 @@ chạy đó:
 
 **Lộ trình chuyển đổi:**
 
-1. Viết ba template (concept, decisions, system), hai contract, và rút gọn writing rules từ
-   `dispatch-rules.md`.
+1. ✅ Viết ba template (concept, decisions, system), hai contract, và rút gọn writing rules từ
+   `dispatch-rules.md`. Nằm ở `shared/` (ngang hàng `skills/`, vì cả ba skill v2 dùng chung).
 2. Skill `/gdd-forge:concept` + agent `gdd-concept`, gồm decision sheet và danh sách 0–4 câu bắt
    buộc hỏi.
 3. Agent `gdd-system` + guidance theo loại system (chuyển từ `guidance/` và thân các agent thiết
    kế hiện có) + skill `/gdd-forge:system`.
 4. `scripts/gdd_check.py` + rút gọn `gdd-reviewer` + viết lại `/gdd-forge:review`.
-5. Xóa các thành phần bị bỏ ở bảng trên.
+5. Xóa các thành phần bị bỏ ở bảng trên; chuyển `skills/forge/data/` thành `shared/data/`.
 6. Cập nhật `plugin.json`, viết lại README (bỏ phần v1).
 
 ### Đo lường hiệu quả
