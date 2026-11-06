@@ -1,5 +1,238 @@
 # GDD Forge
 
+## GDD Forge v2 — Tổng quan
+
+> **Trạng thái:** thiết kế v2 đã được duyệt (2026-11-06), chưa triển khai. Các mục từ
+> [1. GDD Forge là gì](#1-gdd-forge-là-gì) trở xuống vẫn mô tả **v1 đang chạy** cho tới khi chuyển
+> đổi xong.
+
+GDD Forge v2 biến một pitch thành một GDD ngắn, chia theo hệ thống, với ít câu hỏi nhất có thể.
+Mục tiêu: một GDD mà người làm game thực sự đọc hết, và tốn ít token hơn v1.
+
+### Vì sao cần v2
+
+v1 sinh GDD rất dài, nhiều phần thừa, và hỏi lại rất nhiều. Nguyên nhân nằm ở thiết kế của kit,
+không phải ở cách agent viết:
+
+- **Template bắt điền mọi section.** Ví dụ ch4 có 11 mục cố định; mỗi mechanic phải đủ intent,
+  rules, inputs, outputs, edge cases và bảng tunables. Section không áp dụng vẫn giữ heading kèm
+  dòng `N/A`.
+- **Khoảng 5 trong 14 chương là boilerplate hoặc không phải việc của GDD.** Index, copyright,
+  version history (git đã làm), appendices; technical và secondary software là tài liệu kỹ thuật;
+  management (lịch, budget) phần lớn team nhỏ không dùng.
+- **Luồng đầy đủ không có giới hạn số từ.** Chỉ bản lite có budget, và vẫn là khoảng 9.000 từ cho
+  5 file.
+- **Mỗi chương lặp lại Open Decisions, New Terms và tham chiếu chéo**, nhân lên qua 14 file.
+- **Luật "never invent, never substitute a default" buộc phải hỏi mọi trường.** Gate luôn hỏi
+  khoảng 24 trường (Section A + B + D-38/39/40), thêm tới 13 trường Section C khi trigger bật:
+  khoảng 8 lượt hỏi trước khi viết chữ đầu tiên.
+- **Sau gate còn 5 loại checkpoint:** duyệt chương neo, GAP cuối mỗi wave (6 wave W3a–W7), item
+  verify `V-`, Blocker, Major tồn đọng. Mọi thứ "thêm/bớt feature, mode, screen" đều là GAP, trong
+  khi thiết kế game chủ yếu là thêm feature.
+- **Kiểm chứng đối kháng nhiều tầng:** finder đọc lại từng file, 3 voter cho mỗi Major, review 4
+  lens + 3 voter, fix loop 2 vòng. Phần lớn token đi vào kiểm một tài liệu mà ít ai đọc hết.
+
+### Nguyên tắc thiết kế
+
+1. **Không bao giờ quyết ngầm** (thay cho "không bao giờ tự quyết"). Agent được đề xuất mọi thứ,
+   miễn mọi đề xuất hiện rõ trong `decisions.md` với nguồn `proposal`, để người sửa bất cứ lúc nào.
+2. **Chỉ hỏi trước điều vừa đắt nếu sai, vừa không suy ra được từ pitch.** Tối đa một vòng 0–4 câu.
+3. **GDD chia theo hệ thống, không theo 13 chương.** Chỉ viết system game thực sự có.
+4. **Budget là trần.** Concept ≤ ~1.000 từ, mỗi system ≤ ~1.200 từ; game đơn giản nên thấp hơn
+   nhiều.
+5. **GDD là tài liệu thiết kế.** Không chứa kiến trúc kỹ thuật, lịch, budget, copyright hay index.
+6. **Kiểm bằng script trước, một reviewer sau.** Không voter, không fix loop nhiều vòng.
+7. **Skill nào xong cũng đề xuất bước tiếp theo.** Xem
+   [Quy ước bước tiếp theo](#quy-ước-bước-tiếp-theo).
+
+### Output: GDD theo hệ thống
+
+```text
+deliverables/<slug>/GDD/
+├── concept.md          # chương neo, ≤ ~1.000 từ
+├── decisions.md        # bảng quyết định: ID · quyết định · giá trị · nguồn (user / proposal) · doc bị ảnh hưởng
+└── systems/
+    ├── combat.md       # mỗi system ≤ ~1.200 từ
+    ├── progression.md
+    ├── economy.md
+    └── ui-flow.md
+```
+
+**`concept.md`** gồm: pitch, 3–5 pillar (tên · ý nghĩa · cấm gì), core loop, target (platform,
+audience, business model), scope, art direction và tone (vài dòng), reference games, out of scope,
+danh sách system (system chưa viết phác một dòng), glossary.
+
+**Mỗi file trong `systems/`** gồm:
+
+- Mục đích và pillar phục vụ.
+- Rules.
+- Bảng tunables (mỗi tunable chỉ định nghĩa ở một nơi).
+- States và edge cases.
+- Danh sách content (nếu có).
+- UI touchpoints.
+- **Hành vi người chơi kiểm được:** các câu dạng "khi … thì …" mà người chơi quan sát được.
+- **Câu hỏi mở:** tối đa 3.
+
+Loại system có guidance riêng: mechanics, economy/monetization, progression, level, UI flow,
+narrative, enemy behavior, presentation (art + audio direction, asset list). Hành vi enemy nằm
+trong system có enemy, không có chương AI riêng.
+
+**Bỏ khỏi GDD:** index, copyright, version history (git lo), appendices, technical, secondary
+software, management. Không còn thư mục phiên bản `<version>/`: GDD là tài liệu sống, lịch sử nằm
+trong git.
+
+### Phân tier theo giai đoạn
+
+Tier thay cho `--profile casual`. Tier đi theo giai đoạn dự án, không theo thể loại.
+
+| Tier | Output | Khi nào |
+| --- | --- | --- |
+| Concept | `concept.md` + `decisions.md` | Pitch, thử ý tưởng; hyper-casual thường dừng gần đây |
+| Core | + system docs của core loop | Bắt đầu prototype |
+| System | Thêm hoặc cập nhật một system | Khi cần thiết kế tiếp một hệ thống cụ thể |
+
+GDD hyper-casual còn khoảng 2.000–2.500 từ thay vì khoảng 9.000.
+
+### Flow hỏi: tối đa một vòng trước khi viết
+
+1. **Đọc pitch → lập decision sheet.** Agent điền mọi quyết định có thể; cái gì tự đề xuất thì
+   ghi nguồn `proposal`.
+2. **Chỉ hỏi trước 0–4 câu,** cho các quyết định pitch không nói tới mà sai thì phải làm lại phần
+   lớn GDD: platform, business model, multiplayer, và scope nếu pitch không rõ.
+3. **Người duyệt `decisions.md` + `concept.md` cùng lúc.** Đây là checkpoint thật sự duy nhất.
+4. **Viết system docs không dừng giữa chừng.** Agent tự đề xuất; mỗi doc kết thúc bằng tối đa 3
+   câu hỏi mở, người trả lời khi đọc doc.
+5. **Đổi quyết định bất cứ lúc nào:** sửa `decisions.md`, rồi `/gdd-forge:review` liệt kê doc bị
+   ảnh hưởng.
+
+So với v1 (khoảng 8 lượt gate + tới 6 checkpoint GAP + verify, Blocker, Major): v2 còn khoảng 1
+lượt hỏi, 1 lần duyệt concept, và câu hỏi mở gom theo từng doc.
+
+### Kiểm chứng: script trước, reviewer sau
+
+**`scripts/gdd_check.py`** (Python stdlib) kiểm những gì máy kiểm được:
+
+- Số từ theo budget (`wc -w`).
+- Heading bắt buộc của concept và system doc.
+- Thuật ngữ khớp glossary trong `concept.md`.
+- Một tunable chỉ được định nghĩa ở một nơi.
+- Tham chiếu `→ <file> §x.y` trỏ tới section có thật.
+- Không có từ ngữ nội bộ của kit lọt vào (contract, dispatch, gate, preset…).
+- Quyết định trong doc khớp giá trị trong `decisions.md`.
+
+**`gdd-reviewer`** có context sạch, chỉ nhận `concept.md`, `decisions.md` và doc vừa viết. Nó kiểm
+mâu thuẫn với concept, mỗi rule có phục vụ pillar nào không, và độ khép kín (rule nhắc tới thứ chưa
+định nghĩa). Trả về tối đa 5 điểm, mỗi điểm có severity.
+
+Bỏ: voter 3 phiếu, 4 lens, fix loop 2 vòng, `fact-ledger.md`, `checks/`.
+
+### Skills và agents
+
+| Thành phần | Vai trò |
+| --- | --- |
+| `/gdd-forge:concept <pitch \| brief.md> [--update]` | Decision sheet, 0–4 câu hỏi, viết `concept.md` + `decisions.md` |
+| `/gdd-forge:system <tên> \| --core [--update]` | Viết hoặc cập nhật một system doc; `--core` viết các system của core loop |
+| `/gdd-forge:review [<file>]` | `gdd_check.py` + `gdd-reviewer`; không arg thì kiểm cả GDD và liệt kê doc lệch với `decisions.md` |
+| `/gdd-forge:name <pitch>` | Giữ từ v1: sinh và chọn tên, ghi vào `decisions.md` |
+| `gdd-concept` | Viết concept và decision sheet |
+| `gdd-system` | Một agent dùng chung, đọc guidance theo loại system |
+| `gdd-reviewer` | Rút gọn từ v1 |
+| `gdd-namer` | Giữ từ v1 |
+
+### Quy ước bước tiếp theo
+
+Mọi skill v2 kết thúc bằng một dòng đề xuất bước tiếp theo, dựa trên **kết quả thực tế** của lần
+chạy đó:
+
+```text
+**Tiếp theo:** `/gdd-forge:review systems/combat.md` — vừa viết combat.md, chưa kiểm.
+```
+
+- Một đề xuất chính, ghi đúng lệnh kèm argument. Nếu kết quả rẽ nhánh, thêm tối đa một nhánh phụ.
+- Chỉ đề xuất, không tự chạy bước cần người duyệt.
+- Không có bước hợp lý nào thì nói rõ "GDD xong ở tier hiện tại", không bịa bước.
+
+| Skill xong với kết quả | Tiếp theo |
+| --- | --- |
+| `/gdd-forge:concept`, còn câu hỏi trước | Người trả lời 0–4 câu |
+| `/gdd-forge:concept`, chờ duyệt | Người duyệt `decisions.md` + `concept.md` → `/gdd-forge:system --core` |
+| `/gdd-forge:concept`, người yêu cầu sửa | Sửa → `/gdd-forge:concept --update` |
+| `/gdd-forge:system` xong một doc | `/gdd-forge:review systems/<tên>.md` |
+| `/gdd-forge:review`, script báo lỗi | Sửa theo lỗi → `/gdd-forge:review <file>` |
+| `/gdd-forge:review`, reviewer có finding severity cao | `/gdd-forge:system <tên> --update` → `/gdd-forge:review <file>` |
+| `/gdd-forge:review` sạch, doc còn câu hỏi mở | Người trả lời câu hỏi mở → `/gdd-forge:system <tên> --update` |
+| `/gdd-forge:review` sạch, còn system trong danh sách chưa viết | `/gdd-forge:system <system kế tiếp>` |
+| `/gdd-forge:review` sạch, đủ system của tier | GDD xong ở tier hiện tại |
+| Người sửa `decisions.md` | `/gdd-forge:review` → `--update` các doc nó liệt kê |
+| `/gdd-forge:name` chọn xong tên | Quay lại bước đang dở |
+
+### Thay đổi so với v1
+
+| v1 | v2 |
+| --- | --- |
+| 14 file theo 13 chương (lite: 6 file) | `concept.md` + `decisions.md` + `systems/*.md` |
+| Gate khoảng 8 lượt, không được tự đề xuất | 0–4 câu + duyệt decision sheet một lần |
+| GAP dừng hỏi cuối mỗi wave | Câu hỏi mở cuối mỗi doc, người trả lời khi đọc |
+| `--profile casual` theo thể loại | Tier Concept / Core / System theo giai đoạn |
+| Workflow nhiều đoạn, checkpoint giữa các đoạn | Skill gọi agent trực tiếp |
+| Finder + 3 voter + 4 lens + fix loop | `gdd_check.py` + một reviewer |
+| 12 agent | 4 agent |
+| Thư mục phiên bản + `_work/` | GDD sống trong git, không `_work/` |
+
+**Thành phần v1: giữ hay bỏ.** Nguyên tắc: bỏ mọi thứ v2 không cần.
+
+| Thành phần v1 | Quyết định | Lý do / thay bằng |
+| --- | --- | --- |
+| `skills/forge` | Thay | Tách thành `/gdd-forge:concept` và `/gdd-forge:system` |
+| `skills/review` | Viết lại | Chạy `gdd_check.py` + `gdd-reviewer` trên cấu trúc mới |
+| `skills/name`, `gdd-namer` | Giữ | Ghi tên vào `decisions.md` thay vì `brief.md` |
+| `workflows/forge-run.js` | Bỏ | Không còn wave, segment hay checkpoint giữa chừng |
+| `gdd-concept-architect` | Thay | Thành `gdd-concept` |
+| `gdd-mechanics-designer`, `gdd-level-designer`, `gdd-ux-designer`, `gdd-narrative-designer`, `gdd-ai-designer`, `gdd-art-director`, `gdd-producer` | Gộp | Thành `gdd-system`; nội dung chuyên môn chuyển thành guidance theo loại system |
+| `gdd-tech-designer` | Bỏ | GDD không còn chương kỹ thuật |
+| `gdd-scribe` | Bỏ | Không còn index, copyright, version history, appendices |
+| `gdd-reviewer` | Rút gọn | Bỏ fact-ledger và 12 rule; giữ kiểm mâu thuẫn, pillar, độ khép kín |
+| `references/guidance/*` | Giữ, sắp lại | Thành guidance theo loại system; bỏ `tech-designer.*` và tách full/lite |
+| `references/brief-schema.md`, `brief-template.md` | Thay | Decision sheet: tập quyết định rút gọn + danh sách 0–4 câu bắt buộc hỏi |
+| `references/dispatch-rules.md` | Rút gọn | Giữ writing rules (tag số, không bịa dữ kiện ngoài, glossary, một fact một chỗ, viết cho team); bỏ GAP, PATCH mode, REPORT |
+| `references/contracts/`, `contracts-lite/`, `chapter-contracts.md` | Thay | Hai contract: concept và system |
+| `references/consistency-rules*.md` | Tách | Phần máy kiểm được vào `gdd_check.py`, phần còn lại vào checklist reviewer |
+| `references/pipeline.md`, `profile-casual.md`, `gap-log-template.md`, `run-meta-template.md` | Bỏ | Flow mới nằm trong `SKILL.md`; tier thay profile |
+| `templates/chapters/`, `templates/lite/` | Thay | Ba template: concept, decisions, system |
+| `checklists/` (17 + 5 lite) | Gộp | Một checklist concept + một checklist system |
+| `scripts/extract-sections.sh` | Bỏ | Doc ngắn, đọc trọn, không cắt input |
+| `data/` | Giữ | Nạp theo nhu cầu của từng system |
+| `.claude-plugin/` | Giữ | Cập nhật mô tả và version |
+
+**Lộ trình chuyển đổi:**
+
+1. Viết ba template (concept, decisions, system), hai contract, và rút gọn writing rules từ
+   `dispatch-rules.md`.
+2. Skill `/gdd-forge:concept` + agent `gdd-concept`, gồm decision sheet và danh sách 0–4 câu bắt
+   buộc hỏi.
+3. Agent `gdd-system` + guidance theo loại system (chuyển từ `guidance/` và thân các agent thiết
+   kế hiện có) + skill `/gdd-forge:system`.
+4. `scripts/gdd_check.py` + rút gọn `gdd-reviewer` + viết lại `/gdd-forge:review`.
+5. Xóa các thành phần bị bỏ ở bảng trên.
+6. Cập nhật `plugin.json`, viết lại README (bỏ phần v1).
+
+### Đo lường hiệu quả
+
+v2 chỉ đáng giữ nếu thắng v1 trên pitch thật. Chạy 3–5 pitch (có ít nhất một hyper-casual và một
+mid-core) qua cả hai bản, so theo bốn chỉ số:
+
+| Chỉ số | Cách đo |
+| --- | --- |
+| Số lượt hỏi người | Đếm lượt hỏi từ đầu tới khi GDD xong ở tier Core |
+| Tổng số từ | `wc -w` toàn bộ GDD |
+| Token mỗi lần chạy | Usage của session Claude Code |
+| Số lần sửa lại ý | Số lần người phải nói "không phải ý mình" |
+
+Nếu v2 ít câu hỏi hơn nhưng số lần sửa lại ý tăng, nghĩa là danh sách 0–4 câu bắt buộc hỏi còn
+thiếu. Khi đó thêm câu vào danh sách đó, không quay lại gate dài.
+
+---
+
 ## 1. GDD Forge là gì
 
 GDD Forge là một plugin Claude Code biến một ý tưởng game (pitch) thành một Game Design Document (GDD) đầy đủ 13 chương. Nguyên tắc cốt lõi: một **gate** (cổng hỏi đáp) hỏi người dùng đúng những quyết định còn thiếu — kit **không bao giờ tự bịa quyết định** (nền tảng, đối tượng, mô hình kinh doanh, engine...) thay người dùng; nếu người dùng bỏ ngỏ, giá trị đó được ghi `UNDECIDED` và xuất hiện trong Open Decisions. Output cuối cùng là 13 chương GDD dạng Markdown (0_Index đến 13_Appendices) cộng với tên game được chọn.
