@@ -1,7 +1,7 @@
 {
   "name": "gdd-forge",
-  "version": "2.0.0",
-  "description": "System-based Game Design Document generator: turns a pitch into a short concept, a decision table and one document per game system, asking at most four questions up front; every kit-made choice is a visible proposal, and a deterministic checker plus one independent reviewer check each document.",
+  "version": "2.1.0",
+  "description": "System-based Game Design Document generator: turns a pitch into a short concept, a decision table and one document per game system, asking at most four questions up front; every kit-made choice is a visible proposal, and a deterministic checker plus one independent reviewer check each document. gdd-review adds a Technical-Leader review of any GDD that produces questions for Game Design.",
   "author": {
     "name": "Truong Nguyen"
   },

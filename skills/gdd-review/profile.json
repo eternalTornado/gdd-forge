@@ -1,0 +1,24 @@
+{
+ "rules": "review-standard.md",
+ "ruleId": "GR-\\d+",
+ "categories": [
+  "Conflict trong feature",
+  "Conflict giữa các GDD",
+  "Out of scope: kỹ thuật/API/DB",
+  "Thiếu info: quy tắc/hành vi",
+  "Thiếu info: số liệu/công thức",
+  "Thiếu info: UI/UX/asset",
+  "Lỗi trình bày"
+ ],
+ "labels": {
+  "questions": "Câu hỏi cho Game Design",
+  "unit": "Mục GDD",
+  "unitBreakdown": "Nhóm",
+  "unitDef": "Đếm theo heading cấp 2–3 của các GDD được review (bỏ Version History, Changelog, Mục lục, Tham chiếu). Nhóm = mỗi GDD được review một nhóm, cộng nhóm Xuyên tài liệu; GDD đối chiếu chỉ có mặt ở mục Ngoài phạm vi GDD.",
+  "priorityDef": "Mức ưu tiên là đánh giá của Technical Leader: Cao — chặn implement hoặc làm dev code sai luật, công thức, luồng, việc cấp/trừ tài nguyên; Trung bình — implement được bằng giả định tạm nhưng có thể phải sửa (giá trị cân bằng, edge case phụ, UI state); Thấp — lỗi trình bày. Nội dung kỹ thuật ngoài phạm vi GDD không tính là câu hỏi, liệt kê riêng ở mục Ngoài phạm vi GDD.",
+  "evidence": "GDD ghi",
+  "figure": "Hình 1 — Câu hỏi theo nhóm",
+  "scopeTitle": "Nội dung ngoài phạm vi GDD",
+  "scopeIntro": "Các mục dưới đây đặc tả kỹ thuật (API, database, cách implement, vận hành) — phần này dev đặc tả trong Specs, không cần Game Design trả lời. Khi cập nhật GDD, Game Design có thể chủ động xoá các mục này; luật và hành vi người chơi thấy trong cùng mục vẫn giữ."
+ }
+}

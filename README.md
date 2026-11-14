@@ -24,9 +24,10 @@ Chọn một cách:
 - Không dùng plugin: copy `skills/*` → `~/.claude/skills/`, `agents/*` → `~/.claude/agents/`, và
   `shared/` → `~/.claude/shared/`. Skill tìm `shared/` ở `<thư mục skill>/../../shared`, nên `shared/`
   phải nằm ngang hàng `skills/`. Khi cài kiểu này, lệnh không có prefix: `/concept`, `/system`,
-  `/review`, `/name`.
+  `/review`, `/gdd-review`, `/name`.
 
-Cần `python3` (3.8+, chỉ dùng thư viện chuẩn) để chạy `gdd_check.py`.
+Cần `python3` (3.8+, chỉ dùng thư viện chuẩn) để chạy `gdd_check.py`. `/gdd-review` cần thêm `git` (dò GDD đổi) và
+`pdftotext` nếu GDD có PDF.
 
 ## 3. Cách dùng
 
@@ -39,6 +40,8 @@ Cần `python3` (3.8+, chỉ dùng thư viện chuẩn) để chạy `gdd_check.
 /gdd-forge:system --update <tên> [<thay đổi>]    # sửa một system doc
 /gdd-forge:review [<file>]                       # gdd_check.py + reviewer; không arg = cả GDD
 /gdd-forge:name <pitch | GDD>                    # sinh và chọn tên game
+/gdd-forge:gdd-review <GDD | thư mục | stem>      # Tech Lead review GDD bất kỳ → report câu hỏi cho Game Design
+/gdd-forge:gdd-review --verify                   # đóng các câu đã được GDD mới trả lời
 ```
 
 Chạy các skill trong cuộc hội thoại chính: chỉ skill nói chuyện với bạn, agent không bao giờ hỏi.
@@ -121,6 +124,27 @@ Nó đi theo checklist ở `shared/checklists/` (mâu thuẫn với concept hay 
 monetization, rule kiểm được, độ khép kín, edge case, tỷ lệ với scope) và trả về tối đa 5 điểm mỗi doc,
 có severity `high` / `medium` / `low`. Reviewer không sửa doc.
 
+### `/gdd-review` — review GDD bất kỳ, ra câu hỏi cho Game Design
+
+`/review` và `/gdd-review` trả lời hai câu hỏi khác nhau:
+
+| | `/review` | `/gdd-review` |
+| --- | --- | --- |
+| Câu hỏi | GDD do kit viết có nhất quán với concept và decisions không? | Dev có implement được đúng một cách không? |
+| Input | GDD do gdd-forge sinh (`concept.md` + `decisions.md`) | GDD bất kỳ trong repo GDD của studio (key `gdd.path`) |
+| Người dùng | Người viết GDD | Technical Leader trước khi giao việc |
+| Output | Finding + đề xuất `/system --update` | `reports/gdd-review/gdd-report.md` + `.html`: câu hỏi đóng cho Game Design, mục Ngoài phạm vi GDD |
+
+Pipeline: thu nguồn → FINDER (haiku) theo ba lens (`conflict` · `scope` · `missing`) → `check_form.py` →
+VERIFIER (sonnet) cố bác bỏ từng candidate → SYNTHESIZER → CRITIC (≤ `rounds` vòng) → render. Chỉ có một
+report; chạy lại thì cập nhật tại chỗ theo `git diff` từ `gddCommit` của report, giữ id câu hỏi.
+`--verify` chỉ kiểm câu đang mở đã được GDD mới trả lời chưa. Thu hẹp phạm vi bằng `sections=` và `lens=`.
+
+Cấu hình đọc từ `CLAUDE.md` / `CLAUDE.local.md` của repo đang mở: `gdd.path` (bắt buộc, thiếu thì skill
+hỏi), `gdd.glossary`, `gdd.filePrefix` (tuỳ chọn). Luật review ở `skills/gdd-review/review-standard.md`
+(GR-NN), category ở `profile.json`; toolkit render/validate dùng chung ở `shared/report-toolkit/`.
+Nhập từ repo Project-X3-GDD; flow chi tiết ở `skills/gdd-review/SKILL.md`.
+
 ## 7. Quy ước bước tiếp theo
 
 Mọi skill kết thúc bằng một dòng đề xuất bước tiếp theo, dựa trên **kết quả thực tế** của lần chạy:
@@ -158,11 +182,13 @@ gdd-forge/
 │   ├── gdd-concept.md       # viết concept.md + decisions.md
 │   ├── gdd-system.md        # viết một system doc, đọc guidance theo type
 │   ├── gdd-reviewer.md      # read-only, tối đa 5 finding mỗi doc
+│   ├── gdd-review.md        # worker của /gdd-review: FINDER · VERIFIER · SYNTHESIZER · CRITIC · QUOTE-FIX
 │   └── gdd-namer.md         # 8 ứng viên tên, read-only
 ├── skills/
 │   ├── concept/SKILL.md
 │   ├── system/SKILL.md
 │   ├── review/SKILL.md
+│   ├── gdd-review/          # SKILL.md, review-standard.md, profile.json, scripts/
 │   └── name/SKILL.md
 └── shared/
     ├── writing-rules.md     # quyết định vs đề xuất vs thiết kế tự do; quy tắc viết; update mode; khối RESULT
@@ -171,10 +197,12 @@ gdd-forge/
     ├── guidance/            # concept.md + 8 file theo type system
     ├── checklists/          # concept.md, system.md — checklist của reviewer
     ├── scripts/gdd_check.py
+    ├── report-toolkit/      # chuẩn report, DATA.md, template HTML, prepare/resolve/assemble/validate/render
     └── data/                # kiến thức nền; _index.md chọn file theo loại doc
 ```
 
-Không agent nào ghim model: mọi dispatch chạy bằng model của phiên.
+Không agent nào ghim model: mọi dispatch chạy bằng model của phiên — trừ `gdd-review`, nơi skill truyền
+`model` theo vai (FINDER, QUOTE-FIX: haiku; VERIFIER, CRITIC, SYNTHESIZER: sonnet).
 
 ## 9. Thay đổi so với v1
 
@@ -234,7 +262,10 @@ type (mechanics, progression, economy, level, enemy-behavior, ui-flow, narrative
 `/gdd-forge:review [<file>]` runs `shared/scripts/gdd_check.py` (headings, word budgets, decision table,
 single ownership of tunables, cross-references, glossary spelling, decisions changed since the last
 commit) and one clean-context reviewer that returns at most five findings per document.
-`/gdd-forge:name` proposes and records a title. Every skill ends with one suggested next command.
+`/gdd-forge:name` proposes and records a title. `/gdd-forge:gdd-review <GDD>` is a Technical-Leader
+review of any GDD (not only kit-made ones): find → independent verify → synthesize → critic, producing one
+updatable report of closed questions for Game Design (`--verify` closes answered ones). Every skill ends
+with one suggested next command.
 
 **Install** — `claude --plugin-dir <path>` to try, or add the folder as a marketplace and install
 `gdd-forge@birdybird-local`. Without the plugin system, copy `skills/`, `agents/` and `shared/` side by
